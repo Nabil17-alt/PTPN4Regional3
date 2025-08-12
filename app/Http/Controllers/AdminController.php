@@ -54,7 +54,7 @@ class AdminController extends Controller
             'users' => $users,
             'units' => $units,
             'jabatanOptions' => $jabatanOptions,
-            'editUser' => $editUser, 
+            'editUser' => $editUser,
         ]);
     }
     public function login(Request $request)
@@ -91,12 +91,10 @@ class AdminController extends Controller
             'password' => 'nullable|string|min:6',
         ]);
 
-        // Update data biasa
         $user->username = $validatedData['username'];
         $user->email = $validatedData['email'];
         $user->level = $validatedData['level'];
 
-        // Update password jika diisi
         if (!empty($validatedData['password'])) {
             $user->password = Hash::make($validatedData['password']);
         }
@@ -105,8 +103,6 @@ class AdminController extends Controller
 
         return redirect()->route('admin.akun')->with('success', 'Akun berhasil diupdate.');
     }
-
-
     public function deleteAccount($username)
     {
         $user = User::where('username', $username)->firstOrFail();
@@ -135,7 +131,6 @@ class AdminController extends Controller
 
         return redirect()->route('admin.akun')->with('success', 'Akun berhasil ditambahkan.');
     }
-
 
     public function view()
     {

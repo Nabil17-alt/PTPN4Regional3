@@ -18,15 +18,11 @@
     @section('content')
         <div class="p-4 sm:ml-64 mt-15">
             <div class="bg-white rounded-lg shadow-md p-6">
-                <!-- Header with title and buttons -->
                 <div class="flex justify-between items-start border-b pb-4 mb-4">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-800">Progress</h2>
                     </div>
-
                 </div>
-
-                <!-- Filter & Search -->
                 <div class="flex justify-end items-center mb-4">
                     <div class="relative w-64">
                         <input type="text"
@@ -41,8 +37,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Table -->
                 <div class="overflow-x-auto">
                     <table class="w-full min-w-[1000px] divide-y divide-gray-200 text-sm">
                         <thead class="bg-gray-100 text-gray-700">
@@ -91,14 +85,10 @@
                                         Delete
                                     </a>
                                 </td>
-
                             </tr>
-                            <!-- Repeat rows as needed -->
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Pagination -->
                 <div class="flex justify-between items-center pt-4 border-t mt-4">
                     <p class="text-sm text-gray-600">Page 1 of 10</p>
                     <div class="space-x-2">

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -27,23 +26,20 @@ return new class extends Migration
             $table->float('harga_escalasi');
 
             $table->float('total_rendemen')->storedAs('rendemen_cpo + rendemen_pk');
-            $table->float('pendapatan_cpo')->storedAs('rendemen_cpo * harga_cpo');
-            $table->float('pendapatan_pk')->storedAs('rendemen_pk * harga_pk');
+            $table->float('pendapatan_cpo')->storedAs('harga_cpo * (rendemen_cpo / 100)');
+            $table->float('pendapatan_pk')->storedAs('harga_pk * (rendemen_pk / 100)');
             $table->float('total_pendapatan')->storedAs('pendapatan_cpo + pendapatan_pk');
-
-            $table->float('biaya_produksi')->storedAs('biaya_olah + tarif_angkut_cpo + tarif_angkut_pk');
+            $table->float('biaya_produksi')->storedAs('(biaya_olah / 100) * (rendemen_cpo + rendemen_pk)');
             $table->float('total_biaya')->storedAs('biaya_produksi + biaya_angkut_jual');
-            $table->float('harga_penetapan')->storedAs('total_biaya / total_rendemen');
-            $table->float('margin')->storedAs('total_pendapatan - total_biaya');
+            $table->float('harga_penetapan')->storedAs('total_pendapatan - total_biaya');
+            $table->float('margin')->storedAs('1 - (harga_escalasi / nullif(harga_penetapan, 0))');
 
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->timestamps();
 
-            // Primary Key (gabungan jika memang seperti itu)
-            $table->primary(['kode_unit','tanggal', 'grade']);
+            $table->primary(['kode_unit', 'tanggal', 'grade']);
         });
-    }
 
+    }
     /**
      * Reverse the migrations.
      */

@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const signupBtn = document.getElementById('signupBtn');
     if (signupBtn) {
         signupBtn.addEventListener('click', function (e) {
-            e.preventDefault(); 
+            e.preventDefault();
             loader.classList.remove('hidden');
 
             setTimeout(() => {

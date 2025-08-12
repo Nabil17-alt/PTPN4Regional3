@@ -25,7 +25,6 @@ function closeModal() {
 function confirmDelete(username) {
     Swal.fire({
         title: 'Yakin ingin menghapus akun ini?',
-        text: "Tindakan ini tidak dapat dibatalkan!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',

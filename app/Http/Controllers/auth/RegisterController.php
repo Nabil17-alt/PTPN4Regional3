@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
 class RegisterController extends Controller
 {
     public function showRegisterForm()
     {
-        return view('auth.register');
+        $unit = DB::table('tb_unit')->select('kode_unit', 'nama_unit')->get();
+
+        return view('auth.register', compact('unit'));
     }
 
     public function register(Request $request)
@@ -34,5 +37,4 @@ class RegisterController extends Controller
 
         return redirect()->route('login')->with('success', 'Pendaftaran berhasil, silakan login.');
     }
-
 }

@@ -27,16 +27,17 @@ class LoginController extends Controller
 
         $user = User::where('username', $request->username)->first();
 
-        if ($user && Hash::check($request->password, $user->password)) {
-            Auth::login($user); 
-            $request->session()->regenerate(); 
-
-            return redirect()->intended('/dashboard');
+        if ($user) {
+            if (Hash::check($request->password, $user->password)) {
+                Auth::login($user);
+                $request->session()->regenerate();
+                return redirect()->intended('/dashboard');
+            } else {
+                return back()->with('login_error', 'Password salah.');
+            }
+        } else {
+            return back()->with('login_error', 'Username salah.');
         }
-
-        return back()->withErrors([
-            'username' => 'Username atau password salah.',
-        ])->onlyInput('username');
     }
 
     public function logout(Request $request)

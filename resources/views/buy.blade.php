@@ -30,7 +30,7 @@
                                 <path
                                     d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z" />
                             </svg>
-                            Tambah Unit
+                            Tambah Pembelian
                         </a>
                     </div>
                 </div>
@@ -40,19 +40,14 @@
                             class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Cari Unit..." />
                         <div class="absolute right-3 top-2.5 text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M21 21l-4.35-4.35M16.65 10.5a6.15 6.15 0 11-12.3 0 6.15 6.15 0 0112.3 0z" />
-                            </svg>
                         </div>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full min-w-[1000px] divide-y divide-gray-200 text-sm">
+                    <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
-                                <th class="px-4 py-3 text-left font-semibold">Unit</th>
+                                <th class="px-4 py-3 text-left font-semibold">Tanggal</th>
                                 <th class="px-4 py-3 text-center font-semibold">Status</th>
                                 <th class="px-4 py-3 text-center font-semibold">Action</th>
                             </tr>
@@ -60,14 +55,9 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($pembelians as $item)
                                 <tr class="transition-all duration-500 hover:bg-gray-50">
-                                    <!-- Kolom Nama Unit -->
-                                    <td class="px-4 py-3 flex items-center space-x-3 text-gray-800 font-medium">
-                                        <div>
-                                            {{ $item->unit->namaunit ?? $item->kode_unit }}
-                                        </div>
+                                    <td class="px-4 py-3 text-gray-800 font-medium">
+                                        {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
                                     </td>
-
-                                    <!-- Kolom Status -->
                                     <td class="text-center px-4 py-3">
                                         @php
                                             $badgeColors = [
@@ -81,8 +71,6 @@
                                             {{ ucfirst($item->status ?? 'Unknown') }}
                                         </span>
                                     </td>
-
-                                    <!-- Kolom Aksi -->
                                     <td class="text-center px-4 py-3">
                                         <a href="{{ route('pembelian.edit', $item) }}" title="Edit"
                                             class="inline-flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
@@ -94,7 +82,6 @@
                                             Edit
                                         </a>
                                     </td>
-
                                 </tr>
                             @empty
                                 <tr>
@@ -104,19 +91,51 @@
                                 </tr>
                             @endforelse
                         </tbody>
-
                     </table>
                 </div>
-                <div class="flex justify-between items-center pt-4 border-t mt-4">
-                    <p class="text-sm text-gray-600">Page 1 of 10</p>
-                    <div class="space-x-2">
-                        <button class="px-3 py-1 text-sm border rounded bg-white hover:bg-gray-100">Previous</button>
-                        <button class="px-3 py-1 text-sm border rounded bg-white hover:bg-gray-100">Next</button>
+                <div class="flex justify-end pt-4 border-t mt-4">
+                    <div class="flex items-center space-x-2">
+                        @php
+                            $start = max(1, $pembelians->currentPage() - 2);
+                            $end = min($pembelians->lastPage(), $pembelians->currentPage() + 2);
+                        @endphp
+                        @if ($start > 1)
+                            <a href="{{ $pembelians->url(1) }}"
+                                class="px-4 py-2 text-sm text-gray-900 border border-gray-400 rounded-lg hover:bg-gray-100 transition-all">
+                                1
+                            </a>
+                            @if ($start > 2)
+                                <span class="px-2 text-sm text-gray-500">...</span>
+                            @endif
+                        @endif
+                        @for ($page = $start; $page <= $end; $page++)
+                            @if ($page == $pembelians->currentPage())
+                                <span
+                                    class="px-4 py-2 text-sm font-semibold text-white bg-gray-700 rounded-lg shadow hover:bg-gray-800 transition-all">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                <a href="{{ $pembelians->url($page) }}"
+                                    class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all">
+                                    {{ $page }}
+                                </a>
+                            @endif
+                        @endfor
+                        @if ($end < $pembelians->lastPage())
+                            @if ($end < $pembelians->lastPage() - 1)
+                                <span class="px-2 text-sm text-gray-500">...</span>
+                            @endif
+                            <a href="{{ $pembelians->url($pembelians->lastPage()) }}"
+                                class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all">
+                                {{ $pembelians->lastPage() }}
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     @endsection
+    <script src="{{ asset('js/buy.js') }}"></script>
 </body>
 
 </html>

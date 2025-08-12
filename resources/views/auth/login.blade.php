@@ -7,6 +7,7 @@
     <link rel="icon" href="{{ asset('images/logo_ptpn4.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
     <link rel="stylesheet" href="{{ asset('css/loaders.css') }}">
+
 </head>
 <body>
     <div class="loader hidden" id="pageLoader">
@@ -49,5 +50,18 @@
         </div>
     </div>
     <script src="{{ asset('js/login.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if(session('login_error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                text: '{{ session('login_error') }}',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Tutup'
+            });
+        </script>
+    @endif
+
 </body>
 </html>

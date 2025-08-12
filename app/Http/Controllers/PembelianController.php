@@ -3,26 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Grade; // atau model yang merepresentasikan tabel grade
-use App\Models\Unit; // Model untuk unit jika diperlukan
+use App\Models\Grade; 
+use App\Models\Unit; 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pembelian;
 
 class PembelianController extends Controller
 {
-    // public function create()
-    // {
-    //     // Mengambil semua data grade
-    //     $grades = Grade::all();
-    //     $units = Unit::all();
-
-    //     // Mengirim data user dan grades ke view
-    //     $user = auth()->user();
-    //     return view('buyform', compact('user', 'grades', 'units'));
-    // }
-
-
-    // Menampilkan form + tabel
     public function create()
     {
         $grades = Grade::all();
@@ -31,24 +18,6 @@ class PembelianController extends Controller
         $user = auth()->user();
         return view('buyform', compact('user', 'grades', 'units'));
     }
-    // public function buy()
-    // {
-    //     $user = Auth::user();
-
-    //     if (!$user) {
-    //         return redirect()->route('login');
-    //     }
-
-    //     // Ambil semua data pembelian, urutkan terbaru dulu
-    //     $pembelians = Pembelian::orderByDesc('created_at')->get();
-
-    //     // Kirim variabel ke view bersama $user
-    //     return view('buy', [
-    //         'user' => $user,
-    //         'pembelians' => $pembelians,
-    //     ]);
-    // }
-
     public function buy()
     {
         $user = Auth::user();
@@ -56,22 +25,16 @@ class PembelianController extends Controller
         if (!$user) {
             return redirect()->route('login');
         }
+        $pembelians = Pembelian::with('unit')->orderByDesc('created_at')->paginate(10);
 
-        // Ambil semua pembelian, urutkan terbaru dulu
-        $pembelians = Pembelian::orderByDesc('created_at')->get();
-
-        // Kirim ke view
         return view('buy', compact('user', 'pembelians'));
     }
-
-
     public function store(Request $request)
     {
-        // Validasi input, kode_unit harus integer karena berasal dari id_unit
         $validated = $request->validate([
-            'kode_unit' => 'required|integer',
+            'kode_unit' => 'required|string|max:255',
             'tanggal' => 'required|date',
-            'grade' => 'required|string|max:255',
+            'grade' => 'required|string|max:50',
             'harga_cpo' => 'required|numeric',
             'harga_pk' => 'required|numeric',
             'rendemen_cpo' => 'required|numeric',
@@ -83,19 +46,14 @@ class PembelianController extends Controller
             'harga_escalasi' => 'required|numeric',
         ]);
 
-        // Cari namaunit dari id_unit
-        $unit = Unit::find($validated['kode_unit']);
+        $unit = Unit::where('kode_unit', $validated['kode_unit'])->first();
+
         if (!$unit) {
             return redirect()->back()->with('error', 'Unit tidak ditemukan.');
         }
 
-        // Cek panjang namaunit supaya tidak melebihi kapasitas kolom kode_unit
-        if (strlen($unit->namaunit) > 255) {
-            return redirect()->back()->with('error', 'Nama unit terlalu panjang untuk disimpan.');
-        }
-
         $pembelian = new Pembelian();
-        $pembelian->kode_unit = $unit->namaunit;  // Simpan nama unit langsung ke kolom kode_unit
+        $pembelian->kode_unit = $validated['kode_unit']; 
         $pembelian->tanggal = $validated['tanggal'];
         $pembelian->grade = $validated['grade'];
         $pembelian->harga_cpo = $validated['harga_cpo'];
