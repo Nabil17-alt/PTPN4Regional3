@@ -10,13 +10,51 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/loaders.css') }}">
 </head>
 
 <body>
     @extends('layouts.app')
 
     @section('content')
-        <div class="p-4 sm:ml-64 mt-15">
+        <div class="loader hidden" id="pageLoader">
+            <div class="square-spin">
+                <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Loading..." />
+            </div>
+            <span class="tooltip">
+                <p>Memuat...</p>
+            </span>
+        </div>
+        <div class="p-4 sm:ml-64">
+            <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
+                <nav class="flex justify-between items-center flex-wrap">
+                    <div>
+                        <ol class="flex items-center space-x-2 text-sm text-gray-500">
+                            <li>
+                                <a href="#" class="hover:text-gray-700">Selamat Datang</a>
+                            </li>
+                            <li>
+                                <span class="mx-2 text-gray-400">/</span>
+                            </li>
+                            <li class="text-gray-700 font-medium">
+                                {{ Auth::user()->level }}
+                            </li>
+                        </ol>
+                        <h6 class="text-xl font-semibold text-gray-800 mt-1">
+                            {{ Auth::user()->username }}
+                        </h6>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <button id="openSidebar" class="md:hidden text-gray-700 hover:text-black">
+                            <i data-lucide="menu"></i>
+                        </button>
+                        <a id="logoutForm" href="{{ route('logout') }}"
+                            class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
+                            Keluar
+                        </a>
+                    </div>
+                </nav>
+            </div>
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-start border-b pb-4 mb-4">
                     <div>
@@ -99,6 +137,7 @@
             </div>
         </div>
     @endsection
+    <script src="{{ asset('js/progress.js') }}"></script>
 </body>
 
 </html>

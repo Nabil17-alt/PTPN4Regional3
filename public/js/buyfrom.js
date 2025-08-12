@@ -54,12 +54,23 @@ function updateColumn() {
 
 document.addEventListener('DOMContentLoaded', function () {
     const loader = document.getElementById('pageLoader');
-    const addbuyForm = document.getElementById('addbuyForm');
 
+    const addbuyForm = document.getElementById('addbuyForm');
     if (addbuyForm) {
         addbuyForm.addEventListener('submit', function () {
             updateColumn();
             loader.classList.remove('hidden');
+        });
+    }
+
+    const logoutBtn = document.getElementById('logoutForm');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            loader.classList.remove('hidden');
+            setTimeout(() => {
+                window.location.href = logoutBtn.getAttribute('href');
+            }, 300);
         });
     }
 

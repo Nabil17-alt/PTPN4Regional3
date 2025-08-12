@@ -10,13 +10,51 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/loaders.css') }}">
 </head>
 
 <body>
     @extends('layouts.app')
 
     @section('content')
-        <div class="p-4 sm:ml-64 mt-15">
+        <div class="loader hidden" id="pageLoader">
+            <div class="square-spin">
+                <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Loading..." />
+            </div>
+            <span class="tooltip">
+                <p>Memuat...</p>
+            </span>
+        </div>
+        <div class="p-4 sm:ml-64">
+            <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
+                <nav class="flex justify-between items-center flex-wrap">
+                    <div>
+                        <ol class="flex items-center space-x-2 text-sm text-gray-500">
+                            <li>
+                                <a href="#" class="hover:text-gray-700">Selamat Datang</a>
+                            </li>
+                            <li>
+                                <span class="mx-2 text-gray-400">/</span>
+                            </li>
+                            <li class="text-gray-700 font-medium">
+                                {{ Auth::user()->level }}
+                            </li>
+                        </ol>
+                        <h6 class="text-xl font-semibold text-gray-800 mt-1">
+                            {{ Auth::user()->username }}
+                        </h6>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <button id="openSidebar" class="md:hidden text-gray-700 hover:text-black">
+                            <i data-lucide="menu"></i>
+                        </button>
+                        <a id="logoutForm" href="{{ route('logout') }}"
+                            class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
+                            Keluar
+                        </a>
+                    </div>
+                </nav>
+            </div>
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-start border-b pb-4 mb-4">
                     <div>
@@ -36,9 +74,9 @@
                 </div>
                 <div class="flex justify-end items-center mb-4">
                     <div class="relative w-64">
-                        <input type="text"
+                        <input type="text" id="searchDate"
                             class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Cari Unit..." />
+                            placeholder="Masukan Tanggal..." />
                         <div class="absolute right-3 top-2.5 text-gray-500">
                         </div>
                     </div>
@@ -79,7 +117,7 @@
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path
                                                         d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5
-                                                                                    5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
+                                                                                                                                    5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
                                                 </svg>
                                                 Lihat
                                             </a>
@@ -89,7 +127,7 @@
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path
                                                         d="M5 19h14v2H5c-1.103 0-2-.897-2-2V7h2v12zM20.707 7.293l-1-1a1 
-                                                                                    1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
+                                                                                                                                    1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
                                                 </svg>
                                                 Detail
                                             </a>

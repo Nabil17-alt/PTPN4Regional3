@@ -59,25 +59,12 @@
                     </a>
                 </li>
             </ul>
-
-            <ul class="text-sm pt-4">
-                <li>
-                    <a href="{{ route('logout') }}" class="menu-item">
-                        <i data-lucide="log-out" class="icon"></i> Keluar
-                    </a>
-                </li>
-            </ul>
         </div>
     </aside>
 
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-30 md:hidden"></div>
 
     <div class="flex-1 md:ml-64 p-4 w-full">
-        <div class="flex justify-between items-center mb-6">
-            <button id="openSidebar" class="md:hidden text-gray-700 hover:text-black">
-                <i data-lucide="menu"></i>
-            </button>
-        </div>
         @yield('content')
     </div>
 
