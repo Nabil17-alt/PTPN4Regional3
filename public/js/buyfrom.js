@@ -33,7 +33,7 @@ function updateColumn() {
 
     let margin = 0;
     if (hargaPenetapan !== 0) {
-        margin = 1 - (hargaEskalasiValue / hargaPenetapan);
+        margin = ((1 - (hargaEskalasiValue / hargaPenetapan)) * 100);
     }
 
     totalRendemenInput.value = totalRendemen.toFixed(2);
@@ -44,7 +44,7 @@ function updateColumn() {
     biayaProduksiInput.readOnly = true;
     totalBiayaInput.value = totalBiaya.toFixed(2);
     if (hargaPenetapanInput) hargaPenetapanInput.value = hargaPenetapan.toFixed(2);
-    if (marginInput) marginInput.value = margin.toFixed(4);
+    if (marginInput) marginInput.value = margin.toFixed(2);
 }
 
 ['rendemen_cpo', 'rendemen_pk', 'hargaCPO', 'hargaPK', 'biayaAngkut', 'hargaEskalasi'].forEach(id => {

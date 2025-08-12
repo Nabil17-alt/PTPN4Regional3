@@ -11,6 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('tb_pembelian_cpo_pk', function (Blueprint $table) {
+            $table->id(); 
             $table->string('kode_unit', 255);
             $table->date('tanggal');
             $table->string('grade', 50);
@@ -32,12 +33,12 @@ return new class extends Migration {
             $table->float('biaya_produksi')->storedAs('(biaya_olah / 100) * (rendemen_cpo + rendemen_pk)');
             $table->float('total_biaya')->storedAs('biaya_produksi + biaya_angkut_jual');
             $table->float('harga_penetapan')->storedAs('total_pendapatan - total_biaya');
-            $table->float('margin')->storedAs('1 - (harga_escalasi / nullif(harga_penetapan, 0))');
+            $table->float('margin')->storedAs('(1 - (harga_eskalasi / nullif(harga_penetapan, 0))) * 100');
 
             $table->timestamps();
 
-            $table->primary(['kode_unit', 'tanggal', 'grade']);
         });
+
 
     }
     /**

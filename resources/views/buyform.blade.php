@@ -50,11 +50,26 @@
                         <div class="flex flex-col gap-6">
                             <div class="w-full">
                                 <label class="block text-sm font-medium text-gray-700">Unit</label>
-                                <input type="text" value="{{ auth()->user()->unit->nama_unit }}" disabled
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
-                                <input type="hidden" name="kode_unit" value="{{ auth()->user()->kode_unit }}">
-                            </div>
 
+                                @php
+                                    $user = auth()->user();
+                                @endphp
+
+                                @if ($user->level === 'Admin' || $user->level === 'Asisten')
+                                    <select name="kode_unit"
+                                        class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-white">
+                                        @foreach ($units as $unit)
+                                            <option value="{{ $unit->kode_unit }}" {{ old('kode_unit', $user->kode_unit) == $unit->kode_unit ? 'selected' : '' }}>
+                                                {{ $unit->nama_unit }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <input type="text" value="{{ $user->unit->nama_unit }}" disabled
+                                        class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
+                                    <input type="hidden" name="kode_unit" value="{{ $user->kode_unit }}">
+                                @endif
+                            </div>
                             <div class="w-full">
                                 <label class="block text-sm font-medium text-gray-700">Grade</label>
                                 <select name="grade" required

@@ -49,14 +49,14 @@
                             <tr>
                                 <th class="px-4 py-3 text-left font-semibold">Tanggal</th>
                                 <th class="px-4 py-3 text-center font-semibold">Status</th>
-                                <th class="px-4 py-3 text-center font-semibold">Action</th>
+                                <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($pembelians as $item)
                                 <tr class="transition-all duration-500 hover:bg-gray-50">
                                     <td class="px-4 py-3 text-gray-800 font-medium">
-                                        {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
+                                        {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d-F-Y') }}
                                     </td>
                                     <td class="text-center px-4 py-3">
                                         @php
@@ -68,19 +68,32 @@
                                             $badgeClass = $badgeColors[$item->status] ?? 'bg-gray-100 text-gray-800';
                                         @endphp
                                         <span class="text-xs px-2 py-1 rounded-full {{ $badgeClass }}">
-                                            {{ ucfirst($item->status ?? 'Unknown') }}
+                                            {{ ucfirst($item->status ?? 'Tidak Diketahui') }}
                                         </span>
                                     </td>
                                     <td class="text-center px-4 py-3">
-                                        <a href="{{ route('pembelian.edit', $item) }}" title="Edit"
-                                            class="inline-flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path
-                                                    d="M5 19h14v2H5c-1.103 0-2-.897-2-2V7h2v12zM20.707 7.293l-1-1a1 1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
-                                            </svg>
-                                            Edit
-                                        </a>
+                                        <div class="flex justify-center items-center gap-2">
+                                            <a href=""
+                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                    fill="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5
+                                                                                    5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
+                                                </svg>
+                                                Lihat
+                                            </a>
+                                            <a href=""
+                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                    fill="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M5 19h14v2H5c-1.103 0-2-.897-2-2V7h2v12zM20.707 7.293l-1-1a1 
+                                                                                    1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
+                                                </svg>
+                                                Detail
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -92,6 +105,7 @@
                             @endforelse
                         </tbody>
                     </table>
+
                 </div>
                 <div class="flex justify-end pt-4 border-t mt-4">
                     <div class="flex items-center space-x-2">
