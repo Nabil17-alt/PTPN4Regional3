@@ -1,48 +1,55 @@
 lucide.createIcons();
 
 document.addEventListener('DOMContentLoaded', () => {
-    const loader = document.getElementById('buttonLoader');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
-    const menuLinks = document.querySelectorAll('.menu-item');
     const openSidebarBtn = document.getElementById('openSidebar');
     const closeSidebarBtn = document.getElementById('closeSidebar');
 
-    if (window.innerWidth < 768) {
-        sidebar.classList.add('hidden');
-        overlay.classList.add('hidden');
+    function updateSidebarVisibility() {
+        const width = window.innerWidth;
+
+        if (width >= 640 && width < 768) {
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('flex');
+            overlay.classList.remove('hidden');
+            openSidebarBtn?.classList.add('hidden');     
+            closeSidebarBtn?.classList.add('hidden');
+        } else if (width < 640) {
+            sidebar.classList.add('hidden');
+            sidebar.classList.remove('flex');
+            overlay.classList.add('hidden');
+            openSidebarBtn?.classList.remove('hidden');  
+            closeSidebarBtn?.classList.remove('hidden');
+        } else {
+            // Untuk md ke atas
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('flex');
+            overlay.classList.add('hidden');
+            openSidebarBtn?.classList.add('hidden');     
+            closeSidebarBtn?.classList.add('hidden');
+        }
     }
 
-    menuLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const href = link.getAttribute('href');
+    updateSidebarVisibility();
 
-            loader.classList.remove('hidden');
+    window.addEventListener('resize', updateSidebarVisibility);
 
-            if (window.innerWidth < 768) {
-                sidebar.classList.add('hidden');
-                overlay.classList.add('hidden');
-            }
-
-            setTimeout(() => {
-                window.location.href = href;
-            }, 500);
-        });
-    });
-
-    openSidebarBtn.addEventListener('click', () => {
+    openSidebarBtn?.addEventListener('click', () => {
         sidebar.classList.remove('hidden');
+        sidebar.classList.add('flex');
         overlay.classList.remove('hidden');
     });
 
-    closeSidebarBtn.addEventListener('click', () => {
+    closeSidebarBtn?.addEventListener('click', () => {
         sidebar.classList.add('hidden');
+        sidebar.classList.remove('flex');
         overlay.classList.add('hidden');
     });
 
-    overlay.addEventListener('click', () => {
+    overlay?.addEventListener('click', () => {
         sidebar.classList.add('hidden');
+        sidebar.classList.remove('flex');
         overlay.classList.add('hidden');
     });
 });

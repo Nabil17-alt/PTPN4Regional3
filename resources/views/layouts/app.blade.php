@@ -20,7 +20,7 @@
         <div class="tooltip">Memuat...</div>
     </div>
 
-    <aside id="sidebar" class="hidden md:flex bg-gray-900 text-white w-64 h-full fixed z-50 flex-col">
+    <aside id="sidebar" class="hidden bg-gray-900 text-white w-64 h-full fixed z-50 flex-col">
         <div class="p-6 text-2xl font-bold border-gray-700 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Logo" class="h-10 w-10 object-contain">

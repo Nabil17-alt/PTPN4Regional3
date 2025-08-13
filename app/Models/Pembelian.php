@@ -7,16 +7,6 @@ class Pembelian extends Model
 {
     protected $table = 'tb_pembelian_cpo_pk';
 
-    protected $primaryKey = 'kode_unit';
-    public $incrementing = false;
-
-    public $timestamps = true;
-    protected $keyType = 'string';
-    public function getRouteKeyName()
-    {
-        return 'kode_unit';
-    }
-
     protected $fillable = [
         'kode_unit',
         'tanggal',
@@ -44,5 +34,5 @@ class Pembelian extends Model
     {
         return $this->belongsTo(Unit::class, 'kode_unit', 'kode_unit');
     }
-
 }
+

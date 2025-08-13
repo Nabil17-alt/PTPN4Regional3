@@ -43,3 +43,5 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('pembelian/{pembelian}', [PembelianController::class, 'destroy'])
         ->name('pembelian.destroy');
 });
+
+Route::get('/pembelian/{id}/detail', [PembelianController::class, 'show'])->name('pembelian.detail');

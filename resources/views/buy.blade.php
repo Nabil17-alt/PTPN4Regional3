@@ -11,6 +11,8 @@
     <link href="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/loaders.css') }}">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </head>
 
 <body>
@@ -74,13 +76,18 @@
                 </div>
                 <div class="flex justify-end items-center mb-4">
                     <div class="relative w-64">
-                        <input type="text" id="searchDate"
-                            class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Masukan Tanggal..." />
-                        <div class="absolute right-3 top-2.5 text-gray-500">
+                        <input type="text" id="searchDate" placeholder="Masukkan Tanggal..."
+                            class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        <!-- Ikon opsional di kanan input -->
+                        <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8 7V3M16 7V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
                         </div>
                     </div>
                 </div>
+
                 <div class="overflow-x-auto">
                     <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm">
                         <thead class="bg-gray-100 text-gray-700">
@@ -111,23 +118,54 @@
                                     </td>
                                     <td class="text-center px-4 py-3">
                                         <div class="flex justify-center items-center gap-2">
-                                            <a href=""
-                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    fill="currentColor" viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5
-                                                                                                                                    5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
-                                                </svg>
-                                                Lihat
-                                            </a>
-                                            <a href=""
+                                            <div x-data="{ openModal{{ $item->id }}: false }">
+                                                <a href="#" @click.prevent="openModal{{ $item->id }} = true"
+                                                    class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                        fill="currentColor" viewBox="0 0 24 24">
+                                                        <path
+                                                            d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5
+                                                                                                                                                                        5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
+                                                    </svg>
+                                                    Lihat
+                                                </a>
+                                                <div x-show="openModal{{ $item->id }}" x-cloak
+                                                    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                                    <div @click.away="openModal{{ $item->id }} = false"
+                                                        class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+                                                        <div class="flex justify-between items-center mb-4">
+                                                            <h2 class="text-lg font-semibold">
+                                                                {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') }}
+                                                            </h2>
+                                                            <button @click="openModal{{ $item->id }} = false"
+                                                                class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                                                        </div>
+                                                        <table class="w-full text-sm border">
+                                                            <thead>
+                                                                <tr class="bg-gray-100">
+                                                                    <th class="border px-4 py-2">Grade</th>
+                                                                    <th class="border px-4 py-2">Margin (%)</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="border px-4 py-2">{{ $item->grade }}</td>
+                                                                    <td class="border px-4 py-2">
+                                                                        {{ number_format($item->margin, 2) }}%
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a href="{{ route('pembelian.detail', $item->id) }}"
                                                 class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path
                                                         d="M5 19h14v2H5c-1.103 0-2-.897-2-2V7h2v12zM20.707 7.293l-1-1a1 
-                                                                                                                                    1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
+                                                                                                                                                                                                                                                                                        1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
                                                 </svg>
                                                 Detail
                                             </a>
@@ -143,7 +181,6 @@
                             @endforelse
                         </tbody>
                     </table>
-
                 </div>
                 <div class="flex justify-end pt-4 border-t mt-4">
                     <div class="flex items-center space-x-2">

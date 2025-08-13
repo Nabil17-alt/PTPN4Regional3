@@ -5,12 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Beranda - PTPN4</title>
+    <title>Tambah Pembelian - PTPN4</title>
     <link rel="icon" href="{{ asset('images/logo_ptpn4.png') }}" type="image/png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/loaders.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
@@ -27,9 +29,20 @@
         </div>
         <div class="p-4 sm:ml-64">
             @if (session('success'))
-                <div class="mb-4 p-3 bg-green-200 text-green-800 rounded">
-                    {{ session('success') }}
-                </div>
+                <script>
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 5000,
+                        timerProgressBar: true,
+                    });
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: '{{ session('success') }}'
+                    });
+                </script>
             @endif
             <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
                 <nav class="flex justify-between items-center flex-wrap">
@@ -63,7 +76,7 @@
 
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-start border-b pb-4 mb-4">
-                    <h2 class="text-xl font-semibold text-gray-800">Pembelian - Tambah Unit</h2>
+                    <h2 class="text-xl font-semibold text-gray-800">Pembelian - Tambah Pembelian</h2>
                 </div>
 
                 <form id="addbuyForm" action="{{ route('pembelian.store') }}" method="POST" class="space-y-6">
