@@ -142,13 +142,13 @@
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Rendemen CPO</label>
-                                <input type="number" step="any" name="rendemen_cpo" id="rendemen_cpo" value="19.54"
+                                <input type="number" step="any" name="rendemen_cpo" id="rendemen_cpo" 
                                     class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
                                     required>
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Rendemen PK</label>
-                                <input type="number" step="any" name="rendemen_pk" id="rendemen_pk" value="4.2"
+                                <input type="number" step="any" name="rendemen_pk" id="rendemen_pk" 
                                     class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
                                     required>
                             </div>
@@ -162,7 +162,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Biaya Olah</label>
-                            <input type="number" step="any" name="biaya_olah" id="biayaOlah" value="294.94"
+                            <input type="number" step="any" name="biaya_olah" id="biayaOlah" 
                                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
                                 required>
                         </div>
@@ -170,13 +170,13 @@
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Tarif Angkut (CPO)</label>
-                                <input type="number" step="any" name="tarif_angkut_cpo" id="tarifAngkutCPO" value="171"
+                                <input type="number" step="any" name="tarif_angkut_cpo" id="tarifAngkutCPO" 
                                     class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
                                     required>
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Tarif Angkut (PK)</label>
-                                <input type="number" step="any" name="tarif_angkut_pk" id="tarifAngkutPK" value="194.5"
+                                <input type="number" step="any" name="tarif_angkut_pk" id="tarifAngkutPK" 
                                     class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
                                     required>
                             </div>
@@ -209,7 +209,7 @@
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Biaya Angkut</label>
-                                <input type="number" step="any" name="biaya_angkut_jual" id="biayaAngkut" value="35.47"
+                                <input type="number" step="any" name="biaya_angkut_jual" id="biayaAngkut" 
                                     class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
                                     required>
                             </div>
@@ -229,7 +229,7 @@
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga Ekskalasi</label>
-                                <input type="number" step="any" name="harga_escalasi" id="hargaEskalasi" value="2970"
+                                <input type="number" step="any" name="harga_escalasi" id="hargaEskalasi" 
                                     class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
                                     required>
                             </div>

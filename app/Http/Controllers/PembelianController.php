@@ -84,12 +84,20 @@ class PembelianController extends Controller
         return view('editform', compact('pembelian', 'grades', 'units'));
     }
 
-    public function show($id)
+    public function showdetail($id)
     {
         $pembelian = Pembelian::with('unit')->findOrFail($id);
         $unit = $pembelian->unit;
 
         return view('buydetail', compact('pembelian', 'unit'));
+    }
+
+    public function showsee($id)
+    {
+        $pembelian = Pembelian::with('unit')->findOrFail($id);
+        $unit = $pembelian->unit;
+
+        return view('buysee', compact('pembelian', 'unit'));
     }
 
 }

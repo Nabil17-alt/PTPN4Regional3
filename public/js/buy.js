@@ -1,22 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('searchDate');
     const tableRows = document.querySelectorAll('tbody tr');
+    const loader = document.getElementById('pageLoader');
 
     if (searchInput) {
         searchInput.addEventListener('input', () => {
             const keyword = searchInput.value.trim().toLowerCase();
-
             tableRows.forEach(row => {
                 const rowText = row.textContent.toLowerCase();
-                const isMatch = rowText.includes(keyword);
-                row.style.display = isMatch ? '' : 'none';
+                row.style.display = rowText.includes(keyword) ? '' : 'none';
             });
         });
     }
 
-    const loader = document.getElementById('pageLoader');
     const logoutBtn = document.getElementById('logoutForm');
-
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -26,4 +23,24 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 300);
         });
     }
+
+    document.querySelectorAll('.lihatForm').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (loader) loader.classList.remove('hidden');
+            setTimeout(() => {
+                window.location.href = this.getAttribute('href');
+            }, 300);
+        });
+    });
+
+    document.querySelectorAll('.detailForm').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (loader) loader.classList.remove('hidden');
+            setTimeout(() => {
+                window.location.href = this.getAttribute('href');
+            }, 300);
+        });
+    });
 });

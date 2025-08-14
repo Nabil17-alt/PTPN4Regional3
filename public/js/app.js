@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('overlay');
     const openSidebarBtn = document.getElementById('openSidebar');
     const closeSidebarBtn = document.getElementById('closeSidebar');
+    const loader = document.getElementById('buttonLoader');
 
     function updateSidebarVisibility() {
         const width = window.innerWidth;
@@ -51,5 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar.classList.add('hidden');
         sidebar.classList.remove('flex');
         overlay.classList.add('hidden');
+    });
+
+    document.querySelectorAll('.menu-item').forEach(link => {
+        link.addEventListener('click', function (e) {
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+        });
     });
 });

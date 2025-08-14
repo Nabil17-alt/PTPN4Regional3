@@ -118,58 +118,26 @@
                                     </td>
                                     <td class="text-center px-4 py-3">
                                         <div class="flex justify-center items-center gap-2">
-                                            <div x-data="{ openModal{{ $item->id }}: false }">
-                                                <a href="#" @click.prevent="openModal{{ $item->id }} = true"
-                                                    class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                        fill="currentColor" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5
-                                                                                                                                                                        5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
-                                                    </svg>
-                                                    Lihat
-                                                </a>
-                                                <div x-show="openModal{{ $item->id }}" x-cloak
-                                                    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                                                    <div @click.away="openModal{{ $item->id }} = false"
-                                                        class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-                                                        <div class="flex justify-between items-center mb-4">
-                                                            <h2 class="text-lg font-semibold">
-                                                                {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') }}
-                                                            </h2>
-                                                            <button @click="openModal{{ $item->id }} = false"
-                                                                class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
-                                                        </div>
-                                                        <table class="w-full text-sm border">
-                                                            <thead>
-                                                                <tr class="bg-gray-100">
-                                                                    <th class="border px-4 py-2">Grade</th>
-                                                                    <th class="border px-4 py-2">Margin (%)</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td class="border px-4 py-2">{{ $item->grade }}</td>
-                                                                    <td class="border px-4 py-2">
-                                                                        {{ number_format($item->margin, 2) }}%
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <a href="{{ route('pembelian.detail', $item->id) }}"
-                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
+                                            <a href="{{ route('pembelian.lihat', $item->id) }}"
+                                                class="lihatForm flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path
-                                                        d="M5 19h14v2H5c-1.103 0-2-.897-2-2V7h2v12zM20.707 7.293l-1-1a1 
-                                                                                                                                                                                                                                                                                        1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
+                                                        d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
+                                                </svg>
+                                                Lihat
+                                            </a>
+                                            <a href="{{ route('pembelian.detail', $item->id) }}"
+                                                class="detailForm flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                    fill="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M5 19h14v2H5c-1.103 0-2-.897-2-2V7h2v12zM20.707 7.293l-1-1a1 1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
                                                 </svg>
                                                 Detail
                                             </a>
                                         </div>
+
                                     </td>
                                 </tr>
                             @empty

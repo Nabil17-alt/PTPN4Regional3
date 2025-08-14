@@ -44,4 +44,5 @@ Route::middleware(['auth'])->group(function () {
         ->name('pembelian.destroy');
 });
 
-Route::get('/pembelian/{id}/detail', [PembelianController::class, 'show'])->name('pembelian.detail');
+Route::get('/pembelian/{id}/detail', [PembelianController::class, 'showdetail'])->name('pembelian.detail');
+Route::get('/pembelian/{id}/lihat', [PembelianController::class, 'showsee'])->name('pembelian.lihat');

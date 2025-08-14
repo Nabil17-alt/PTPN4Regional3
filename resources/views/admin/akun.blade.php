@@ -26,6 +26,21 @@
             </span>
         </div>
         <div class="p-4 sm:ml-64">
+            @if (session('success'))
+                <script>
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 5000,
+                        timerProgressBar: true,
+                    });
+                    Toast.fire({
+                        icon: 'success',
+                        title: '{{ session('success') }}'
+                    });
+                </script>
+            @endif
             <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
                 <nav class="flex justify-between items-center flex-wrap">
                     <div>

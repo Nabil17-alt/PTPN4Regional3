@@ -1,3 +1,4 @@
+
 function updateColumn() {
     const rendemenCpoInput = document.getElementById('rendemen_cpo');
     const rendemenPkInput = document.getElementById('rendemen_pk');
@@ -15,13 +16,13 @@ function updateColumn() {
     const hargaEskalasiInput = document.getElementById('hargaEskalasi');
     const marginInput = document.getElementById('margin');
 
-    const rendemenCpoValue = parseFloat(rendemenCpoInput.value) || 0;
-    const rendemenPkValue = parseFloat(rendemenPkInput.value) || 0;
-    const biayaOlahValue = parseFloat(biayaOlahInput.value) || 0;
-    const hargaCpoValue = parseFloat(hargaCpoInput.value) || 0;
-    const hargaPkValue = parseFloat(hargaPkInput.value) || 0;
-    const biayaAngkutValue = parseFloat(biayaAngkutInput.value) || 0;
-    const hargaEskalasiValue = parseFloat(hargaEskalasiInput.value) || 0;
+    const rendemenCpoValue = parseFloat(rendemenCpoInput?.value) || 0;
+    const rendemenPkValue = parseFloat(rendemenPkInput?.value) || 0;
+    const hargaCpoValue = parseFloat(hargaCpoInput?.value) || 0;
+    const hargaPkValue = parseFloat(hargaPkInput?.value) || 0;
+    const biayaOlahValue = parseFloat(biayaOlahInput?.value) || 0;
+    const biayaAngkutValue = parseFloat(biayaAngkutInput?.value) || 0;
+    const hargaEskalasiValue = parseFloat(hargaEskalasiInput?.value) || 0;
 
     const totalRendemen = rendemenCpoValue + rendemenPkValue;
     const pendapatanCpo = hargaCpoValue * (rendemenCpoValue / 100);
@@ -36,35 +37,47 @@ function updateColumn() {
         margin = ((1 - (hargaEskalasiValue / hargaPenetapan)) * 100);
     }
 
-    totalRendemenInput.value = totalRendemen.toFixed(2);
-    pendapatanCpoInput.value = pendapatanCpo.toFixed(2);
-    pendapatanPkInput.value = pendapatanPk.toFixed(2);
-    totalPendapatanInput.value = totalPendapatan.toFixed(2);
-    biayaProduksiInput.value = biayaProduksi.toFixed(2);
-    biayaProduksiInput.readOnly = true;
-    totalBiayaInput.value = totalBiaya.toFixed(2);
+    if (totalRendemenInput) totalRendemenInput.value = totalRendemen.toFixed(2);
+    if (pendapatanCpoInput) pendapatanCpoInput.value = pendapatanCpo.toFixed(2);
+    if (pendapatanPkInput) pendapatanPkInput.value = pendapatanPk.toFixed(2);
+    if (totalPendapatanInput) totalPendapatanInput.value = totalPendapatan.toFixed(2);
+    if (biayaProduksiInput) biayaProduksiInput.value = biayaProduksi.toFixed(2);
+    if (totalBiayaInput) totalBiayaInput.value = totalBiaya.toFixed(2);
     if (hargaPenetapanInput) hargaPenetapanInput.value = hargaPenetapan.toFixed(2);
     if (marginInput) marginInput.value = margin.toFixed(2);
 }
 
-['rendemen_cpo', 'rendemen_pk', 'hargaCPO', 'hargaPK', 'biayaAngkut', 'hargaEskalasi'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', updateColumn);
-});
-
 document.addEventListener('DOMContentLoaded', function () {
-    const loader = document.getElementById('pageLoader');
+    updateColumn();
 
+    const inputIDs = [
+        'rendemen_cpo',
+        'rendemen_pk',
+        'hargaCPO',
+        'hargaPK',
+        'biayaAngkut',
+        'hargaEskalasi',
+        'biayaOlah'
+    ];
+
+    inputIDs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', updateColumn);
+            el.addEventListener('change', updateColumn);
+        }
+    });
+
+    const loader = document.getElementById('pageLoader');
     const addbuyForm = document.getElementById('addbuyForm');
-    if (addbuyForm) {
+    if (addbuyForm && loader) {
         addbuyForm.addEventListener('submit', function () {
-            updateColumn();
             loader.classList.remove('hidden');
         });
     }
 
     const logoutBtn = document.getElementById('logoutForm');
-    if (logoutBtn) {
+    if (logoutBtn && loader) {
         logoutBtn.addEventListener('click', function (e) {
             e.preventDefault();
             loader.classList.remove('hidden');
@@ -73,5 +86,4 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 300);
         });
     }
-
 });
