@@ -62,19 +62,38 @@
                     </div>
                 </div>
                 <div class="flex justify-end items-center mb-4">
+<<<<<<< HEAD
+=======
+                    <div class="relative w-64">
+                        <input type="text" id="searchDetail"
+                            class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Masukan Nama Field..." />
+                        <div class="absolute right-3 top-2.5 text-gray-500">
+                        </div>
+                    </div>
+>>>>>>> 3e4d29a178eff7fd9f4086bd9f520cdfdd7cfa12
                 </div>
                 <div class="max-w-5xl mx-auto overflow-x-auto">
                     <table class="min-w-[800px] w-full table-fixed">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
                                 <th class="w-1/3 px-4 py-3 text-left font-semibold">Grade</th>
+<<<<<<< HEAD
                                 <th class="w-2/3 px-6 py-3 text-left font-semibold">Margin</th>
+=======
+                                <th class="w-2/3 px-6 py-3 text-left font-semibold">Margin (%)</th>
+>>>>>>> 3e4d29a178eff7fd9f4086bd9f520cdfdd7cfa12
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <tr>
+<<<<<<< HEAD
                                 <td class="px-4 py-3">{{ $pembelian->grade }}</td>
                                 <td class="px-6 py-3">{{ number_format($pembelian->margin, 2, ',', '.') }}%</td>
+=======
+                                <td class="px-4 py-3">Tanggal</td>
+                                <td class="px-6 py-3">{{ \Carbon\Carbon::parse($pembelian->tanggal)->translatedFormat('d F Y') }}</td>
+>>>>>>> 3e4d29a178eff7fd9f4086bd9f520cdfdd7cfa12
                             </tr>
                         </tbody>
                     </table>
@@ -90,7 +109,11 @@
             </div>
         </div>
     @endsection
+<<<<<<< HEAD
     <script src="{{ asset('js/buysee.js') }}"></script>
+=======
+    <script src="{{ asset('js/buydetail.js') }}"></script>
+>>>>>>> 3e4d29a178eff7fd9f4086bd9f520cdfdd7cfa12
 </body>
 
 </html>

@@ -11,22 +11,20 @@
 </head>
 
 <body>
-    <div id="buttonLoader" class="loader hidden">
+    {{-- Loader --}}
+    <div class="loader hidden" id="pageLoader">
         <div class="square-spin">
-            <div>
-                <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Loading" class="loader-logo" />
-            </div>
+            <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Loading..." />
         </div>
-        <div class="tooltip">Memuat...</div>
+        <span class="tooltip">
+            <p>Memuat...</p>
+        </span>
     </div>
 
-    <div class="register-container">
+    <div class="register-card">
         <div class="logo-wrapper">
-            <div class="logo-circle">
-                <img src="{{ asset('images/logo_ptpn4.png') }}" alt="PTPN Logo" class="logo-login">
-            </div>
+            <img src="{{ asset('images/logo_ptpn4.png') }}" alt="PTPN Logo">
             <h1 class="register-title">Buat Akun Baru</h1>
-            <a href="{{ route('login') }}" class="btn-back" id="signinBtn">Kembali ke Login</a>
         </div>
 
         <form id="registerForm" class="register-form" method="POST" action="{{ route('register') }}">
@@ -71,10 +69,11 @@
             @error('kode_unit') <div class="error-messages">{{ $message }}</div> @enderror
 
             <button type="submit" class="btn-register">Daftar</button>
+            <a href="{{ route('login') }}" id="backLink" class="btn-back">← Kembali ke Login</a>
+
         </form>
     </div>
 
     <script src="{{ asset('js/register.js') }}"></script>
 </body>
-
 </html>
