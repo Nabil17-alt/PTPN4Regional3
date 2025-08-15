@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function pilihKantorRegional() {
         for (const option of unitKerjaSelect.options) {
             if (option.text.trim().toLowerCase().includes("kantor regional")) {
-                unitKerjaSelect.value = option.value; 
+                unitKerjaSelect.value = option.value;
                 return true;
             }
         }
@@ -59,10 +59,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (jabatan === "admin" || jabatan === "asisten") {
             if (pilihKantorRegional()) {
-                unitKerjaSelect.disabled = true; 
+                unitKerjaSelect.disabled = true;
             }
         } else {
-            unitKerjaSelect.disabled = false; 
+            unitKerjaSelect.disabled = false;
             unitKerjaSelect.selectedIndex = 0;
         }
     });

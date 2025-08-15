@@ -146,18 +146,40 @@ input:focus {
     margin-top: 5px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .container {
         flex-direction: column;
+        height: auto;
     }
+}
 
+@media (max-width: 768px) {
     .left, .right {
         width: 100%;
         height: auto;
         padding: 30px 20px;
     }
 
+    .register-title,
     .sign-in-title {
         font-size: 22px;
+    }
+
+    .welcome-msg {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-login {
+        width: 90px;
+    }
+
+    .welcome-msg {
+        font-size: 20px;
+    }
+
+    .welcome-sub {
+        font-size: 14px;
     }
 }
