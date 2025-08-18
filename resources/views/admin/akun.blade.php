@@ -274,7 +274,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
-                            <select name="level" required
+                            <select id= "jabatanSelect" name="level" required
                                 class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-500 focus:border-gray-500 px-3 py-2">
                                 <option value="" disabled selected>Pilih Jabatan</option>
                                 @foreach ($jabatanOptions as $option)
@@ -284,7 +284,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Kode Unit</label>
-                            <select name="kode_unit" required
+                            <select id="unitSelect" name="kode_unit" required
                                 class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-500 focus:border-gray-500 px-3 py-2">
                                 <option value="" disabled selected>Pilih Unit</option>
                                 @foreach ($units as $unit)

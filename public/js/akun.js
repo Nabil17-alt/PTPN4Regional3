@@ -82,3 +82,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const jabatanSelect = document.getElementById("jabatanSelect");
+    const unitSelect = document.getElementById("unitSelect");
+
+    if (jabatanSelect && unitSelect) {
+        jabatanSelect.addEventListener("change", function () {
+            const selectedJabatan = this.value;
+
+            if (selectedJabatan === "Admin" || selectedJabatan === "Asisten") {
+
+                const kantorOption = Array.from(unitSelect.options).find(opt =>
+                    opt.textContent.trim().toLowerCase() === "kantor regional".toLowerCase()
+                );
+
+                if (kantorOption) {
+                    unitSelect.value = kantorOption.value;
+                }
+
+                unitSelect.disabled = true;
+            } else {
+                unitSelect.disabled = false;
+                unitSelect.value = "";
+            }
+        });
+    }
+});
+
+
