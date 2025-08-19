@@ -78,7 +78,6 @@
                     <div class="relative w-64">
                         <input type="text" id="searchDate" placeholder="Masukkan Tanggal..."
                             class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                        <!-- Ikon opsional di kanan input -->
                         <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -87,14 +86,12 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="overflow-x-auto">
                     @php
                         $groupedPembelians = $pembelians->groupBy(function ($item) {
                             return \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d');
                         });
                     @endphp
-
                     <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>

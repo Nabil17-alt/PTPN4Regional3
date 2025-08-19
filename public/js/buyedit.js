@@ -1,4 +1,3 @@
-
 function updateColumn() {
     const rendemenCpoInput = document.getElementById('rendemen_cpo');
     const rendemenPkInput = document.getElementById('rendemen_pk');

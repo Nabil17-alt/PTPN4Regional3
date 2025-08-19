@@ -37,7 +37,6 @@
                         timer: 5000,
                         timerProgressBar: true,
                     });
-
                     Toast.fire({
                         icon: 'success',
                         title: '{{ session('success') }}'
@@ -95,7 +94,7 @@
                                 <label class="block text-sm font-medium text-gray-700">Unit</label>
 
                                 @php
-$user = auth()->user();
+                                    $user = auth()->user();
                                 @endphp
 
                                 @if ($user->level === 'Admin' || $user->level === 'Asisten')
@@ -277,7 +276,6 @@ $user = auth()->user();
                 </form>
             </div>
     @endsection
-
         <script src="{{ asset('js/buyedit.js') }}"></script>
 </body>
 
