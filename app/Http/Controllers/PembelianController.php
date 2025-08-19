@@ -74,30 +74,54 @@ class PembelianController extends Controller
     public function destroy(Pembelian $pembelian)
     {
         $pembelian->delete();
-        return redirect()->route('pembelian.index')->with('success', 'Berhasil menghapus data!');
+        return redirect()->back()->with('success', 'Berhasil menghapus data!');
     }
 
-    public function edit(Pembelian $pembelian)
+    public function edit($id)
     {
+        $pembelian = Pembelian::findOrFail($id);
         $grades = Grade::all();
-        $units = Unit::all();
-        return view('editform', compact('pembelian', 'grades', 'units'));
+        $units = Unit::all(); 
+
+        return view('buyedit', compact('pembelian', 'grades', 'units')); 
     }
 
-    public function showdetail($id)
+    public function update(Request $request, $id)
+    {
+        $pembelian = Pembelian::findOrFail($id);
+
+        $validated = $request->validate([
+            'kode_unit' => 'required|string|max:255',
+            'tanggal' => 'required|date',
+            'grade' => 'required|string|max:50',
+            'harga_cpo' => 'required|numeric',
+            'harga_pk' => 'required|numeric',
+            'rendemen_cpo' => 'required|numeric',
+            'rendemen_pk' => 'required|numeric',
+            'biaya_olah' => 'required|numeric',
+            'tarif_angkut_cpo' => 'required|numeric',
+            'tarif_angkut_pk' => 'required|numeric',
+            'biaya_angkut_jual' => 'required|numeric',
+            'harga_escalasi' => 'required|numeric',
+            
+        ]);
+
+        $pembelian->update($validated);
+
+        return redirect()->route('buy')->with('success', 'Data pembelian berhasil diedit.');
+
+    }
+
+    public function lihatTanggal($tanggal)
+    {
+        $items = Pembelian::whereDate('tanggal', $tanggal)->get(); 
+        return view('buysee', compact('items')); 
+    }
+
+    public function detail($id)
     {
         $pembelian = Pembelian::with('unit')->findOrFail($id);
         $unit = $pembelian->unit;
-
         return view('buydetail', compact('pembelian', 'unit'));
     }
-
-    public function showsee($id)
-    {
-        $pembelian = Pembelian::with('unit')->findOrFail($id);
-        $unit = $pembelian->unit;
-
-        return view('buysee', compact('pembelian', 'unit'));
-    }
-
 }

@@ -164,7 +164,7 @@
                 </div>
                 <div class="flex justify-end pt-4 border-t mt-4">
                     <div class="pt-6">
-                        <a id="backForm" href="{{ route('buy') }}"
+                        <a id="backForm" href="{{ request('back') ?? url()->previous() }}"
                             class="inline-block px-4 py-2 text-sm bg-gray-700 text-white rounded hover:bg-gray-800 transition-all">
                             Kembali
                         </a>

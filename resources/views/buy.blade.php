@@ -89,6 +89,12 @@
                 </div>
 
                 <div class="overflow-x-auto">
+                    @php
+                        $groupedPembelians = $pembelians->groupBy(function ($item) {
+                            return \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d');
+                        });
+                    @endphp
+
                     <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
@@ -98,27 +104,28 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse ($pembelians as $item)
+                            @forelse ($groupedPembelians as $tanggal => $items)
+                                @php
+                                    $firstItem = $items->first();
+                                    $badgeColors = [
+                                        'approve' => 'bg-green-100 text-green-700',
+                                        'pending' => 'bg-yellow-100 text-yellow-800',
+                                        'reject' => 'bg-red-100 text-red-800',
+                                    ];
+                                    $badgeClass = $badgeColors[$firstItem->status] ?? 'bg-gray-100 text-gray-800';
+                                @endphp
                                 <tr class="transition-all duration-500 hover:bg-gray-50">
                                     <td class="px-4 py-3 text-gray-800 font-medium">
-                                        {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d-F-Y') }}
+                                        {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}
                                     </td>
                                     <td class="text-center px-4 py-3">
-                                        @php
-                                            $badgeColors = [
-                                                'approve' => 'bg-green-100 text-green-700',
-                                                'pending' => 'bg-yellow-100 text-yellow-800',
-                                                'reject' => 'bg-red-100 text-red-800',
-                                            ];
-                                            $badgeClass = $badgeColors[$item->status] ?? 'bg-gray-100 text-gray-800';
-                                        @endphp
                                         <span class="text-xs px-2 py-1 rounded-full {{ $badgeClass }}">
-                                            {{ ucfirst($item->status ?? 'Tidak Diketahui') }}
+                                            {{ ucfirst($firstItem->status ?? 'Tidak Diketahui') }}
                                         </span>
                                     </td>
                                     <td class="text-center px-4 py-3">
                                         <div class="flex justify-center items-center gap-2">
-                                            <a href="{{ route('pembelian.lihat', $item->id) }}"
+                                            <a href="{{ route('pembelian.lihat.tanggal', ['tanggal' => $tanggal]) }}"
                                                 class="lihatForm flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     fill="currentColor" viewBox="0 0 24 24">
@@ -127,17 +134,7 @@
                                                 </svg>
                                                 Lihat
                                             </a>
-                                            <a href="{{ route('pembelian.detail', $item->id) }}"
-                                                class="detailForm flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    fill="currentColor" viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M5 19h14v2H5c-1.103 0-2-.897-2-2V7h2v12zM20.707 7.293l-1-1a1 1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
-                                                </svg>
-                                                Detail
-                                            </a>
                                         </div>
-
                                     </td>
                                 </tr>
                             @empty

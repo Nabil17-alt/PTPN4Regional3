@@ -22,5 +22,29 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 300);
         });
     }
-
 });
+
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Apakah kamu yakin?',
+        text: "Data yang dihapus tidak bisa dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal',
+        buttonsStyling: false, 
+        customClass: {
+            confirmButton: 'btn-danger',
+            cancelButton: 'btn-secondary'
+        },
+        preConfirm: () => {
+            const loader = document.getElementById('pageLoader');
+            if (loader) loader.classList.remove('hidden');
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById('delete-form-' + id);
+            if (form) form.submit();
+        }
+    });
+}

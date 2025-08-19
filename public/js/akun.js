@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (kantorOption) {
                     unitSelect.value = kantorOption.value;
-                }
+                }   
 
                 unitSelect.disabled = true;
             } else {

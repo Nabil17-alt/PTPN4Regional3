@@ -1,0 +1,27 @@
+.swal2-confirm,
+.swal2-cancel {
+    all: unset;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    margin: 0 1rem;
+}
+
+.btn-danger {
+    background-color: #d33;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+
+}
+
+.btn-secondary {
+    background-color: #3085d6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+}

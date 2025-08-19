@@ -12,11 +12,9 @@ Route::get('/', function () {
 });
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']); 
-
+Route::post('/login', [LoginController::class, 'login']);
 Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
-
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', function () {
@@ -32,17 +30,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/akun/add', [AdminController::class, 'storeAccount'])->name('akun.add');
     Route::put('/akun/{username}', [AdminController::class, 'updateAccount'])->name('akun.update');
     Route::delete('/akun/{username}', [AdminController::class, 'deleteAccount'])->name('akun.delete');
+
+    Route::get('/buy', [PembelianController::class, 'buy'])->name('buy');
+    Route::get('/buy/{id}/detail', [PembelianController::class, 'detail'])->name('buy.detail');
+    Route::delete('/buy/{pembelian}', [PembelianController::class, 'destroy'])->name('buy.destroy');
+
+    Route::get('/pembelian/lihat/{tanggal}', [PembelianController::class, 'lihatTanggal'])->name('pembelian.lihat.tanggal');
+    Route::get('/pembelian/{id}/edit', [PembelianController::class, 'edit'])->name('pembelian.edit');
+    Route::put('/pembelian/{id}', [PembelianController::class, 'update'])->name('pembelian.update');
+    Route::delete('pembelian/{pembelian}', [PembelianController::class, 'destroy'])->name('pembelian.destroy');
+    Route::resource('pembelian', PembelianController::class)->except(['edit', 'update', 'destroy']);
 });
 
 Route::get('/view', [AdminController::class, 'view'])->name('view');
 Route::get('/progress', [AdminController::class, 'progress'])->name('progress');
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/buy', [PembelianController::class, 'buy'])->name('buy');
-    Route::resource('pembelian', PembelianController::class);
-    Route::delete('pembelian/{pembelian}', [PembelianController::class, 'destroy'])
-        ->name('pembelian.destroy');
-});
-
-Route::get('/pembelian/{id}/detail', [PembelianController::class, 'showdetail'])->name('pembelian.detail');
-Route::get('/pembelian/{id}/lihat', [PembelianController::class, 'showsee'])->name('pembelian.lihat');
