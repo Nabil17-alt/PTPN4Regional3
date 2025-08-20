@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Unit;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+
 
 class AdminController extends Controller
 {
@@ -101,35 +103,41 @@ class AdminController extends Controller
 
         $user->save();
 
-        return redirect()->route('admin.akun')->with('success', 'Akun berhasil diupdate.');
+        return redirect()->route('admin.akun')->with('success', 'Akun berhasil diedit');
     }
     public function deleteAccount($username)
     {
         $user = User::where('username', $username)->firstOrFail();
         $user->delete();
 
-        return redirect()->route('admin.akun')->with('success', 'Akun berhasil dihapus.');
+        return redirect()->route('admin.akun')->with('success', 'Akun berhasil dihapus');
     }
     public function storeAccount(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string|unique:tb_users,username',
-            'email' => 'required|email|unique:tb_users,email',
-            'password' => 'required|string|min:6',
-            'level' => 'required|string',
-            'kode_unit' => 'required|string',
-        ]);
+        try {
+            $request->validate([
+                'username' => 'required|string|unique:tb_users,username',
+                'email' => 'required|email|unique:tb_users,email',
+                'password' => 'required|string|min:6',
+                'level' => 'required|string',
+                'kode_unit' => 'required|string',
+            ]);
 
+            $user = User::create([
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'level' => $request->level,
+                'kode_unit' => $request->kode_unit,
+            ]);
 
-        User::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'level' => $request->level,
-            'kode_unit' => $request->kode_unit,
-        ]);
+            Log::info('User created:', ['user' => $user]);
 
-        return redirect()->route('admin.akun')->with('success', 'Akun berhasil ditambahkan.');
+            return redirect()->route('admin.akun')->with('success', 'Akun berhasil ditambahkan');
+        } catch (\Exception $e) {
+            Log::error('Gagal tambah akun: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Gagal menambahkan akun. Lihat log untuk detail.']);
+        }
     }
 
     public function view()

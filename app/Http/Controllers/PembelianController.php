@@ -108,7 +108,7 @@ class PembelianController extends Controller
 
         $pembelian->update($validated);
 
-        return redirect()->route('buy')->with('success', 'Data pembelian berhasil diedit.');
+        return redirect()->back()->with('success', 'Data pembelian berhasil diedit');
 
     }
 

@@ -105,9 +105,9 @@
                                 @php
                                     $firstItem = $items->first();
                                     $badgeColors = [
-                                        'approve' => 'bg-green-100 text-green-700',
-                                        'pending' => 'bg-yellow-100 text-yellow-800',
-                                        'reject' => 'bg-red-100 text-red-800',
+                                        'Sudah Diapprove' => 'bg-green-100 text-green-700',
+                                        'Tidak Mengolah' => 'bg-yellow-100 text-yellow-800',
+                                        'Belum Diinput' => 'bg-red-100 text-red-800',
                                     ];
                                     $badgeClass = $badgeColors[$firstItem->status] ?? 'bg-gray-100 text-gray-800';
                                 @endphp
@@ -145,43 +145,6 @@
                     </table>
                 </div>
                 <div class="flex justify-end pt-4 border-t mt-4">
-                    <div class="flex items-center space-x-2">
-                        @php
-                            $start = max(1, $pembelians->currentPage() - 2);
-                            $end = min($pembelians->lastPage(), $pembelians->currentPage() + 2);
-                        @endphp
-                        @if ($start > 1)
-                            <a href="{{ $pembelians->url(1) }}"
-                                class="px-4 py-2 text-sm text-gray-900 border border-gray-400 rounded-lg hover:bg-gray-100 transition-all">
-                                1
-                            </a>
-                            @if ($start > 2)
-                                <span class="px-2 text-sm text-gray-500">...</span>
-                            @endif
-                        @endif
-                        @for ($page = $start; $page <= $end; $page++)
-                            @if ($page == $pembelians->currentPage())
-                                <span
-                                    class="px-4 py-2 text-sm font-semibold text-white bg-gray-700 rounded-lg shadow hover:bg-gray-800 transition-all">
-                                    {{ $page }}
-                                </span>
-                            @else
-                                <a href="{{ $pembelians->url($page) }}"
-                                    class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all">
-                                    {{ $page }}
-                                </a>
-                            @endif
-                        @endfor
-                        @if ($end < $pembelians->lastPage())
-                            @if ($end < $pembelians->lastPage() - 1)
-                                <span class="px-2 text-sm text-gray-500">...</span>
-                            @endif
-                            <a href="{{ $pembelians->url($pembelians->lastPage()) }}"
-                                class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all">
-                                {{ $pembelians->lastPage() }}
-                            </a>
-                        @endif
-                    </div>
                 </div>
             </div>
         </div>

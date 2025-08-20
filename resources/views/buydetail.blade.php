@@ -165,7 +165,10 @@
                 <div class="flex justify-end pt-4 border-t mt-4">
                     <div class="pt-6">
                         <a id="backForm" href="{{ request('back') ?? url()->previous() }}"
-                            class="inline-block px-4 py-2 text-sm bg-gray-700 text-white rounded hover:bg-gray-800 transition-all">
+                            class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                            </svg>
                             Kembali
                         </a>
                     </div>

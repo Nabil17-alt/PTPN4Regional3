@@ -12,7 +12,7 @@ class User extends Authenticatable
     public $incrementing = false; 
     protected $keyType = 'string'; 
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = ['username', 'email','password', 'level', 'kode_unit', 'created_at','updated_at'];
 

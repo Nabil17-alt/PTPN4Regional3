@@ -86,28 +86,36 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener("DOMContentLoaded", () => {
     const jabatanSelect = document.getElementById("jabatanSelect");
     const unitSelect = document.getElementById("unitSelect");
+    const kodeUnitHidden = document.getElementById("kodeUnitHidden");
 
-    if (jabatanSelect && unitSelect) {
-        jabatanSelect.addEventListener("change", function () {
-            const selectedJabatan = this.value;
+    if (jabatanSelect && unitSelect && kodeUnitHidden) {
+        function updateUnitField() {
+            const selectedJabatan = jabatanSelect.value;
 
             if (selectedJabatan === "Admin" || selectedJabatan === "Asisten") {
-
                 const kantorOption = Array.from(unitSelect.options).find(opt =>
-                    opt.textContent.trim().toLowerCase() === "kantor regional".toLowerCase()
+                    opt.textContent.trim().toLowerCase() === "kantor regional"
                 );
 
                 if (kantorOption) {
                     unitSelect.value = kantorOption.value;
-                }   
+                    kodeUnitHidden.value = kantorOption.value;
+                }
 
-                unitSelect.disabled = true;
+                unitSelect.setAttribute("disabled", "disabled");
+                unitSelect.classList.add("bg-gray-100");
             } else {
-                unitSelect.disabled = false;
-                unitSelect.value = "";
+                unitSelect.removeAttribute("disabled");
+                unitSelect.classList.remove("bg-gray-100");
+                kodeUnitHidden.value = unitSelect.value;
             }
+        }
+
+        jabatanSelect.addEventListener("change", updateUnitField);
+        unitSelect.addEventListener("change", () => {
+            kodeUnitHidden.value = unitSelect.value;
         });
+
+        updateUnitField();
     }
 });
-
-
