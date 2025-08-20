@@ -45,13 +45,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Pastikan loader disembunyikan saat halaman selesai load
 window.addEventListener('load', function () {
     const loader = document.getElementById('pageLoader');
     if (loader) loader.classList.add('hidden');
 });
 
-// Sembunyikan loader jika halaman dimuat dari cache (back/forward)
 window.addEventListener('pageshow', function (event) {
     const loader = document.getElementById('pageLoader');
     if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {

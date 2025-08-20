@@ -30,7 +30,6 @@
                 <i data-lucide="x"></i>
             </button>
         </div>
-
         <div class="flex flex-col justify-between flex-1 px-4 pb-6">
             <ul class="space-y-2 text-sm">
                 <li>
@@ -44,7 +43,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('buy') }}" class="menu-item">
+                    <a href="{{ in_array(Auth::user()->level, ['Admin', 'Asisten']) ? route('buy.admin') : route('buy') }}"
+                        class="menu-item">
                         <i data-lucide="shopping-cart" class="icon"></i> Pembelian
                     </a>
                 </li>

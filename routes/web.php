@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/akun/{username}', [AdminController::class, 'deleteAccount'])->name('akun.delete');
 
     Route::get('/buy', [PembelianController::class, 'buy'])->name('buy');
+    Route::get('/buy/admin', [PembelianController::class, 'buyadmin'])->name('buy.admin');
     Route::get('/buy/{id}/detail', [PembelianController::class, 'detail'])->name('buy.detail');
     Route::delete('/buy/{pembelian}', [PembelianController::class, 'destroy'])->name('buy.destroy');
 

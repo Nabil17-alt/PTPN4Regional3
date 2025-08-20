@@ -29,6 +29,13 @@ class PembelianController extends Controller
 
         return view('buy', compact('user', 'pembelians'));
     }
+
+    public function buyadmin()
+    {
+        $items = Pembelian::all();
+        return view('buyadmin', compact('items'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
