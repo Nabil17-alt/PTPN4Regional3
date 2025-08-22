@@ -38,7 +38,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.akun') }}" class="menu-item">
+                    <a href="{{ route('admin.akun') }}"
+                        class="menu-item">
                         <i data-lucide="user-circle" class="icon"></i> Akun
                     </a>
                 </li>
@@ -61,13 +62,10 @@
             </ul>
         </div>
     </aside>
-
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-30 md:hidden"></div>
-
     <div class="flex-1 md:ml-64 p-4 w-full">
         @yield('content')
     </div>
-
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
 

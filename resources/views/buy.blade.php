@@ -106,7 +106,11 @@
                                     $firstItem = $items->first();
                                     $badgeColors = [
                                         'Sudah Diapprove' => 'bg-green-100 text-green-700',
-                                        'Tidak Mengolah' => 'bg-yellow-100 text-yellow-800',
+                                        'Sudah Diapprove Manager' => 'bg-green-100 text-green-700',
+                                        'Sudah Diapprove General_Manager' => 'bg-green-100 text-green-700',
+                                        'Sudah Diapprove Region_Head' => 'bg-green-100 text-green-700',
+                                        'Sudah Diapprove SEVP' => 'bg-green-100 text-green-700',
+                                        'Sudah Diinput' => 'bg-blue-100 text-blue-800',
                                         'Belum Diinput' => 'bg-red-100 text-red-800',
                                     ];
                                     $badgeClass = $badgeColors[$firstItem->status] ?? 'bg-gray-100 text-gray-800';
@@ -147,6 +151,19 @@
                 <div class="flex justify-end pt-4 border-t mt-4">
                 </div>
             </div>
+            <footer class="footer p-5 bg-gray-50 border-t">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="text-center text-muted text-m text-lg-start">
+                            Copyright &copy;
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                            PT. Perkebunan Nusantara IV
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     @endsection
     <script src="{{ asset('js/buy.js') }}"></script>

@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Grade; 
 use App\Models\Unit; 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Pembelian;
+use Carbon\Carbon;
 
 class PembelianController extends Controller
 {
@@ -30,10 +32,59 @@ class PembelianController extends Controller
         return view('buy', compact('user', 'pembelians'));
     }
 
-    public function buyadmin()
+    public function buyadmin(Request $request)
     {
-        $items = Pembelian::all();
-        return view('buyadmin', compact('items'));
+        $tanggal = $request->tanggal ?? Carbon::yesterday()->toDateString();
+        $units = Unit::where('jenis', '!=', 'Kantor Regional')->get();
+
+        $pembelianPadaTanggal = Pembelian::whereDate('tanggal', $tanggal)->get()->keyBy('kode_unit');
+
+        $userLevel = Auth::user()->level;
+
+        $items = $units->map(function ($unit) use ($pembelianPadaTanggal, $userLevel, $tanggal) {
+            $kodeUnit = $unit->kode_unit;
+            $pembelian = $pembelianPadaTanggal->get($kodeUnit);
+
+            if ($pembelian) {
+                switch ($userLevel) {
+                    case 'Manager':
+                        $pembelian->status = $pembelian->status_approval_manager ? 'Sudah Diapprove Manager' : 'Sudah Diinput';
+                        break;
+                    case 'General_Manager':
+                        $pembelian->status = $pembelian->status_approval_gm ? 'Sudah Diapprove General_Manager' : 'Sudah Diinput';
+                        break;
+                    case 'Region_Head':
+                        $pembelian->status = $pembelian->status_approval_rh ? 'Sudah Diapprove Region_Head' : 'Sudah Diinput';
+                        break;
+                    case 'SEVP':
+                        $pembelian->status = $pembelian->status_approval_sevp ? 'Sudah Diapprove SEVP' : 'Sudah Diinput';
+                        break;
+                    default:
+                        $pembelian->status = 'Sudah Diinput';
+                }
+
+                return $pembelian;
+            } else {
+                $adaData = DB::table('tb_pembelian_cpo_pk')
+                    ->where('kode_unit', $kodeUnit)
+                    ->whereDate('tanggal', $tanggal)
+                    ->exists();
+
+                if ($adaData) {
+                    $pembelianDummy = new Pembelian();
+                    $pembelianDummy->unit = $unit;
+                    $pembelianDummy->status = 'Sudah Diinput';
+                    return $pembelianDummy;
+                } else {
+                    $pembelianDummy = new Pembelian();
+                    $pembelianDummy->unit = $unit;
+                    $pembelianDummy->status = 'Belum Diinput';
+                    return $pembelianDummy;
+                }
+            }
+        });
+
+        return view('buyadmin', compact('items', 'tanggal'));
     }
 
     public function store(Request $request)

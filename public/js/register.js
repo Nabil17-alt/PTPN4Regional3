@@ -78,3 +78,15 @@ document.addEventListener("DOMContentLoaded", function () {
 document.getElementById('backLink').addEventListener('click', function () {
     document.getElementById('pageLoader').classList.remove('hidden');
 });
+
+window.addEventListener('pageshow', function (event) {
+    const loader = document.getElementById('pageLoader');
+    if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+        loader?.classList.add('hidden');
+    }
+});
+
+window.addEventListener('load', function () {
+    const loader = document.getElementById('pageLoader');
+    loader?.classList.add('hidden');
+});

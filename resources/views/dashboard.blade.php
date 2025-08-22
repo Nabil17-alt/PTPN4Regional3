@@ -31,7 +31,7 @@
                     <div>
                         <ol class="flex items-center space-x-2 text-sm text-gray-500">
                             <li>
-                                <a href="#" class="hover:text-gray-700">Selamat Datang</a>
+                                <a class="hover:text-gray-700">Selamat Datang</a>
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
@@ -48,76 +48,36 @@
                         <button id="openSidebar" class="md:hidden text-gray-700 hover:text-black">
                             <i data-lucide="menu"></i>
                         </button>
-                        <a id="logoutForm" href="{{ route('logout') }}" class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
+                        <a id="logoutForm" href="{{ route('logout') }}"
+                            class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
                             Keluar
                         </a>
                     </div>
                 </nav>
             </div>
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex justify-between items-start border-b pb-4 mb-4">
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-800">Beranda</h2>
-                    </div>
-                    <div class="flex gap-2">
-                        <button
-                            class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z" />
-                            </svg>
-                            Tambah Data
-                        </button>
-                    </div>
-                </div>
-                <form action="#" method="POST" class="space-y-6">
-                    @csrf
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Nama</label>
-                                <input type="text" name="nama"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring focus:ring-indigo-200">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Email</label>
-                                <input type="email" name="email"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring focus:ring-indigo-200">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Alamat</label>
-                                <input type="text" name="alamat"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring focus:ring-indigo-200">
-                            </div>
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">No HP</label>
-                                <input type="text" name="no_hp"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring focus:ring-indigo-200">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Keterangan</label>
-                                <input type="text" name="keterangan"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring focus:ring-indigo-200">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Tanggal</label>
-                                <input type="date" name="tanggal"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring focus:ring-indigo-200">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                <div class="flex justify-between items-center pt-4 border-t mt-4">
-                    <p class="text-sm text-gray-600">Page 1 of 10</p>
-                    <div class="space-x-2">
-                        <button class="px-3 py-1 text-sm border rounded bg-white hover:bg-gray-100">Previous</button>
-                        <button class="px-3 py-1 text-sm border rounded bg-white hover:bg-gray-100">Next</button>
-                    </div>
+            <div
+                class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center justify-center text-center min-h-[400px]">
+                <div id="greeting" data-username="{{ Auth::user()->username }}" class="text-xl md:text-2xl font-semibold text-gray-700 mb-4"></div>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">SELAMAT DATANG DI </h1>
+                <p class="text-sm md:text-base text-gray-600 mb-1">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                <p class="text-sm md:text-base text-gray-600 mb-6">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                <div class="w-40 md:w-48">
+                    <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Logo PTPN4" class="w-full h-auto" />
                 </div>
             </div>
+            <footer class="footer p-5 bg-gray-50 border-t">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="text-center text-muted text-m text-lg-start">
+                            Copyright &copy;
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                            PT. Perkebunan Nusantara IV
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     @endsection
     <script src="{{ asset('js/dashboard.js') }}"></script>

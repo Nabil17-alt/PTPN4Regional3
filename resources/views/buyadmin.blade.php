@@ -49,7 +49,7 @@
                     <div>
                         <ol class="flex items-center space-x-2 text-sm text-gray-500">
                             <li>
-                                <a href="#" class="hover:text-gray-700">Selamat Datang</a>
+                                <a class="hover:text-gray-700">Selamat Datang</a>
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
@@ -66,11 +66,12 @@
                         <button id="openSidebar" class="md:hidden text-gray-700 hover:text-black">
                             <i data-lucide="menu"></i>
                         </button>
-                        <a id="logoutForm" href="{{ route('logout') }}"
+                        <a id="logoutFormSubmit" href="{{ route('logout') }}"
                             class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
                             Keluar
                         </a>
                     </div>
+
                 </nav>
             </div>
             <div class="bg-white rounded-lg shadow-md p-6">
@@ -79,15 +80,15 @@
                         <h2 class="text-xl font-semibold text-gray-800">Pembelian</h2>
                     </div>
                 </div>
+                @php
+                    use Carbon\Carbon;
+                    $tanggalSemalam = request('tanggal') ?? Carbon::yesterday()->toDateString();
+                @endphp
                 <div class="flex justify-end items-center mb-4">
                     <div class="relative w-64">
-                        <input type="text" id="searchDate" placeholder="Masukkan Tanggal..."
+                        <input type="date" id="searchDate" name="tanggal" value="{{ $tanggalSemalam }}"
                             class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M8 7V3M16 7V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
                         </div>
                     </div>
                 </div>
@@ -95,7 +96,7 @@
                     <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
-                                <th class="px-4 py-3 text-left font-semibold">Grade</th>
+                                <th class="px-4 py-3 text-left font-semibold">Unit</th>
                                 <th class="px-4 py-3 text-center font-semibold">Status</th>
                                 <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                             </tr>
@@ -103,64 +104,56 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($items as $pembelian)
                                 @php
-                                    $firstItem = $items->first();
                                     $badgeColors = [
                                         'Sudah Diapprove' => 'bg-green-100 text-green-700',
-                                        'Tidak Mengolah' => 'bg-yellow-100 text-yellow-800',
+                                        'Sudah Diapprove Manager' => 'bg-green-100 text-green-700',
+                                        'Sudah Diapprove General_Manager' => 'bg-green-100 text-green-700',
+                                        'Sudah Diapprove Region_Head' => 'bg-green-100 text-green-700',
+                                        'Sudah Diapprove SEVP' => 'bg-green-100 text-green-700',
+                                        'Sudah Diinput' => 'bg-blue-100 text-blue-800',
                                         'Belum Diinput' => 'bg-red-100 text-red-800',
                                     ];
-                                    $badgeClass = $badgeColors[$firstItem->status] ?? 'bg-gray-100 text-gray-800';
+                                    $badgeClass = $badgeColors[$pembelian->status] ?? 'bg-gray-100 text-gray-800';
                                 @endphp
                                 <tr class="transition-all duration-500 hover:bg-gray-50">
                                     <td class="px-4 py-3">
-                                        {{ $pembelian->grade }}
+                                        @php
+                                            $unit = $pembelian->unit;
+                                        @endphp
+                                        @if ($unit && $unit->jenis !== 'Kantor Regional')
+                                            {{ $unit->nama_unit }}
+                                        @else
+                                            -
+                                        @endif
                                     </td>
                                     <td class="text-center px-4 py-3">
                                         <span class="text-xs px-2 py-1 rounded-full {{ $badgeClass }}">
-                                            {{ ucfirst($firstItem->status ?? 'Tidak Diketahui') }}
+                                            {{ ucfirst($pembelian->status ?? 'Tidak Diketahui') }}
                                         </span>
                                     </td>
                                     <td class="text-center px-4 py-3">
                                         <div class="flex justify-center items-center gap-2">
-                                            <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
-                                                class="detailForm flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    fill="currentColor" viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
-                                                </svg>
-                                                Detail
-                                            </a>
-                                            <a href="{{ route('pembelian.edit', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
-                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    fill="currentColor" viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M5 20h14v2H5c-1.103 0-2-.897-2-2V6h2v14zM20.707 7.293l-1-1a1.001 1.001 0 0 0-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 0 0 0-1.414z" />
-                                                </svg>
-                                                Edit
-                                            </a>
-                                            <form id="delete-form-{{ $pembelian->id }}"
-                                                action="{{ route('pembelian.destroy', $pembelian->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" onclick="confirmDelete({{ $pembelian->id }})"
-                                                    class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-all">
+                                            @if ($pembelian->id)
+                                                <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
+                                                    class="detailForm flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                         fill="currentColor" viewBox="0 0 24 24">
                                                         <path
-                                                            d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
+                                                            d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
                                                     </svg>
-                                                    Hapus
-                                                </button>
-                                            </form>
+                                                    Detail
+                                                </a>
+
+                                            @else
+                                                <span class="text-xs text-gray-400">Belum tersedia aksi</span>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
                                     <td colspan="3" class="text-center px-4 py-3 text-gray-500">
-                                        Tidak ada data.
+                                        Tidak ada data untuk tanggal ini.
                                     </td>
                                 </tr>
                             @endforelse
@@ -170,6 +163,19 @@
                 <div class="flex justify-end pt-4 border-t mt-4">
                 </div>
             </div>
+            <footer class="footer p-5 bg-gray-50 border-t">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="text-center text-muted text-m text-lg-start">
+                            Copyright &copy;
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                            PT. Perkebunan Nusantara IV
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     @endsection
     <script src="{{ asset('js/buyadmin.js') }}"></script>
