@@ -242,7 +242,7 @@
                         </div>
 
                         <div class="flex justify-between items-center pt-6">
-                            <a href="{{ route('buy') }}"
+                            <a href="{{ route('buy.admin') }}"
                                 class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
                                     viewBox="0 0 24 24">
@@ -263,6 +263,19 @@
                     </div>
                 </form>
             </div>
+            <footer class="footer p-5 bg-gray-50 border-t">
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-6 mb-lg-0 mb-4">
+                    <div class="text-center text-muted text-m text-lg-start">
+                        Copyright &copy;
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script>
+                        PT. Perkebunan Nusantara IV
+                    </div>
+                </div>
+            </div>
+        </footer>
         </div>
     @endsection
     <script src="{{ asset('js/buyfrom.js') }}"></script>
