@@ -1,43 +1,106 @@
-# 🌾 PTPN IV Regional 3 - Manajemen Pembelian CPO & PK
+# 🌾 PTPN IV Regional 3 - Sistem Manajemen Pembelian CPO & PK
 
-Proyek ini adalah sistem informasi berbasis web yang dirancang untuk mempermudah pengelolaan pembelian **CPO (Crude Palm Oil)** dan **PK (Palm Kernel)** di lingkungan **PTPN IV Regional 3**. Sistem ini dibangun dengan framework **Laravel**, menggunakan TailwindCSS untuk desain antarmuka modern dan responsif.
+## 👥 Tim Pengembang
 
-## 🖼️ Preview Tampilan
+| Nama               | NIM             | Konsentrasi          |
+|--------------------|-----------------|-----------------------|
+| Muhammad Nabil     | 2210031802043   | Full Stack Developer  |
+| Putri Kurnia Sari  | 2210031802061   | Full Stack Developer  |
 
-### 🔐 Halaman Login
+---
+
+## 📝 Deskripsi Proyek
+
+Sistem Informasi Manajemen Pembelian **CPO (Crude Palm Oil)** dan **PK (Palm Kernel)** dikembangkan untuk mendukung operasional **PTPN IV Regional 3**. Aplikasi berbasis web ini mempermudah pencatatan, validasi, dan visualisasi data pembelian secara efisien dan terstruktur.
+
+Dibangun menggunakan **Laravel** dan **TailwindCSS** untuk tampilan antarmuka yang modern dan responsif.
+
+---
+
+## 🖼️ Preview Tampilan Antarmuka
+
+### 🔐 Halaman Login  
 ![Login](public/images/login.png)
 
-### 📝 Halaman Register
+### 📝 Halaman Registrasi  
 ![Register](public/images/register.png)
 
-### 📊 Dashboard Akun
-![Dashboard Akun](public/images/dashboard-akun.png)
+### 📊 Dashboard  
+![Dashboard](public/images/layout_dashboard.png)
+
+### 👤 Manajemen Akun  
+![Akun](public/images/layout_akun.png)
+
+### 🛒 Pembelian (Admin)  
+![Pembelian Admin](public/images/layout_pembelianadmin.png)
+
+### 🛒 Pembelian (User)  
+![Pembelian User](public/images/layout_pembelianuser.png)
 
 ---
 
-## 🚀 Fitur Utama
+## 🚀 Fitur Unggulan
 
-- 🔐 Autentikasi pengguna (login & register)
-- 📦 Manajemen data pembelian CPO & PK
-- 📈 Visualisasi dan rekapitulasi data pembelian
-- 🧾 Formulir input dinamis dengan validasi
-- 📂 Multi-user role (Admin, Unit, dll)
-- 🌐 Tampilan modern dan responsif
-
----
-
-## 🛠️ Teknologi yang Digunakan
-
-- **Framework:** Laravel 10
-- **Frontend:** TailwindCSS, Blade
-- **Database:** MySQL
-- **Library tambahan:** Flowbite, Lucide Icons
+- 🔐 Autentikasi pengguna (Login & Registrasi)
+- 👥 Sistem multi-role: Admin, Unit, dll
+- 📦 Manajemen pembelian CPO & PK secara real-time
+- 📊 Visualisasi dan rekap data pembelian
+- 🧾 Form input dinamis dengan validasi otomatis
+- 📱 Tampilan modern, bersih, dan responsif (mobile-friendly)
 
 ---
 
-## 📦 Cara Instalasi
+## ⚙️ Teknologi yang Digunakan
 
-1. **Clone repository ini**
+- **Backend Framework:** Laravel 10  
+- **Frontend:** Blade + TailwindCSS  
+- **Database:** MySQL  
+- **Library Tambahan:** Flowbite, Lucide Icons
+
+---
+
+## 📦 Cara Instalasi & Menjalankan Aplikasi
+
+1. **Clone repositori ini:**
    ```bash
    git clone https://github.com/Nabil17-alt/PTPN4Regional3.git
    cd PTPN4Regional3
+   ```
+
+2. **Install dependency PHP:**
+   ```bash
+   composer install
+   ```
+
+3. **Copy file environment dan sesuaikan:**
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Generate key aplikasi:**
+   ```bash
+   php artisan key:generate
+   ```
+
+5. **Konfigurasi database di file `.env`, lalu jalankan migrasi:**
+   ```bash
+   php artisan migrate
+   ```
+
+6. **Install dependency frontend:**
+   ```bash
+   npm install && npm run dev
+   ```
+
+7. **Jalankan server Laravel:**
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## 📫 Kontak & Kontribusi
+
+Jika Anda ingin memberikan masukan atau kontribusi terhadap proyek ini, silakan buat _issue_ atau _pull request_ melalui repositori GitHub kami.
+
+📌 GitHub: [Nabil17-alt/PTPN4Regional3](https://github.com/Nabil17-alt/PTPN4Regional3)
