@@ -7,9 +7,6 @@
 | Muhammad Nabil     | 2210031802043   | Full Stack Developer  | [Nabil17-alt](https://github.com/Nabil17-alt) |
 | Putri Kurnia Sari  | 2210031802061   | Full Stack Developer  | [putrikurniasari](https://github.com/putrikurniasari) |
 
-https://github.com/Nabil17-alt
-https://github.com/putrikurniasari
-
 ---
 
 ## 📝 Deskripsi Proyek
