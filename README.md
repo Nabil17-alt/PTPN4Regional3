@@ -2,10 +2,13 @@
 
 ## 👥 Tim Pengembang
 
-| Nama               | NIM             | Konsentrasi          |
-|--------------------|-----------------|-----------------------|
-| Muhammad Nabil     | 2210031802043   | Full Stack Developer  |
-| Putri Kurnia Sari  | 2210031802061   | Full Stack Developer  |
+| Nama               | NIM             | Konsentrasi          | GitHub Profile |
+|--------------------|-----------------|-----------------------|----------------|
+| Muhammad Nabil     | 2210031802043   | Full Stack Developer  | [Nabil17-alt](https://github.com/Nabil17-alt) |
+| Putri Kurnia Sari  | 2210031802061   | Full Stack Developer  | [putrikurniasari](https://github.com/putrikurniasari) |
+
+https://github.com/Nabil17-alt
+https://github.com/putrikurniasari
 
 ---
 
@@ -23,7 +26,7 @@ Dibangun menggunakan **Laravel** dan **TailwindCSS** untuk tampilan antarmuka ya
 ![Login](public/images/login.png)
 
 ### 📝 Halaman Registrasi  
-![Register](public/images/register.png)
+![Register](public/images/layout_register.png)
 
 ### 📊 Dashboard  
 ![Dashboard](public/images/layout_dashboard.png)
