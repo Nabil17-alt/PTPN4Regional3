@@ -55,4 +55,15 @@ document.addEventListener('DOMContentLoaded', function () {
         greetingEl.textContent = greetingText + ", " + greetingEl.dataset.username;
     }
 
+    const approveForm = document.querySelector('form[action*="pembelian.approve"]');
+    if (approveForm) {
+        approveForm.addEventListener('submit', function (e) {
+            if (loader) loader.classList.remove('hidden');
+            e.preventDefault();
+            setTimeout(() => {
+                approveForm.submit();
+            }, 300); 
+        });
+    }
+
 });

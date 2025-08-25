@@ -51,12 +51,10 @@
                             <li>
                                 <a id="greeting" class="hover:text-gray-700"
                                     data-username="{{ Auth::user()->username }}"></a>
-
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
                             </li>
-
                         </ol>
                         <h6 class="text-xl font-semibold text-gray-800 mt-1">
                             {{ Auth::user()->level }}
@@ -71,7 +69,6 @@
                             Keluar
                         </a>
                     </div>
-
                 </nav>
             </div>
             <div class="bg-white rounded-lg shadow-md p-6">
@@ -91,7 +88,6 @@
                         </a>
                     </div>
                 </div>
-
                 @php
                     use Carbon\Carbon;
                     $tanggalSemalam = request('tanggal') ?? Carbon::yesterday()->toDateString();
@@ -139,8 +135,30 @@
                                         @endif
                                     </td>
                                     <td class="text-center px-4 py-3">
+                                        @php
+                                            if (isset($pembelian->status_approval_rh) && $pembelian->status_approval_rh) {
+                                                $status = 'Diapprove Region_Head';
+                                            } elseif (isset($pembelian->status_approval_gm) && $pembelian->status_approval_gm) {
+                                                $status = 'Diapprove General_Manager';
+                                            } elseif (isset($pembelian->status_approval_admin) && $pembelian->status_approval_admin) {
+                                                $status = 'Diapprove Admin';
+                                            } elseif (isset($pembelian->status_approval_manager) && $pembelian->status_approval_manager) {
+                                                $status = 'Diapprove Manager';
+                                            } else {
+                                                $status = $pembelian->status ?? 'Sudah Diinput';
+                                            }
+                                            $badgeColors = [
+                                                'Diapprove Manager' => 'bg-green-100 text-green-700',
+                                                'Diapprove Admin' => 'bg-green-100 text-green-700',
+                                                'Diapprove General_Manager' => 'bg-green-100 text-green-700',
+                                                'Diapprove Region_Head' => 'bg-green-100 text-green-700',
+                                                'Sudah Diinput' => 'bg-blue-100 text-blue-800',
+                                                'Belum Diinput' => 'bg-red-100 text-red-800',
+                                            ];
+                                            $badgeClass = $badgeColors[$status] ?? 'bg-gray-100 text-gray-800';
+                                        @endphp
                                         <span class="text-xs px-2 py-1 rounded-full {{ $badgeClass }}">
-                                            {{ ucfirst($pembelian->status ?? 'Tidak Diketahui') }}
+                                            {{ $status }}
                                         </span>
                                     </td>
                                     <td class="text-center px-4 py-3">
@@ -161,7 +179,6 @@
                                             @else
                                                 <span class="text-xs text-gray-400">Data tidak lengkap</span>
                                             @endif
-
                                         </div>
                                     </td>
                                 </tr>

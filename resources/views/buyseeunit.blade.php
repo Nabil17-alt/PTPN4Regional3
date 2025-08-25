@@ -37,7 +37,6 @@
                             timer: 5000,
                             timerProgressBar: true,
                         });
-
                         Toast.fire({
                             icon: 'success',
                             title: @json(session('success'))
@@ -50,13 +49,12 @@
                     <div>
                         <ol class="flex items-center space-x-2 text-sm text-gray-500">
                             <li>
-                                <a id="greeting" class="hover:text-gray-700" data-username="{{ Auth::user()->username }}"></a>
-
+                                <a id="greeting" class="hover:text-gray-700"
+                                    data-username="{{ Auth::user()->username }}"></a>
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
                             </li>
-
                         </ol>
                         <h6 class="text-xl font-semibold text-gray-800 mt-1">
                             {{ Auth::user()->level }}
@@ -85,43 +83,50 @@
                     <table class="w-full text-sm divide-y divide-gray-200">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
-                                <th class="px-4 py-3 text-left font-semibold">Grade</th>
-                                <th class="px-4 py-3 text-left font-semibold">Margin</th>
-                                <th class="px-4 py-3 text-left font-semibold">Status</th>
-                                <th class="px-4 py-3 text-center font-semibold">Aksi</th>
+                                <th class="w-1/4 px-4 py-3 text-left font-semibold">Grade</th>
+                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Margin</th>
+                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Status</th>
+                                <th class="w-1/4 px-6 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>
-
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse ($pembelians as $item)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-4 py-3">{{ $item->grade }}</td>
+                            @forelse ($pembelians as $pembelian)
+                                <tr>
+                                    <td class="px-4 py-3">{{ $pembelian->grade }}</td>
                                     <td class="px-6 py-3">
-                                        <span class="{{ $item->margin < 0 ? 'text-red-600' : 'text-green-600' }}">
-                                            {{ number_format($item->margin, 2, ',', '.') }}%
+                                        <span class="{{ $pembelian->margin < 0 ? 'text-red-600' : 'text-green-600' }}">
+                                            {{ number_format($pembelian->margin, 2, ',', '.') }}%
                                         </span>
                                     </td>
-                                    <td class="px-4 py-3">
+                                    <td class="px-6 py-3">
                                         @php
-                                            $badgeColors = [
-                                                'Sudah Diapprove' => 'bg-green-100 text-green-700',
-                                                'Sudah Diapprove Admin' => 'bg-green-100 text-green-700',
-                                                'Sudah Diapprove Manager' => 'bg-green-100 text-green-700',
-                                                'Sudah Diapprove General_Manager' => 'bg-green-100 text-green-700',
-                                                'Sudah Diapprove Region_Head' => 'bg-green-100 text-green-700',
-                                                'Sudah Diapprove SEVP' => 'bg-green-100 text-green-700',
-                                                'Sudah Diinput' => 'bg-blue-100 text-blue-800',
-                                                'Belum Diinput' => 'bg-red-100 text-red-800',
-                                            ];
-                                            $badgeClass = $badgeColors[$item->status ?? ''] ?? 'bg-gray-100 text-gray-800';
+                                            if ($pembelian->status_approval_rh) {
+                                                $status = 'Diapprove Region_Head';
+                                            } elseif ($pembelian->status_approval_gm) {
+                                                $status = 'Diapprove General_Manager';
+                                            } elseif ($pembelian->status_approval_admin) {
+                                                $status = 'Diapprove Admin';
+                                            } elseif ($pembelian->status_approval_manager) {
+                                                $status = 'Diapprove Manager';
+                                            } else {
+                                                $status = 'Sudah Diinput';
+                                            }
+                                            $badgeClass = 'bg-gray-200 text-gray-800';
+                                            if (str_contains($status, 'Diapprove')) {
+                                                $badgeClass = 'bg-green-100 text-green-800';
+                                            } elseif ($status === 'Sudah Diinput') {
+                                                $badgeClass = 'bg-yellow-100 text-yellow-800';
+                                            } elseif ($status === 'Ditolak') {
+                                                $badgeClass = 'bg-red-100 text-red-800';
+                                            }
                                         @endphp
                                         <span class="text-xs px-2 py-1 rounded-full {{ $badgeClass }}">
-                                            {{ ucfirst($item->status ?? 'Tidak Diketahui') }}
+                                            {{ $status }}
                                         </span>
                                     </td>
                                     <td class="text-center px-4 py-3">
                                         <div class="flex justify-center items-center gap-2">
-                                            <a href="{{ route('buy.detail', ['id' => $item->id, 'back' => request()->fullUrl()]) }}"
+                                            <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
                                                 class="detailForm flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     fill="currentColor" viewBox="0 0 24 24">
@@ -130,7 +135,7 @@
                                                 </svg>
                                                 Detail
                                             </a>
-                                            <a href="{{ route('pembelian.edit', ['id' => $item->id, 'back' => request()->fullUrl()]) }}"
+                                            <a href="{{ route('pembelian.edit', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
                                                 class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     fill="currentColor" viewBox="0 0 24 24">
@@ -139,11 +144,11 @@
                                                 </svg>
                                                 Edit
                                             </a>
-                                            <form id="delete-form-{{ $item->id }}"
-                                                action="{{ route('pembelian.destroy', $item->id) }}" method="POST">
+                                            <form id="delete-form-{{ $pembelian->id }}"
+                                                action="{{ route('pembelian.destroy', $pembelian->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" onclick="confirmDelete({{ $item->id }})"
+                                                <button type="button" onclick="confirmDelete({{ $pembelian->id }})"
                                                     class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-all">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                         fill="currentColor" viewBox="0 0 24 24" class="inline-block">
@@ -163,7 +168,6 @@
                             @endforelse
                         </tbody>
                     </table>
-
                 </div>
                 <div class="flex justify-end pt-4 border-t mt-4">
                     <div class="pt-6">

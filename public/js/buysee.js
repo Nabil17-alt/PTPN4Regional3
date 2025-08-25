@@ -22,6 +22,24 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 300);
         });
     }
+
+    const greetingEl = document.getElementById("greeting");
+    if (greetingEl) {
+        const hour = new Date().getHours();
+        let greetingText = "Selamat datang";
+
+        if (hour >= 3 && hour < 10) {
+            greetingText = "Selamat pagi";
+        } else if (hour >= 10 && hour < 15) {
+            greetingText = "Selamat siang";
+        } else if (hour >= 15 && hour < 18) {
+            greetingText = "Selamat sore";
+        } else {
+            greetingText = "Selamat malam";
+        }
+
+        greetingEl.textContent = greetingText + ", " + greetingEl.dataset.username;
+    }
 });
 
 function confirmDelete(id) {

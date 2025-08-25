@@ -16,35 +16,27 @@ class PembelianController extends Controller
     {
         $grades = Grade::all();
         $units = Unit::all();
-
         $user = auth()->user();
         return view('buyform', compact('user', 'grades', 'units'));
     }
     public function buy()
     {
         $user = Auth::user();
-
         if (!$user) {
             return redirect()->route('login');
         }
         $pembelians = Pembelian::with('unit')->orderByDesc('created_at')->paginate(10);
-
         return view('buy', compact('user', 'pembelians'));
     }
-
     public function buyadmin(Request $request)
     {
         $tanggal = $request->tanggal ?? Carbon::yesterday()->toDateString();
         $units = Unit::where('jenis', '!=', 'Kantor Regional')->get();
-
         $pembelianPadaTanggal = Pembelian::whereDate('tanggal', $tanggal)->get()->keyBy('kode_unit');
-
         $userLevel = Auth::user()->level;
-
         $items = $units->map(function ($unit) use ($pembelianPadaTanggal, $userLevel, $tanggal) {
             $kodeUnit = $unit->kode_unit;
             $pembelian = $pembelianPadaTanggal->get($kodeUnit);
-
             if ($pembelian) {
                 switch ($userLevel) {
                     case 'Admin':
@@ -59,21 +51,15 @@ class PembelianController extends Controller
                     case 'Region_Head':
                         $pembelian->status = $pembelian->status_approval_rh ? 'Diapprove Region_Head' : 'Sudah Diinput';
                         break;
-                    case 'SEVP':
-                        $pembelian->status = $pembelian->status_approval_sevp ? 'Diapprove SEVP' : 'Sudah Diinput';
-                        break;
                     default:
                         $pembelian->status = 'Sudah Diinput';
                 }
-
-
                 return $pembelian;
             } else {
                 $adaData = DB::table('tb_pembelian_cpo_pk')
                     ->where('kode_unit', $kodeUnit)
                     ->whereDate('tanggal', $tanggal)
                     ->exists();
-
                 if ($adaData) {
                     $pembelianDummy = new Pembelian();
                     $pembelianDummy->unit = $unit;
@@ -87,10 +73,8 @@ class PembelianController extends Controller
                 }
             }
         });
-
         return view('buyadmin', compact('items', 'tanggal'));
     }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -107,13 +91,10 @@ class PembelianController extends Controller
             'biaya_angkut_jual' => 'required|numeric',
             'harga_escalasi' => 'required|numeric',
         ]);
-
         $unit = Unit::where('kode_unit', $validated['kode_unit'])->first();
-
         if (!$unit) {
             return redirect()->back()->with('error', 'Unit tidak ditemukan.');
         }
-
         $pembelian = new Pembelian();
         $pembelian->kode_unit = $validated['kode_unit']; 
         $pembelian->tanggal = $validated['tanggal'];
@@ -127,31 +108,24 @@ class PembelianController extends Controller
         $pembelian->tarif_angkut_pk = $validated['tarif_angkut_pk'];
         $pembelian->biaya_angkut_jual = $validated['biaya_angkut_jual'];
         $pembelian->harga_escalasi = $validated['harga_escalasi'];
-
         $pembelian->save();
-
         return redirect()->back()->with('success', 'Data pembelian berhasil disimpan');
     }
-
     public function destroy(Pembelian $pembelian)
     {
         $pembelian->delete();
         return redirect()->back()->with('success', 'Berhasil menghapus data!');
     }
-
     public function edit($id)
     {
         $pembelian = Pembelian::findOrFail($id);
         $grades = Grade::all();
         $units = Unit::all(); 
-
         return view('buyedit', compact('pembelian', 'grades', 'units')); 
     }
-
     public function update(Request $request, $id)
     {
         $pembelian = Pembelian::findOrFail($id);
-
         $validated = $request->validate([
             'kode_unit' => 'required|string|max:255',
             'tanggal' => 'required|date',
@@ -167,55 +141,84 @@ class PembelianController extends Controller
             'harga_escalasi' => 'required|numeric',
             
         ]);
-
         $pembelian->update($validated);
-
         return redirect()->back()->with('success', 'Data pembelian berhasil diedit');
-
     }
-
     public function lihatTanggal($tanggal)
     {
         $items = Pembelian::whereDate('tanggal', $tanggal)->get(); 
         return view('buysee', compact('items')); 
     }
-
     public function detail($id)
     {
         $pembelian = Pembelian::with('unit')->findOrFail($id);
         $unit = $pembelian->unit;
         return view('buydetail', compact('pembelian', 'unit'));
     }
-
     public function lihatPerUnit($unit, $tanggal)
     {
         $pembelians = Pembelian::with('unit')
             ->where('kode_unit', $unit)
             ->whereDate('tanggal', $tanggal)
-            ->get(['grade', 'margin', 'id', 'kode_unit', 'tanggal']);
-
+            ->get([
+                'grade',
+                'margin',
+                'id',
+                'kode_unit',
+                'tanggal',
+                'status_approval_admin',
+                'status_approval_manager',
+                'status_approval_gm',
+                'status_approval_rh'
+            ]);
+        $pembelians->transform(function ($item) {
+            if ($item->status_approval_rh) {
+                $item->status = 'Diapprove Region_Head';
+            } elseif ($item->status_approval_gm) {
+                $item->status = 'Diapprove General_Manager';
+            } elseif ($item->status_approval_manager) {
+                $item->status = 'Diapprove Manager';
+            } elseif ($item->status_approval_admin) {
+                $item->status = 'Diapprove Admin';
+            } else {
+                $item->status = 'Sudah Diinput';
+            }
+            return $item;
+        });
         return view('buyseeunit', compact('pembelians'));
     }
-
     public function approve($id)
     {
         $pembelian = Pembelian::findOrFail($id);
-
-        $user = auth()->user();
-
-        if ($user->level === 'Admin') {
-            $pembelian->status = 'Diapprove Admin';
-        } elseif ($user->level === 'Manager') {
-            $pembelian->status = 'Diapprove Manager';
-        } elseif ($user->level === 'General_Manager') {
-            $pembelian->status = 'Diapprove General_Manager';
-        } elseif ($user->level === 'Region_Head') {
-            $pembelian->status = 'Diapprove Region_Head';
+        $userLevel = Auth::user()->level;
+        if ($userLevel == 'Manager') {
+            if ($pembelian->status_approval_admin || $pembelian->status_approval_gm || $pembelian->status_approval_rh) {
+                return redirect()->back()->with('error', 'Sudah di-approve oleh level di atas.');
+            }
+            $pembelian->status_approval_manager = 1;
+        } elseif ($userLevel == 'Admin') {
+            if (!$pembelian->status_approval_manager) {
+                return redirect()->back()->with('error', 'Harus di-approve Manager terlebih dahulu.');
+            }
+            if ($pembelian->status_approval_gm || $pembelian->status_approval_rh) {
+                return redirect()->back()->with('error', 'Sudah di-approve oleh level di atas.');
+            }
+            $pembelian->status_approval_admin = 1;
+        } elseif ($userLevel == 'General_Manager') {
+            if (!$pembelian->status_approval_admin) {
+                return redirect()->back()->with('error', 'Harus di-approve Admin terlebih dahulu.');
+            }
+            if ($pembelian->status_approval_rh) {
+                return redirect()->back()->with('error', 'Sudah di-approve oleh Region Head.');
+            }
+            $pembelian->status_approval_gm = 1;
+        } elseif ($userLevel == 'Region_Head') {
+            if (!$pembelian->status_approval_gm) {
+                return redirect()->back()->with('error', 'Harus di-approve General Manager terlebih dahulu.');
+            }
+            $pembelian->status_approval_rh = 1;
         }
-
         $pembelian->save();
-
-        return redirect()->route('buy.admin')->with('success', 'Data berhasil di-approve.');
+        return redirect()->route('buy.admin')->with('success', 'Pembelian berhasil diapprove.');
     }
-
 }

@@ -37,7 +37,6 @@
                             timer: 5000,
                             timerProgressBar: true,
                         });
-
                         Toast.fire({
                             icon: 'success',
                             title: @json(session('success'))
@@ -50,17 +49,14 @@
                     <div>
                         <ol class="flex items-center space-x-2 text-sm text-gray-500">
                             <li>
-                                <a href="#" class="hover:text-gray-700">Selamat Datang</a>
+                                <a id="greeting" class="hover:text-gray-700" data-username="{{ Auth::user()->username }}"></a>
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
                             </li>
-                            <li class="text-gray-700 font-medium">
-                                {{ Auth::user()->level }}
-                            </li>
                         </ol>
                         <h6 class="text-xl font-semibold text-gray-800 mt-1">
-                            {{ Auth::user()->username }}
+                            {{ Auth::user()->level }}
                         </h6>
                     </div>
                     <div class="flex items-center gap-6">
