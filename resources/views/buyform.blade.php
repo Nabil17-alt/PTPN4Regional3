@@ -37,7 +37,7 @@
                         timer: 5000,
                         timerProgressBar: true,
                     });
-
+                    
                     Toast.fire({
                         icon: 'success',
                         title: '{{ session('success') }}'
@@ -73,12 +73,10 @@
                     </div>
                 </nav>
             </div>
-
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-start border-b pb-4 mb-4">
                     <h2 class="text-xl font-semibold text-gray-800">Pembelian - Tambah Pembelian</h2>
                 </div>
-
                 <form id="addbuyForm" action="{{ route('pembelian.store') }}" method="POST" class="space-y-6">
                     @csrf
                     <div class="space-y-4">
@@ -88,15 +86,12 @@
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring focus:ring-indigo-200"
                                 required>
                         </div>
-
                         <div class="flex flex-col gap-6">
                             <div class="w-full">
                                 <label class="block text-sm font-medium text-gray-700">Unit</label>
-
                                 @php
                                     $user = auth()->user();
                                 @endphp
-
                                 @if ($user->level === 'Admin' || $user->level === 'Asisten')
                                     <select name="kode_unit"
                                         class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-white">
@@ -123,7 +118,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga CPO</label>
@@ -138,7 +132,6 @@
                                     required>
                             </div>
                         </div>
-
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Rendemen CPO</label>
@@ -153,20 +146,17 @@
                                     required>
                             </div>
                         </div>
-
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Total Rendemen</label>
                             <input type="number" step="any" name="total_rendemen" id="total_rendemen" readonly
                                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                         </div>
-
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Biaya Olah</label>
                             <input type="number" step="any" name="biaya_olah" id="biayaOlah"
                                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
                                 required>
                         </div>
-
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Tarif Angkut (CPO)</label>
@@ -181,7 +171,6 @@
                                     required>
                             </div>
                         </div>
-
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Pendapatan CPO</label>
@@ -194,13 +183,11 @@
                                     class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                             </div>
                         </div>
-
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Total Pendapatan</label>
                             <input type="number" step="any" name="total_pendapatan" id="totalPendapatan" readonly
                                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                         </div>
-
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Biaya Produksi</label>
@@ -214,13 +201,11 @@
                                     required>
                             </div>
                         </div>
-
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Total Biaya</label>
                             <input type="number" step="any" name="total_biaya" id="totalBiaya" readonly
                                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                         </div>
-
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga Penetapan</label>
@@ -234,13 +219,11 @@
                                     required>
                             </div>
                         </div>
-
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Margin</label>
                             <input type="number" step="any" name="margin" id="margin" readonly
                                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                         </div>
-
                         <div class="flex justify-between items-center pt-6">
                             <a href="{{ route('buy.admin') }}"
                                 class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
