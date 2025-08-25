@@ -91,7 +91,7 @@
                             </a>
                         </div>
                 </div>
-                
+
                 @php
                     use Carbon\Carbon;
                     $tanggalSemalam = request('tanggal') ?? Carbon::yesterday()->toDateString();
@@ -155,7 +155,7 @@
                                                     </svg>
                                                     Detail
                                                 </a>
-
+                                                
                                             @else
                                                 <span class="text-xs text-gray-400">Belum tersedia aksi</span>
                                             @endif
