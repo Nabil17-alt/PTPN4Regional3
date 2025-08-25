@@ -85,6 +85,7 @@
                         </button>
                     @endif
                 </div>
+                @if(in_array(Auth::user()->level, ['Admin','Asisten']))
                 <form id="cariForm" method="GET" action="{{ route('admin.akun') }}"
                     class="flex justify-end items-center mb-4">
                     <div class="relative w-64">
@@ -102,6 +103,8 @@
                         </div>
                     </div>
                 </form>
+                @endif
+                
                 <div class="overflow-x-auto">
                     <table class="w-full min-w-[1000px] divide-y divide-gray-200 text-sm">
                         <thead class="bg-gray-100 text-gray-700">
@@ -114,6 +117,7 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($users as $user)
+<<<<<<< HEAD
                                 @if(in_array(Auth::user()->level, ['Admin', 'Asisten']) || Auth::user()->username == $user->username)
                                     <tr>
                                         <td class="px-4 py-3 flex items-center space-x-3">
@@ -157,10 +161,57 @@
                                         </td>
                                     </tr>
                                 @endif
+=======
+                            @if(in_array(Auth::user()->level, ['Admin','Asisten']) || Auth::user()->username == $user->username)
+                                <tr>
+                                    <td class="px-4 py-3 flex items-center space-x-3">
+                                        <img src="https://i.pravatar.cc/40?u={{ $user->username }}" alt="{{ $user->username }}"
+                                            class="rounded-full h-8 w-8" />
+                                        <div class="font-medium text-gray-800">{{ $user->username }}</div>
+                                    </td>
+                                    <td class="text-center px-4 py-3 text-gray-600">{{ $user->email }}</td>
+                                    <td class="text-center px-4 py-3 text-gray-600">{{ $user->level }}</td>
+                                    <td class="px-4 py-3 text-center">
+                                        <div class="flex justify-center items-center gap-2">
+                                            @if(in_array(Auth::user()->level, ['Admin','Asisten']) || Auth::user()->username == $user->username)
+                                            <button type="button"
+                                                onclick="openEditModal('{{ $user->username }}', '{{ $user->name }}', '{{ $user->email }}', '{{ $user->level }}')"
+                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                    fill="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M5 19h14v2H5c-1.103 0-2-.897-2-2V7h2v12zM20.707 7.293l-1-1a1 1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
+                                                </svg>
+                                                Edit
+                                            </button>
+                                            @endif
+                                            @if(in_array(Auth::user()->level, ['Admin','Asisten']))
+                                            <form id="delete-form-{{ $user->username }}" 
+                                                action="{{ route('akun.delete', $user->username) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" onclick="confirmDelete('{{ $user->username }}')"
+                                                    class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-all">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                        fill="currentColor" viewBox="0 0 24 24">
+                                                        <path
+                                                            d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
+                                                    </svg>
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endif
+>>>>>>> 7ba9210591926919040d1789e3fd8ff48e3287a8
                             @endforeach
                         </tbody>
                     </table>
                 </div>
+
+                @if(in_array(Auth::user()->level, ['Admin','Asisten']))
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t mt-6">
                     <p class="text-sm text-gray-500">
                         Menampilkan <span class="font-medium text-gray-700">{{ $users->firstItem() }}</span>
@@ -205,6 +256,7 @@
                         @endif
                     </div>
                 </div>
+                @endif
             </div>
             <footer class="footer p-5 bg-gray-50 border-t">
                 <div class="row align-items-center justify-content-lg-between">
