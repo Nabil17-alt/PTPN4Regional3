@@ -22,6 +22,11 @@ class AdminController extends Controller
         $query = User::select('tb_users.*', 'tb_unit.nama_unit')
             ->leftJoin('tb_unit', 'tb_users.kode_unit', '=', 'tb_unit.kode_unit');
 
+
+        if (!in_array($user->level, ['Admin', 'Asisten'])) {
+            $query->where('tb_users.username', $user->username);
+        }
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -33,8 +38,6 @@ class AdminController extends Controller
         }
 
         $users = $query->paginate(10)->withQueryString();
-
-
         $units = Unit::all();
 
         $jabatanOptions = [
@@ -45,6 +48,7 @@ class AdminController extends Controller
             'Region_Head',
             'SEVP'
         ];
+
 
         $editUser = null;
         if ($request->has('edit')) {
@@ -59,6 +63,8 @@ class AdminController extends Controller
             'editUser' => $editUser,
         ]);
     }
+
+
     public function login(Request $request)
     {
         $request->validate([
@@ -84,29 +90,54 @@ class AdminController extends Controller
 
     public function updateAccount(Request $request, $username)
     {
+        $me = Auth::user();
         $user = User::where('username', $username)->firstOrFail();
 
-        $validatedData = $request->validate([
-            'username' => 'required|string',
-            'email' => 'required|email|unique:tb_users,email,' . $user->id,
-            'level' => 'required|string',
-            'password' => 'nullable|string|min:6',
-        ]);
+        if (!in_array($me->level, ['Admin', 'Asisten']) && $me->username !== $username) {
+            return redirect()->route('admin.akun')->withErrors(['error' => 'Tidak memiliki izin mengubah akun lain.']);
+        }
 
-        $user->username = $validatedData['username'];
-        $user->email = $validatedData['email'];
-        $user->level = $validatedData['level'];
+        if (in_array($me->level, ['Admin', 'Asisten'])) {
+            $rules = [
+                'username' => 'required|string',
+                'email' => 'required|email|unique:tb_users,email,' . $user->id,
+                'level' => 'required|string',
+                'password' => 'nullable|string|min:6',
+            ];
 
-        if (!empty($validatedData['password'])) {
-            $user->password = Hash::make($validatedData['password']);
+            $validated = $request->validate($rules);
+
+            $user->username = $validated['username'];
+            $user->email = $validated['email'];
+            $user->level = $validated['level'];
+            if (!empty($validated['password'])) {
+                $user->password = Hash::make($validated['password']);
+            }
+        } else {
+            $rules = [
+                'username' => 'required|string',
+                'password' => 'nullable|string|min:6',
+            ];
+
+            $validated = $request->validate($rules);
+
+            $user->username = $validated['username'];
+            if (!empty($validated['password'])) {
+                $user->password = Hash::make($validated['password']);
+            }
         }
 
         $user->save();
 
-        return redirect()->route('admin.akun')->with('success', 'Akun berhasil diedit');
+        return redirect()->route('admin.akun')->with('success', 'Akun berhasil diperbarui');
     }
     public function deleteAccount($username)
     {
+        $me = Auth::user();
+        if (!in_array($me->level, ['Admin', 'Asisten'])) {
+            return redirect()->route('admin.akun')->withErrors(['error' => 'Tidak memiliki izin untuk menghapus akun.']);
+        }
+
         $user = User::where('username', $username)->firstOrFail();
         $user->delete();
 
@@ -115,20 +146,27 @@ class AdminController extends Controller
     public function storeAccount(Request $request)
     {
         try {
-            $request->validate([
+            $me = Auth::user();
+            if (!in_array($me->level, ['Admin', 'Asisten'])) {
+                return redirect()->route('admin.akun')->withErrors(['error' => 'Tidak memiliki izin membuat akun.']);
+            }
+
+            $rules = [
                 'username' => 'required|string|unique:tb_users,username',
                 'email' => 'required|email|unique:tb_users,email',
                 'password' => 'required|string|min:6',
-                'level' => 'required|string',
                 'kode_unit' => 'required|string',
-            ]);
+                'level' => 'required|string',
+            ];
+
+            $validated = $request->validate($rules);
 
             $user = User::create([
-                'username' => $request->username,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'level' => $request->level,
-                'kode_unit' => $request->kode_unit,
+                'username' => $validated['username'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'level' => $validated['level'],
+                'kode_unit' => $validated['kode_unit'],
             ]);
 
             Log::info('User created:', ['user' => $user]);
