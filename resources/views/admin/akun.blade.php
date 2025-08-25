@@ -85,23 +85,26 @@
                     </button>
                     @endif
                 </div>
+                @if(in_array(Auth::user()->level, ['Admin','Asisten']))
                 <form id="cariForm" method="GET" action="{{ route('admin.akun') }}"
                     class="flex justify-end items-center mb-4">
                     <div class="relative w-64">
                         <input type="text" name="search" value="{{ request('search') }}"
                             class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Cari akun..." />
-                            <div class="absolute right-3 top-2.5 text-gray-500">
-                                <button type="submit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M21 21l-4.35-4.35M16.65 10.5a6.15 6.15 0 11-12.3 0 6.15 6.15 0 0112.3 0z" />
-                                    </svg>
-                                </button>
-                            </div>
+                        <div class="absolute right-3 top-2.5 text-gray-500">
+                            <button type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21 21l-4.35-4.35M16.65 10.5a6.15 6.15 0 11-12.3 0 6.15 6.15 0 0112.3 0z" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </form>
+                @endif
+                
                 <div class="overflow-x-auto">
                     <table class="w-full min-w-[1000px] divide-y divide-gray-200 text-sm">
                         <thead class="bg-gray-100 text-gray-700">
@@ -152,15 +155,17 @@
                                                     Hapus
                                                 </button>
                                             </form>
-                                        @endif
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
-                                @endif
+                            @endif
                             @endforeach
                         </tbody>
                     </table>
                 </div>
+
+                @if(in_array(Auth::user()->level, ['Admin','Asisten']))
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t mt-6">
                     <p class="text-sm text-gray-500">
                         Menampilkan <span class="font-medium text-gray-700">{{ $users->firstItem() }}</span>
@@ -205,6 +210,7 @@
                         @endif
                     </div>
                 </div>
+                @endif
             </div>
             <footer class="footer p-5 bg-gray-50 border-t">
                 <div class="row align-items-center justify-content-lg-between">
