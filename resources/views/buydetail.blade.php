@@ -31,17 +31,16 @@
                     <div>
                         <ol class="flex items-center space-x-2 text-sm text-gray-500">
                             <li>
-                                <a href="#" class="hover:text-gray-700">Selamat Datang</a>
+                                <a id="greeting" class="hover:text-gray-700" data-username="{{ Auth::user()->username }}"></a>
+
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
                             </li>
-                            <li class="text-gray-700 font-medium">
-                                {{ Auth::user()->level }}
-                            </li>
+
                         </ol>
                         <h6 class="text-xl font-semibold text-gray-800 mt-1">
-                            {{ Auth::user()->username }}
+                            {{ Auth::user()->level }}
                         </h6>
                     </div>
                     <div class="flex items-center gap-6">
@@ -162,16 +161,26 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-end pt-4 border-t mt-4">
-                    <div class="pt-6">
-                        <a id="backForm" href="{{ request('back') ?? url()->previous() }}"
-                            class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-                            </svg>
-                            Kembali
-                        </a>
-                    </div>
+                <div class="flex justify-between items-center border-t mt-4 pt-6">
+                    <a id="backForm" href="{{ request('back') ?? url()->previous() }}"
+                        class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                        </svg>
+                        Kembali
+                    </a>
+                    @if (in_array(Auth::user()->level, ['Asisten','Admin', 'Manager', 'General_Manager', 'Region_Head']))
+                        <form method="POST" action="{{ route('pembelian.approve', ['id' => $pembelian->id]) }}">
+                            @csrf
+                            <button type="submit"
+                                class="flex items-center gap-1 text-sm px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                </svg>
+                                Approve
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>

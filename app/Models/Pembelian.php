@@ -27,7 +27,7 @@ class Pembelian extends Model
         'total_biaya',
         'harga_penetapan',
         'harga_escalasi',
-        'margin'
+        'margin',
     ];
 
     public function unit()

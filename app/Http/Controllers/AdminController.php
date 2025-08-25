@@ -41,12 +41,11 @@ class AdminController extends Controller
         $units = Unit::all();
 
         $jabatanOptions = [
-            'Admin',
             'Asisten',
             'Manager',
+            'Admin',
             'General_Manager',
             'Region_Head',
-            'SEVP'
         ];
 
 
@@ -129,7 +128,7 @@ class AdminController extends Controller
 
         $user->save();
 
-        return redirect()->route('admin.akun')->with('success', 'Akun berhasil diperbarui');
+        return redirect()->route('admin.akun')->with('success', 'Akun berhasil diedit');
     }
     public function deleteAccount($username)
     {

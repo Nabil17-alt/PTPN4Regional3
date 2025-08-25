@@ -48,12 +48,11 @@
                         <label for="level">Jabatan</label>
                         <select id="level" name="level" required>
                         <option value="" disabled selected>Pilih Jabatan</option>
-                        <option value="Admin">Admin</option>
                         <option value="Asisten">Asisten</option>
                         <option value="Manager">Manager</option>
+                        <option value="Admin">Admin</option>
                         <option value="General_Manager">General Manager</option>
                         <option value="Region_Head">Region Head</option>
-                        <option value="SEVP">SEVP</option>
                     </select>
                     @error('level') <div class="error-messages">{{ $message }}</div> @enderror
 

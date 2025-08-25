@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('email');
             $table->string('password');
-            $table->enum('level', ['Admin', 'Asisten', 'Manager', 'General_Manager', 'Region_Head', 'SEVP']);
+            $table->enum('level', ['Admin', 'Asisten', 'Manager', 'General_Manager', 'Region_Head',]);
             $table->string('kode_unit');
             $table->timestamps();
         });

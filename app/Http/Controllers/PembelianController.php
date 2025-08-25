@@ -47,21 +47,25 @@ class PembelianController extends Controller
 
             if ($pembelian) {
                 switch ($userLevel) {
+                    case 'Admin':
+                        $pembelian->status = $pembelian->status_approval_admin ? 'Diapprove Admin' : 'Sudah Diinput';
+                        break;
                     case 'Manager':
-                        $pembelian->status = $pembelian->status_approval_manager ? 'Sudah Diapprove Manager' : 'Sudah Diinput';
+                        $pembelian->status = $pembelian->status_approval_manager ? 'Diapprove Manager' : 'Sudah Diinput';
                         break;
                     case 'General_Manager':
-                        $pembelian->status = $pembelian->status_approval_gm ? 'Sudah Diapprove General_Manager' : 'Sudah Diinput';
+                        $pembelian->status = $pembelian->status_approval_gm ? 'Diapprove General_Manager' : 'Sudah Diinput';
                         break;
                     case 'Region_Head':
-                        $pembelian->status = $pembelian->status_approval_rh ? 'Sudah Diapprove Region_Head' : 'Sudah Diinput';
+                        $pembelian->status = $pembelian->status_approval_rh ? 'Diapprove Region_Head' : 'Sudah Diinput';
                         break;
                     case 'SEVP':
-                        $pembelian->status = $pembelian->status_approval_sevp ? 'Sudah Diapprove SEVP' : 'Sudah Diinput';
+                        $pembelian->status = $pembelian->status_approval_sevp ? 'Diapprove SEVP' : 'Sudah Diinput';
                         break;
                     default:
                         $pembelian->status = 'Sudah Diinput';
                 }
+
 
                 return $pembelian;
             } else {
@@ -182,4 +186,36 @@ class PembelianController extends Controller
         $unit = $pembelian->unit;
         return view('buydetail', compact('pembelian', 'unit'));
     }
+
+    public function lihatPerUnit($unit, $tanggal)
+    {
+        $pembelians = Pembelian::with('unit')
+            ->where('kode_unit', $unit)
+            ->whereDate('tanggal', $tanggal)
+            ->get(['grade', 'margin', 'id', 'kode_unit', 'tanggal']);
+
+        return view('buyseeunit', compact('pembelians'));
+    }
+
+    public function approve($id)
+    {
+        $pembelian = Pembelian::findOrFail($id);
+
+        $user = auth()->user();
+
+        if ($user->level === 'Admin') {
+            $pembelian->status = 'Diapprove Admin';
+        } elseif ($user->level === 'Manager') {
+            $pembelian->status = 'Diapprove Manager';
+        } elseif ($user->level === 'General_Manager') {
+            $pembelian->status = 'Diapprove General_Manager';
+        } elseif ($user->level === 'Region_Head') {
+            $pembelian->status = 'Diapprove Region_Head';
+        }
+
+        $pembelian->save();
+
+        return redirect()->route('buy.admin')->with('success', 'Data berhasil di-approve.');
+    }
+
 }

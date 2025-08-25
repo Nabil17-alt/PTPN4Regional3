@@ -44,21 +44,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ in_array(Auth::user()->level, ['Admin', 'Asisten']) ? route('buy.admin') : route('buy') }}"
+                    <a href="{{ Auth::user()->level === 'Asisten' ? route('buy') : route('buy.admin') }}"
                         class="menu-item">
                         <i data-lucide="shopping-cart" class="icon"></i> Pembelian
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('progress') }}" class="menu-item">
-                        <i data-lucide="bar-chart-3" class="icon"></i> Progres
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('view') }}" class="menu-item">
-                        <i data-lucide="eye" class="icon"></i> Lihat
-                    </a>
-                </li>
+
             </ul>
         </div>
     </aside>
