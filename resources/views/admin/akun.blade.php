@@ -73,6 +73,7 @@
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-start border-b pb-4 mb-4">
                     <h2 class="text-xl font-semibold text-gray-800">Akun</h2>
+                    @if(in_array(Auth::user()->level, ['Admin','Asisten']))
                     <button onclick="openAddModal()"
                         class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -82,6 +83,7 @@
                         </svg>
                         Tambah Akun
                     </button>
+                    @endif
                 </div>
                 <form id="cariForm" method="GET" action="{{ route('admin.akun') }}"
                     class="flex justify-end items-center mb-4">
@@ -89,15 +91,15 @@
                         <input type="text" name="search" value="{{ request('search') }}"
                             class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Cari akun..." />
-                        <div class="absolute right-3 top-2.5 text-gray-500">
-                            <button type="submit">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 21l-4.35-4.35M16.65 10.5a6.15 6.15 0 11-12.3 0 6.15 6.15 0 0112.3 0z" />
-                                </svg>
-                            </button>
-                        </div>
+                            <div class="absolute right-3 top-2.5 text-gray-500">
+                                <button type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 21l-4.35-4.35M16.65 10.5a6.15 6.15 0 11-12.3 0 6.15 6.15 0 0112.3 0z" />
+                                    </svg>
+                                </button>
+                            </div>
                     </div>
                 </form>
                 <div class="overflow-x-auto">
@@ -112,6 +114,7 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($users as $user)
+                            @if(in_array(Auth::user()->level, ['Admin','Asisten']) || Auth::user()->username == $user->username)
                                 <tr>
                                     <td class="px-4 py-3 flex items-center space-x-3">
                                         <img src="https://i.pravatar.cc/40?u={{ $user->username }}" alt="{{ $user->username }}"
@@ -122,6 +125,7 @@
                                     <td class="text-center px-4 py-3 text-gray-600">{{ $user->level }}</td>
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
+                                            @if(in_array(Auth::user()->level, ['Admin','Asisten']) || Auth::user()->username == $user->username)
                                             <button type="button"
                                                 onclick="openEditModal('{{ $user->username }}', '{{ $user->name }}', '{{ $user->email }}', '{{ $user->level }}')"
                                                 class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
@@ -132,7 +136,9 @@
                                                 </svg>
                                                 Edit
                                             </button>
-                                            <form id="delete-form-{{ $user->username }}"
+                                            @endif
+                                            @if(in_array(Auth::user()->level, ['Admin','Asisten']))
+                                            <form id="delete-form-{{ $user->username }}" 
                                                 action="{{ route('akun.delete', $user->username) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
@@ -146,9 +152,11 @@
                                                     Hapus
                                                 </button>
                                             </form>
+                                        @endif
                                         </div>
                                     </td>
                                 </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
@@ -231,12 +239,15 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                         <input type="email" id="editEmail" name="email" required
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                        class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2"
+                        @if(!in_array(Auth::user()->level, ['Admin','Asisten'])) readonly @endif>
+
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
                         <select id="editLevel" name="level" required
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2"
+                            @if(!in_array(Auth::user()->level, ['Admin','Asisten'])) disabled @endif>
                             <option value="" disabled selected>Pilih Jabatan</option>
                             @foreach ($jabatanOptions as $option)
                                 <option value="{{ $option }}">{{ str_replace('_', ' ', $option) }}</option>
@@ -333,10 +344,8 @@
                 </form>
             </div>
         </div>
-
     @endsection
     <script src="{{ asset('js/akun.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
-
 </html>
