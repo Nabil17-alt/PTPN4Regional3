@@ -71,10 +71,19 @@
                     </div>
                 </nav>
             </div>
+            @php
+                use Carbon\Carbon;
+                $tanggalSemalam = request('tanggal') ?? Carbon::yesterday()->toDateString();
+            @endphp
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-start border-b pb-4 mb-4">
                     <div>
-                        <h2 class="text-xl font-semibold text-gray-800">Pembelian</h2>
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            Pembelian
+                            <span class="text-base font-normal text-gray-500">
+                                ({{ \Carbon\Carbon::parse($tanggalSemalam)->translatedFormat('d F Y') }})
+                            </span>
+                        </h2>
                     </div>
                     <div class="flex gap-2">
                         <a href="{{ route('pembelian.create') }}"
@@ -88,10 +97,6 @@
                         </a>
                     </div>
                 </div>
-                @php
-                    use Carbon\Carbon;
-                    $tanggalSemalam = request('tanggal') ?? Carbon::yesterday()->toDateString();
-                @endphp
                 <div class="flex justify-end items-center mb-4">
                     <div class="relative w-64">
                         <input type="date" id="searchDate" name="tanggal" value="{{ $tanggalSemalam }}"
