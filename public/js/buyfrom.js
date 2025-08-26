@@ -1,4 +1,3 @@
-
 function updateColumn() {
     const rendemenCpoInput = document.getElementById('rendemen_cpo');
     const rendemenPkInput = document.getElementById('rendemen_pk');
@@ -72,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const addbuyForm = document.getElementById('addbuyForm');
     if (addbuyForm && loader) {
         addbuyForm.addEventListener('submit', function () {
+            updateColumn(); // <-- Tambahan penting!
             loader.classList.remove('hidden');
         });
     }

@@ -80,30 +80,34 @@
                 <div class="flex justify-end items-center mb-4">
                 </div>
                 <div class="max-w-5xl mx-auto overflow-x-auto">
-                    <table class="w-full text-sm divide-y divide-gray-200">
+                    <table class="w-full text-sm text-left divide-y divide-gray-200 table-auto">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
-                                <th class="w-1/4 px-4 py-3 text-left font-semibold">Grade</th>
-                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Margin</th>
-                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Status</th>
-                                <th class="w-1/4 px-6 py-3 text-center font-semibold">Aksi</th>
+                                <th class="px-4 py-3 font-semibold">Grade</th>
+                                <th class="px-4 py-3 font-semibold">Harga Penetapan</th>
+                                <th class="px-4 py-3 font-semibold">Harga Eskalasi</th>
+                                <th class="px-4 py-3 font-semibold">Margin</th>
+                                <th class="px-4 py-3 font-semibold">Status</th>
+                                <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-100">
                             @forelse ($pembelians as $pembelian)
-                                <tr>
+                                <tr class="hover:bg-gray-50 transition">
                                     <td class="px-4 py-3">{{ $pembelian->grade }}</td>
-                                    <td class="px-6 py-3">
+                                    <td class="px-4 py-3">{{ $pembelian->harga_penetapan}}</td>
+                                    <td class="px-4 py-3">{{ $pembelian->harga_escalasi}}</td>
+                                    <td class="px-4 py-3">
                                         <span class="{{ $pembelian->margin < 0 ? 'text-red-600' : 'text-green-600' }}">
                                             {{ number_format($pembelian->margin, 2, ',', '.') }}%
                                         </span>
                                     </td>
-                                    <td class="px-6 py-3">
+                                    <td class="px-4 py-3">
                                         @php
                                             if ($pembelian->status_approval_rh) {
-                                                $status = 'Diapprove Region_Head';
+                                                $status = 'Diapprove Region Head';
                                             } elseif ($pembelian->status_approval_gm) {
-                                                $status = 'Diapprove General_Manager';
+                                                $status = 'Diapprove General Manager';
                                             } elseif ($pembelian->status_approval_admin) {
                                                 $status = 'Diapprove Admin';
                                             } elseif ($pembelian->status_approval_manager) {
@@ -111,34 +115,32 @@
                                             } else {
                                                 $status = 'Sudah Diinput';
                                             }
-                                            $badgeClass = 'bg-gray-200 text-gray-800';
-                                            if (str_contains($status, 'Diapprove')) {
-                                                $badgeClass = 'bg-green-100 text-green-800';
-                                            } elseif ($status === 'Sudah Diinput') {
-                                                $badgeClass = 'bg-blue-100 text-blue-800';
-                                            } elseif ($status === 'Ditolak') {
-                                                $badgeClass = 'bg-red-100 text-red-800';
-                                            }
+                                            $badgeClass = match (true) {
+                                                str_contains($status, 'Diapprove') => 'bg-green-100 text-green-800',
+                                                $status === 'Sudah Diinput' => 'bg-blue-100 text-blue-800',
+                                                $status === 'Ditolak' => 'bg-red-100 text-red-800',
+                                                default => 'bg-gray-200 text-gray-800',
+                                            };
                                         @endphp
-                                        <span class="text-xs px-2 py-1 rounded-full {{ $badgeClass }}">
+                                        <span class="text-xs px-2 py-1 rounded-full font-medium {{ $badgeClass }}">
                                             {{ $status }}
                                         </span>
                                     </td>
-                                    <td class="text-center px-4 py-3">
+                                    <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
                                             <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
-                                                class="detailForm flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    fill="currentColor" viewBox="0 0 24 24">
+                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                                    viewBox="0 0 24 24">
                                                     <path
                                                         d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
                                                 </svg>
                                                 Detail
                                             </a>
                                             <a href="{{ route('pembelian.edit', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
-                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    fill="currentColor" viewBox="0 0 24 24">
+                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                                    viewBox="0 0 24 24">
                                                     <path
                                                         d="M5 20h14v2H5c-1.103 0-2-.897-2-2V6h2v14zM20.707 7.293l-1-1a1.001 1.001 0 0 0-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 0 0 0-1.414z" />
                                                 </svg>
@@ -149,11 +151,10 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" onclick="confirmDelete({{ $pembelian->id }})"
-                                                    class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-all">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                        fill="currentColor" viewBox="0 0 24 24" class="inline-block">
-                                                        <path
-                                                            d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
+                                                    class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
                                                     </svg>
                                                     Hapus
                                                 </button>
@@ -163,7 +164,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center text-gray-500 py-3">Tidak ada data ditemukan.</td>
+                                    <td colspan="6" class="text-center text-gray-500 py-4">Tidak ada data ditemukan.</td>
                                 </tr>
                             @endforelse
                         </tbody>

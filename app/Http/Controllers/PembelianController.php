@@ -91,13 +91,23 @@ class PembelianController extends Controller
             'tarif_angkut_pk' => 'required|numeric',
             'biaya_angkut_jual' => 'required|numeric',
             'harga_escalasi' => 'required|numeric',
+            'total_rendemen' => 'nullable|numeric',
+            'pendapatan_cpo' => 'nullable|numeric',
+            'pendapatan_pk' => 'nullable|numeric',
+            'total_pendapatan' => 'nullable|numeric',
+            'biaya_produksi' => 'nullable|numeric',
+            'total_biaya' => 'nullable|numeric',
+            'harga_penetapan' => 'nullable|numeric',
+            'margin' => 'nullable|numeric',
         ]);
+
         $unit = Unit::where('kode_unit', $validated['kode_unit'])->first();
         if (!$unit) {
             return redirect()->back()->with('error', 'Unit tidak ditemukan.');
         }
+
         $pembelian = new Pembelian();
-        $pembelian->kode_unit = $validated['kode_unit']; 
+        $pembelian->kode_unit = $validated['kode_unit'];
         $pembelian->tanggal = $validated['tanggal'];
         $pembelian->grade = $validated['grade'];
         $pembelian->harga_cpo = $validated['harga_cpo'];
@@ -109,9 +119,19 @@ class PembelianController extends Controller
         $pembelian->tarif_angkut_pk = $validated['tarif_angkut_pk'];
         $pembelian->biaya_angkut_jual = $validated['biaya_angkut_jual'];
         $pembelian->harga_escalasi = $validated['harga_escalasi'];
+        $pembelian->total_rendemen = $request->total_rendemen;
+        $pembelian->pendapatan_cpo = $request->pendapatan_cpo;
+        $pembelian->pendapatan_pk = $request->pendapatan_pk;
+        $pembelian->total_pendapatan = $request->total_pendapatan;
+        $pembelian->biaya_produksi = $request->biaya_produksi;
+        $pembelian->total_biaya = $request->total_biaya;
+        $pembelian->harga_penetapan = $request->harga_penetapan;
+        $pembelian->margin = $request->margin;
         $pembelian->save();
+
         return redirect()->back()->with('success', 'Data pembelian berhasil disimpan');
     }
+
     public function destroy(Pembelian $pembelian)
     {
         $pembelian->delete();
@@ -167,11 +187,14 @@ class PembelianController extends Controller
                 'id',
                 'kode_unit',
                 'tanggal',
+                'harga_penetapan',
+                'harga_escalasi',
                 'status_approval_admin',
                 'status_approval_manager',
                 'status_approval_gm',
                 'status_approval_rh'
             ]);
+
         $pembelians->transform(function ($item) {
             if ($item->status_approval_rh) {
                 $item->status = 'Diapprove Region_Head';
@@ -241,6 +264,4 @@ class PembelianController extends Controller
             return redirect()->back()->with('error', 'Approval tidak dapat diproses saat ini. Silakan coba beberapa saat lagi.');
         }
     }
-
-
 }
