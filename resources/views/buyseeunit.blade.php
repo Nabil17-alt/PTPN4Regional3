@@ -115,7 +115,7 @@
                                             if (str_contains($status, 'Diapprove')) {
                                                 $badgeClass = 'bg-green-100 text-green-800';
                                             } elseif ($status === 'Sudah Diinput') {
-                                                $badgeClass = 'bg-yellow-100 text-yellow-800';
+                                                $badgeClass = 'bg-blue-100 text-blue-800';
                                             } elseif ($status === 'Ditolak') {
                                                 $badgeClass = 'bg-red-100 text-red-800';
                                             }
