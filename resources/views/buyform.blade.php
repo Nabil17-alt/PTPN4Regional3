@@ -37,7 +37,6 @@
                         timer: 5000,
                         timerProgressBar: true,
                     });
-                    
                     Toast.fire({
                         icon: 'success',
                         title: '{{ session('success') }}'
@@ -49,17 +48,15 @@
                     <div>
                         <ol class="flex items-center space-x-2 text-sm text-gray-500">
                             <li>
-                                <a href="#" class="hover:text-gray-700">Selamat Datang</a>
+                                <a id="greeting" class="hover:text-gray-700"
+                                    data-username="{{ Auth::user()->username }}"></a>
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
                             </li>
-                            <li class="text-gray-700 font-medium">
-                                {{ Auth::user()->level }}
-                            </li>
                         </ol>
                         <h6 class="text-xl font-semibold text-gray-800 mt-1">
-                            {{ Auth::user()->username }}
+                            {{ Auth::user()->level }}
                         </h6>
                     </div>
                     <div class="flex items-center gap-6">
@@ -247,18 +244,18 @@
                 </form>
             </div>
             <footer class="footer p-5 bg-gray-50 border-t">
-            <div class="row align-items-center justify-content-lg-between">
-                <div class="col-lg-6 mb-lg-0 mb-4">
-                    <div class="text-center text-muted text-m text-lg-start">
-                        Copyright &copy;
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                        PT. Perkebunan Nusantara IV
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="text-center text-muted text-m text-lg-start">
+                            Copyright &copy;
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                            PT. Perkebunan Nusantara IV
+                        </div>
                     </div>
                 </div>
-            </div>
-        </footer>
+            </footer>
         </div>
     @endsection
     <script src="{{ asset('js/buyfrom.js') }}"></script>

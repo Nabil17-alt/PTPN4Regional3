@@ -35,12 +35,10 @@
                             <li>
                                 <a id="greeting" class="hover:text-gray-700"
                                     data-username="{{ Auth::user()->username }}"></a>
-
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
                             </li>
-
                         </ol>
                         <h6 class="text-xl font-semibold text-gray-800 mt-1">
                             {{ Auth::user()->level }}
@@ -103,17 +101,38 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($groupedPembelians as $tanggal => $items)
                                 @php
-                                    $firstItem = $items->first();
+                                    $approvedLevels = $items->map(function ($item) {
+                                        if ($item->status_approval_rh)
+                                            return 'Region Head';
+                                        if ($item->status_approval_gm)
+                                            return 'General Manager';
+                                        if ($item->status_approval_admin)
+                                            return 'Admin';
+                                        if ($item->status_approval_manager)
+                                            return 'Manager';
+                                        return null;
+                                    })->filter();
+                                    $jumlahApproval = $approvedLevels->count();
+                                    $totalItems = $items->count();
+                                    $statusText = '';
+                                    if ($totalItems === 0) {
+                                        $statusText = 'Belum Diinput';
+                                    } elseif ($jumlahApproval === 0) {
+                                        $statusText = 'Sudah Diinput';
+                                    } else {
+                                        $uniqueLevels = $approvedLevels->unique();
+                                        if ($uniqueLevels->count() === 1) {
+                                            $statusText = "$jumlahApproval Diapprove " . $uniqueLevels->first();
+                                        } else {
+                                            $statusText = "$jumlahApproval Diapprove";
+                                        }
+                                    }
                                     $badgeColors = [
-                                        'Sudah Diapprove' => 'bg-green-100 text-green-700',
-                                        'Sudah Diapprove Manager' => 'bg-green-100 text-green-700',
-                                        'Sudah Diapprove General_Manager' => 'bg-green-100 text-green-700',
-                                        'Sudah Diapprove Region_Head' => 'bg-green-100 text-green-700',
-                                        'Sudah Diapprove SEVP' => 'bg-green-100 text-green-700',
-                                        'Sudah Diinput' => 'bg-blue-100 text-blue-800',
                                         'Belum Diinput' => 'bg-red-100 text-red-800',
+                                        'Sudah Diinput' => 'bg-blue-100 text-blue-800',
                                     ];
-                                    $badgeClass = $badgeColors[$firstItem->status] ?? 'bg-gray-100 text-gray-800';
+                                    $badgeClass = collect($badgeColors)->filter(fn($v, $k) => str($statusText)->contains($k))->first()
+                                        ?? 'bg-green-100 text-green-700';
                                 @endphp
                                 <tr class="transition-all duration-500 hover:bg-gray-50">
                                     <td class="px-4 py-3 text-gray-800 font-medium">
@@ -121,7 +140,7 @@
                                     </td>
                                     <td class="text-center px-4 py-3">
                                         <span class="text-xs px-2 py-1 rounded-full {{ $badgeClass }}">
-                                            {{ ucfirst($firstItem->status ?? 'Tidak Diketahui') }}
+                                            {{ $statusText }}
                                         </span>
                                     </td>
                                     <td class="text-center px-4 py-3">
