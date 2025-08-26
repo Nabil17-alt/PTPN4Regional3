@@ -18,222 +18,237 @@
     @extends('layouts.app')
 
     @section('content')
-        <div class="loader hidden" id="pageLoader">
-            <div class="square-spin">
-                <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Loading..." />
-            </div>
-            <span class="tooltip">
-                <p>Memuat...</p>
-            </span>
-        </div>
-        <div class="p-4 sm:ml-64">
-            @if (session('success'))
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 5000,
-                            timerProgressBar: true,
-                        });
-                        Toast.fire({
-                            icon: 'success',
-                            title: @json(session('success'))
-                        });
-                    });
-                </script>
-            @endif
-            <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
-                <nav class="flex justify-between items-center flex-wrap">
-                    <div>
-                        <ol class="flex items-center space-x-2 text-sm text-gray-500">
-                            <li>
-                                <a id="greeting" class="hover:text-gray-700"
-                                    data-username="{{ Auth::user()->username }}"></a>
-                            </li>
-                            <li>
-                                <span class="mx-2 text-gray-400">/</span>
-                            </li>
-                        </ol>
-                        <h6 class="text-xl font-semibold text-gray-800 mt-1">
-                            {{ Auth::user()->level }}
-                        </h6>
-                    </div>
-                    <div class="flex items-center gap-6">
-                        <button id="openSidebar" class="md:hidden text-gray-700 hover:text-black">
-                            <i data-lucide="menu"></i>
-                        </button>
-                        <a id="logoutForm" href="{{ route('logout') }}"
-                            class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
-                            Keluar
-                        </a>
-                    </div>
-                </nav>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex justify-between items-start border-b pb-4 mb-4">
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-800">Pembelian - Detail Pembelian</h2>
-                    </div>
-                </div>
-                <div class="flex justify-end items-center mb-4">
-                    <div class="relative w-64">
-                        <input type="text" id="searchDetail"
-                            class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Masukan Nama..." />
-                        <div class="absolute right-3 top-2.5 text-gray-500">
-                        </div>
-                    </div>
-                </div>
-                <div class="max-w-5xl mx-auto overflow-x-auto">
-                    <table class="min-w-[800px] w-full table-fixed">
-                        <thead class="bg-gray-100 text-gray-700">
-                            <tr>
-                                <th class="w-1/3 px-4 py-3 text-left font-semibold">Nama</th>
-                                <th class="w-2/3 px-6 py-3 text-left font-semibold">Nilai</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-4 py-3">Tanggal</td>
-                                <td class="px-6 py-3">
-                                    {{ \Carbon\Carbon::parse($pembelian->tanggal)->translatedFormat('d F Y') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Unit</td>
-                                <td class="px-6 py-3">{{ $unit->nama_unit }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Grade</td>
-                                <td class="px-6 py-3">{{ $pembelian->grade }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Harga CPO</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->harga_cpo) }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Harga PK</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->harga_pk) }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Rendemen CPO</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->rendemen_cpo, 2, ',', '.') }}%</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Rendemen PK</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->rendemen_pk, 2, ',', '.') }}%</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Total Rendemen</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->total_rendemen, 2, ',', '.') }}%</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Biaya Olah</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->biaya_olah, 2, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Tarif Angkut CPO</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->tarif_angkut_cpo) }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Tarif Angkut PK</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->tarif_angkut_pk, 1, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Biaya Angkut Jual</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->biaya_angkut_jual, 2, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Harga Eskalasi</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->harga_escalasi) }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Pendapatan CPO</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->pendapatan_cpo, 2, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Pendapatan PK</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->pendapatan_pk, 1, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Total Pendapatan</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->total_pendapatan, 2, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Biaya Produksi</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->biaya_produksi, 2, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Total Biaya</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->total_biaya, 2, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Harga Penetapan</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->harga_penetapan, 2, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Margin</td>
-                                <td class="px-6 py-3">{{ number_format($pembelian->margin, 2, ',', '.') }}%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="flex justify-between items-center border-t mt-4 pt-6">
-                    <a id="backForm" href="{{ request('back') ?? url()->previous() }}"
-                        class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                            viewBox="0 0 24 24">
-                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-                        </svg>
-                        Kembali
-                    </a>
-                    @php
-                        if ($pembelian->status_approval_rh) {
-                            $approvalLevel = 'Region_Head';
-                        } elseif ($pembelian->status_approval_gm) {
-                            $approvalLevel = 'General_Manager';
-                        } elseif ($pembelian->status_approval_admin) {
-                            $approvalLevel = 'Admin';
-                        } elseif ($pembelian->status_approval_manager) {
-                            $approvalLevel = 'Manager';
-                        } else {
-                            $approvalLevel = null;
-                        }
-                        $levelOrder = [
-                            'Manager' => 1,
-                            'Admin' => 2,
-                            'General_Manager' => 3,
-                            'Region_Head' => 4,
-                        ];
-                        $userLevel = Auth::user()->level;
-                        $userOrder = $levelOrder[$userLevel] ?? 0;
-                        $approvalOrder = $levelOrder[$approvalLevel] ?? 0;
-                        $canApprove = $userOrder > 0 && $userOrder == $approvalOrder + 1;
-                    @endphp
-                    @if (in_array($userLevel, ['Manager', 'Admin', 'General_Manager', 'Region_Head']))
-                        @if ($approvalOrder >= $userOrder)
-                            <span class="text-sm text-red-600 font-semibold">
-                                Telah disetujui oleh {{ str_replace('_', ' ', $approvalLevel) }}, anda tidak dapat melakukan
-                                approval.
-                            </span>
-                        @else
-                            <form method="POST" action="{{ route('pembelian.approve', ['id' => $pembelian->id]) }}">
-                                @csrf
-                                <button type="submit" id="approveBtn"
-                                    class="flex items-center gap-1 text-sm px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-all">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                                    </svg>
-                                    Approve
-                                </button>
-                            </form>
-                        @endif
-                    @endif
-                </div>
-            </div>
-        </div>
+                                <div class="loader hidden" id="pageLoader">
+                                    <div class="square-spin">
+                                        <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Loading..." />
+                                    </div>
+                                    <span class="tooltip">
+                                        <p>Memuat...</p>
+                                    </span>
+                                </div>
+                                <div class="p-4 sm:ml-64">
+                                    @if (session('success') || session('error'))
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                @if (session('success'))
+                                                    const Toast = Swal.mixin({
+                                                        toast: true,
+                                                        position: 'top-end',
+                                                        showConfirmButton: false,
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                    });
+                                                    Toast.fire({
+                                                        icon: 'success',
+                                                        title: @json(session('success'))
+                                                    });
+                                                @endif
+                                                    @if (session('error'))
+                                                        const Toast = Swal.mixin({
+                                                            toast: true,
+                                                            position: 'top-end',
+                                                            showConfirmButton: false,
+                                                            timer: 5000,
+                                                            timerProgressBar: true,
+                                                        });
+                                                        Toast.fire({
+                                                            icon: 'error',
+                                                            text: {!! json_encode(session('error')) !!}
+                                                        });
+                                                    @endif
+                                                });
+                                        </script>
+                                    @endif
+                                    <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
+                                        <nav class="flex justify-between items-center flex-wrap">
+                                            <div>
+                                                <ol class="flex items-center space-x-2 text-sm text-gray-500">
+                                                    <li>
+                                                        <a id="greeting" class="hover:text-gray-700"
+                                                            data-username="{{ Auth::user()->username }}"></a>
+                                                    </li>
+                                                    <li>
+                                                        <span class="mx-2 text-gray-400">/</span>
+                                                    </li>
+                                                </ol>
+                                                <h6 class="text-xl font-semibold text-gray-800 mt-1">
+                                                    {{ Auth::user()->level }}
+                                                </h6>
+                                            </div>
+                                            <div class="flex items-center gap-6">
+                                                <button id="openSidebar" class="md:hidden text-gray-700 hover:text-black">
+                                                    <i data-lucide="menu"></i>
+                                                </button>
+                                                <a id="logoutForm" href="{{ route('logout') }}"
+                                                    class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
+                                                    Keluar
+                                                </a>
+                                            </div>
+                                        </nav>
+                                    </div>
+                                    <div class="bg-white rounded-lg shadow-md p-6">
+                                        <div class="flex justify-between items-start border-b pb-4 mb-4">
+                                            <div>
+                                                <h2 class="text-xl font-semibold text-gray-800">Pembelian - Detail Pembelian</h2>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-end items-center mb-4">
+                                            <div class="relative w-64">
+                                                <input type="text" id="searchDetail"
+                                                    class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    placeholder="Masukan Nama..." />
+                                                <div class="absolute right-3 top-2.5 text-gray-500">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="max-w-5xl mx-auto overflow-x-auto">
+                                            <table class="min-w-[800px] w-full table-fixed">
+                                                <thead class="bg-gray-100 text-gray-700">
+                                                    <tr>
+                                                        <th class="w-1/3 px-4 py-3 text-left font-semibold">Nama</th>
+                                                        <th class="w-2/3 px-6 py-3 text-left font-semibold">Nilai</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="bg-white divide-y divide-gray-200">
+                                                    <tr>
+                                                        <td class="px-4 py-3">Tanggal</td>
+                                                        <td class="px-6 py-3">
+                                                            {{ \Carbon\Carbon::parse($pembelian->tanggal)->translatedFormat('d F Y') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Unit</td>
+                                                        <td class="px-6 py-3">{{ $unit->nama_unit }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Grade</td>
+                                                        <td class="px-6 py-3">{{ $pembelian->grade }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Harga CPO</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->harga_cpo) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Harga PK</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->harga_pk) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Rendemen CPO</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->rendemen_cpo, 2, ',', '.') }}%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Rendemen PK</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->rendemen_pk, 2, ',', '.') }}%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Total Rendemen</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->total_rendemen, 2, ',', '.') }}%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Biaya Olah</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->biaya_olah, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Tarif Angkut CPO</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->tarif_angkut_cpo) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Tarif Angkut PK</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->tarif_angkut_pk, 1, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Biaya Angkut Jual</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->biaya_angkut_jual, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Harga Eskalasi</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->harga_escalasi) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Pendapatan CPO</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->pendapatan_cpo, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Pendapatan PK</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->pendapatan_pk, 1, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Total Pendapatan</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->total_pendapatan, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Biaya Produksi</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->biaya_produksi, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Total Biaya</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->total_biaya, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Harga Penetapan</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->harga_penetapan, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3">Margin</td>
+                                                        <td class="px-6 py-3">{{ number_format($pembelian->margin, 2, ',', '.') }}%</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="flex justify-between items-center border-t mt-4 pt-6">
+                                            <a id="backForm" href="{{ request('back') ?? url()->previous() }}"
+                                                class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                                                </svg>
+                                                Kembali
+                                            </a>
+                                            @php
+        if ($pembelian->status_approval_rh) {
+            $approvalLevel = 'Region_Head';
+        } elseif ($pembelian->status_approval_gm) {
+            $approvalLevel = 'General_Manager';
+        } elseif ($pembelian->status_approval_admin) {
+            $approvalLevel = 'Admin';
+        } elseif ($pembelian->status_approval_manager) {
+            $approvalLevel = 'Manager';
+        } else {
+            $approvalLevel = null;
+        }
+        $levelOrder = [
+            'Manager' => 1,
+            'Admin' => 2,
+            'General_Manager' => 3,
+            'Region_Head' => 4,
+        ];
+        $userLevel = Auth::user()->level;
+        $userOrder = $levelOrder[$userLevel] ?? 0;
+        $approvalOrder = $levelOrder[$approvalLevel] ?? 0;
+        $canApprove = $userOrder > 0 && $userOrder == $approvalOrder + 1;
+                                            @endphp
+                                            @if (in_array($userLevel, ['Manager', 'Admin', 'General_Manager', 'Region_Head']))
+                                                @if ($approvalOrder >= $userOrder)
+                                                    <span class="text-sm text-red-600 font-semibold">
+                                                        Telah disetujui oleh {{ str_replace('_', ' ', $approvalLevel) }}, anda tidak dapat melakukan
+                                                        approval.
+                                                    </span>
+                                                @else
+                                                    <form method="POST" action="{{ route('pembelian.approve', ['id' => $pembelian->id]) }}">
+                                                        @csrf
+                                                        <button type="submit" id="approveBtn"
+                                                            class="flex items-center gap-1 text-sm px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-all">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                                            </svg>
+                                                            Approve
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
     @endsection
     <script src="{{ asset('js/buydetail.js') }}"></script>
 </body>

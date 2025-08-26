@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pembelian;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class PembelianController extends Controller
 {
@@ -189,36 +190,57 @@ class PembelianController extends Controller
     }
     public function approve($id)
     {
-        $pembelian = Pembelian::findOrFail($id);
-        $userLevel = Auth::user()->level;
-        if ($userLevel == 'Manager') {
-            if ($pembelian->status_approval_admin || $pembelian->status_approval_gm || $pembelian->status_approval_rh) {
-                return redirect()->back()->with('error', 'Sudah di-approve oleh level di atas.');
+        try {
+            $pembelian = Pembelian::findOrFail($id);
+            $userLevel = Auth::user()->level;
+            Log::info("[$userLevel] " . Auth::user()->username . " mencoba melakukan approval untuk pembelian ID: $id");
+
+            if ($userLevel == 'Manager') {
+                if ($pembelian->status_approval_admin || $pembelian->status_approval_gm || $pembelian->status_approval_rh) {
+                    Log::warning("Approval oleh Manager ditolak: Pembelian ID $id sudah disetujui oleh level di atas.");
+                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena sudah disetujui oleh level yang lebih tinggi.');
+                }
+                $pembelian->status_approval_manager = 1;
+
+            } elseif ($userLevel == 'Admin') {
+                if (!$pembelian->status_approval_manager) {
+                    Log::warning("Approval oleh Admin ditolak: Manager belum menyetujui pembelian ID $id.");
+                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena harus disetujui oleh Manager terlebih dahulu.');
+                }
+                if ($pembelian->status_approval_gm || $pembelian->status_approval_rh) {
+                    Log::warning("Approval oleh Admin ditolak: Pembelian ID $id sudah disetujui oleh level di atas.");
+                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena sudah disetujui oleh level yang lebih tinggi.');
+                }
+                $pembelian->status_approval_admin = 1;
+
+            } elseif ($userLevel == 'General_Manager') {
+                if (!$pembelian->status_approval_admin) {
+                    Log::warning("Approval oleh GM ditolak: Admin belum menyetujui pembelian ID $id.");
+                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena harus disetujui oleh Admin terlebih dahulu.');
+                }
+                if ($pembelian->status_approval_rh) {
+                    Log::warning("Approval oleh GM ditolak: Pembelian ID $id sudah disetujui oleh Region Head.");
+                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena sudah disetujui oleh Region Head.');
+                }
+                $pembelian->status_approval_gm = 1;
+
+            } elseif ($userLevel == 'Region_Head') {
+                if (!$pembelian->status_approval_gm) {
+                    Log::warning("Approval oleh RH ditolak: General Manager belum menyetujui pembelian ID $id.");
+                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena harus disetujui oleh General Manager terlebih dahulu.');
+                }
+                $pembelian->status_approval_rh = 1;
             }
-            $pembelian->status_approval_manager = 1;
-        } elseif ($userLevel == 'Admin') {
-            if (!$pembelian->status_approval_manager) {
-                return redirect()->back()->with('error', 'Harus di-approve Manager terlebih dahulu.');
-            }
-            if ($pembelian->status_approval_gm || $pembelian->status_approval_rh) {
-                return redirect()->back()->with('error', 'Sudah di-approve oleh level di atas.');
-            }
-            $pembelian->status_approval_admin = 1;
-        } elseif ($userLevel == 'General_Manager') {
-            if (!$pembelian->status_approval_admin) {
-                return redirect()->back()->with('error', 'Harus di-approve Admin terlebih dahulu.');
-            }
-            if ($pembelian->status_approval_rh) {
-                return redirect()->back()->with('error', 'Sudah di-approve oleh Region Head.');
-            }
-            $pembelian->status_approval_gm = 1;
-        } elseif ($userLevel == 'Region_Head') {
-            if (!$pembelian->status_approval_gm) {
-                return redirect()->back()->with('error', 'Harus di-approve General Manager terlebih dahulu.');
-            }
-            $pembelian->status_approval_rh = 1;
+
+            $pembelian->save();
+            Log::info("Approval berhasil oleh $userLevel untuk pembelian ID $id.");
+            return redirect()->route('buy.admin')->with('success', 'Pembelian berhasil diapprove.');
+
+        } catch (\Exception $e) {
+            Log::error("Terjadi kesalahan saat approval pembelian ID $id oleh $userLevel: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Approval tidak dapat diproses saat ini. Silakan coba beberapa saat lagi.');
         }
-        $pembelian->save();
-        return redirect()->route('buy.admin')->with('success', 'Pembelian berhasil diapprove.');
     }
+
+
 }
