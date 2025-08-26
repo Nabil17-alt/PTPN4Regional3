@@ -18,60 +18,60 @@
     @extends('layouts.app')
     
     @section('content')
-                <div class="loader hidden" id="pageLoader">
-                    <div class="square-spin">
-                        <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Loading..." />
-                    </div>
-                    <span class="tooltip">
-                        <p>Memuat...</p>
-                    </span>
+            <div class="loader hidden" id="pageLoader">
+                <div class="square-spin">
+                    <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Loading..." />
                 </div>
-                <div class="p-4 sm:ml-64">
-                    @if (session('success'))
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                const Toast = Swal.mixin({
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 5000,
-                                    timerProgressBar: true,
-                                });
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: @json(session('success'))
-                                });
+                <span class="tooltip">
+                    <p>Memuat...</p>
+                </span>
+            </div>
+            <div class="p-4 sm:ml-64">
+                @if (session('success'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 5000,
+                                timerProgressBar: true,
                             });
-                        </script>
-                    @endif
-                    <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
-                        <nav class="flex justify-between items-center flex-wrap">
-                            <div>
-                                <ol class="flex items-center space-x-2 text-sm text-gray-500">
-                                    <li>
-                                        <a id="greeting" class="hover:text-gray-700" data-username="{{ Auth::user()->username }}"></a>
-                                    </li>
-                                    <li><span class="mx-2 text-gray-400">/</span></li>
-                                </ol>
-                                <h6 class="text-xl font-semibold text-gray-800 mt-1">
-                                    {{ Auth::user()->level }}
-                                </h6>
-                            </div>
-                            <div class="flex items-center gap-6">
-                                <button id="openSidebar" class="md:hidden text-gray-700 hover:text-black">
-                                    <i data-lucide="menu"></i>
-                                </button>
-                                <a id="logoutFormSubmit" href="{{ route('logout') }}"
-                                    class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
-                                    Keluar
-                                </a>
-                            </div>
-                        </nav>
+                            Toast.fire({
+                                icon: 'success',
+                                title: @json(session('success'))
+                            });
+                        });
+                    </script>
+                @endif
+                <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
+                    <nav class="flex justify-between items-center flex-wrap">
+                        <div>
+                            <ol class="flex items-center space-x-2 text-sm text-gray-500">
+                                <li>
+                                    <a id="greeting" class="hover:text-gray-700" data-username="{{ Auth::user()->username }}"></a>
+                                </li>
+                                <li><span class="mx-2 text-gray-400">/</span></li>
+                            </ol>
+                            <h6 class="text-xl font-semibold text-gray-800 mt-1">
+                                {{ Auth::user()->level }}
+                            </h6>
+                        </div>
+                        <div class="flex items-center gap-6">
+                            <button id="openSidebar" class="md:hidden text-gray-700 hover:text-black">
+                                <i data-lucide="menu"></i>
+                            </button>
+                            <a id="logoutFormSubmit" href="{{ route('logout') }}"
+                                class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
+                                Keluar
+                            </a>
+                        </div>
+                    </nav>
                     </div>
-                    @php
-                    use Carbon\Carbon;
-                    $tanggalSemalam = request('tanggal') ?? Carbon::yesterday()->toDateString();
-                    @endphp
+                @php
+                use Carbon\Carbon;
+                $tanggalSemalam = request('tanggal') ?? Carbon::yesterday()->toDateString();
+                @endphp
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <div class="flex justify-between items-start border-b pb-4 mb-4">
                             <div>
@@ -109,27 +109,27 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @forelse ($items as $pembelian)
                                         @php
-            $unit = $pembelian->unit;
-            if (isset($pembelian->status_approval_rh)) {
-                $status = 'Diapprove Region_Head';
-            } elseif (isset($pembelian->status_approval_gm)) {
-                $status = 'Diapprove General_Manager';
-            } elseif (isset($pembelian->status_approval_admin)) {
-                $status = 'Diapprove Admin';
-            } elseif (isset($pembelian->status_approval_manager)) {
-                $status = 'Diapprove Manager';
-            } else {
-                $status = $pembelian->status ?? 'Sudah Diinput';
-            }
-            $badgeColors = [
-                'Diapprove Manager' => 'bg-green-100 text-green-700',
-                'Diapprove Admin' => 'bg-green-100 text-green-700',
-                'Diapprove General_Manager' => 'bg-green-100 text-green-700',
-                'Diapprove Region_Head' => 'bg-green-100 text-green-700',
-                'Sudah Diinput' => 'bg-blue-100 text-blue-800',
-                'Belum Diinput' => 'bg-red-100 text-red-800',
-            ];
-            $badgeClass = $badgeColors[$status] ?? 'bg-gray-100 text-gray-800';
+                                        $unit = $pembelian->unit;
+                                        if (isset($pembelian->status_approval_rh)) {
+                                            $status = 'Diapprove Region_Head';
+                                        } elseif (isset($pembelian->status_approval_gm)) {
+                                            $status = 'Diapprove General_Manager';
+                                        } elseif (isset($pembelian->status_approval_admin)) {
+                                            $status = 'Diapprove Admin';
+                                        } elseif (isset($pembelian->status_approval_manager)) {
+                                            $status = 'Diapprove Manager';
+                                        } else {
+                                            $status = $pembelian->status ?? 'Sudah Diinput';
+                                        }
+                                        $badgeColors = [
+                                            'Diapprove Manager' => 'bg-green-100 text-green-700',
+                                            'Diapprove Admin' => 'bg-green-100 text-green-700',
+                                            'Diapprove General_Manager' => 'bg-green-100 text-green-700',
+                                            'Diapprove Region_Head' => 'bg-green-100 text-green-700',
+                                            'Sudah Diinput' => 'bg-blue-100 text-blue-800',
+                                            'Belum Diinput' => 'bg-red-100 text-red-800',
+                                        ];
+                                        $badgeClass = $badgeColors[$status] ?? 'bg-gray-100 text-gray-800';
                                         @endphp
                                         <tr class="transition-all duration-500 hover:bg-gray-50">
                                             <td class="px-4 py-3">
