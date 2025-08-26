@@ -11,20 +11,26 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('tb_pembelian_cpo_pk', function (Blueprint $table) {
-            $table->id(); 
+            $table->bigIncrements('id');
             $table->string('kode_unit', 255);
             $table->date('tanggal');
-            $table->string('grade', 50);
 
-            $table->float('harga_cpo');
-            $table->float('harga_pk');
-            $table->float('rendemen_cpo');
-            $table->float('rendemen_pk');
-            $table->float('biaya_olah');
-            $table->float('tarif_angkut_cpo');
-            $table->float('tarif_angkut_pk');
-            $table->float('biaya_angkut_jual');
-            $table->float('harga_escalasi');
+            $table->tinyInteger('status_approval_admin')->nullable();
+            $table->tinyInteger('status_approval_manager')->nullable();
+            $table->tinyInteger('status_approval_gm')->nullable();
+            $table->tinyInteger('status_approval_rh')->nullable();
+
+            $table->string('grade', 50)->nullable();
+
+            $table->float('harga_cpo')->nullable();
+            $table->float('harga_pk')->nullable();
+            $table->float('rendemen_cpo')->nullable();
+            $table->float('rendemen_pk')->nullable();
+            $table->float('biaya_olah')->nullable();
+            $table->float('tarif_angkut_cpo')->nullable();
+            $table->float('tarif_angkut_pk')->nullable();
+            $table->float('biaya_angkut_jual')->nullable();
+            $table->float('harga_escalasi')->nullable();
 
             $table->float('total_rendemen')->storedAs('rendemen_cpo + rendemen_pk');
             $table->float('pendapatan_cpo')->storedAs('harga_cpo * (rendemen_cpo / 100)');
@@ -33,11 +39,12 @@ return new class extends Migration {
             $table->float('biaya_produksi')->storedAs('(biaya_olah / 100) * (rendemen_cpo + rendemen_pk)');
             $table->float('total_biaya')->storedAs('biaya_produksi + biaya_angkut_jual');
             $table->float('harga_penetapan')->storedAs('total_pendapatan - total_biaya');
-            $table->float('margin')->storedAs('(1 - (harga_eskalasi / nullif(harga_penetapan, 0))) * 100');
+            $table->float('margin')->storedAs('(1 - (harga_escalasi / nullif(harga_penetapan, 0))) * 100');
 
-            $table->timestamps();
-
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
+
 
 
     }
