@@ -91,13 +91,23 @@ class PembelianController extends Controller
             'tarif_angkut_pk' => 'required|numeric',
             'biaya_angkut_jual' => 'required|numeric',
             'harga_escalasi' => 'required|numeric',
+            'total_rendemen' => 'nullable|numeric',
+            'pendapatan_cpo' => 'nullable|numeric',
+            'pendapatan_pk' => 'nullable|numeric',
+            'total_pendapatan' => 'nullable|numeric',
+            'biaya_produksi' => 'nullable|numeric',
+            'total_biaya' => 'nullable|numeric',
+            'harga_penetapan' => 'nullable|numeric',
+            'margin' => 'nullable|numeric',
         ]);
+
         $unit = Unit::where('kode_unit', $validated['kode_unit'])->first();
         if (!$unit) {
             return redirect()->back()->with('error', 'Unit tidak ditemukan.');
         }
+
         $pembelian = new Pembelian();
-        $pembelian->kode_unit = $validated['kode_unit']; 
+        $pembelian->kode_unit = $validated['kode_unit'];
         $pembelian->tanggal = $validated['tanggal'];
         $pembelian->grade = $validated['grade'];
         $pembelian->harga_cpo = $validated['harga_cpo'];
@@ -109,9 +119,19 @@ class PembelianController extends Controller
         $pembelian->tarif_angkut_pk = $validated['tarif_angkut_pk'];
         $pembelian->biaya_angkut_jual = $validated['biaya_angkut_jual'];
         $pembelian->harga_escalasi = $validated['harga_escalasi'];
+        $pembelian->total_rendemen = $request->total_rendemen;
+        $pembelian->pendapatan_cpo = $request->pendapatan_cpo;
+        $pembelian->pendapatan_pk = $request->pendapatan_pk;
+        $pembelian->total_pendapatan = $request->total_pendapatan;
+        $pembelian->biaya_produksi = $request->biaya_produksi;
+        $pembelian->total_biaya = $request->total_biaya;
+        $pembelian->harga_penetapan = $request->harga_penetapan;
+        $pembelian->margin = $request->margin;
         $pembelian->save();
+
         return redirect()->back()->with('success', 'Data pembelian berhasil disimpan');
     }
+
     public function destroy(Pembelian $pembelian)
     {
         $pembelian->delete();
@@ -167,11 +187,14 @@ class PembelianController extends Controller
                 'id',
                 'kode_unit',
                 'tanggal',
+                'harga_penetapan',
+                'harga_escalasi',
                 'status_approval_admin',
                 'status_approval_manager',
                 'status_approval_gm',
                 'status_approval_rh'
             ]);
+
         $pembelians->transform(function ($item) {
             if ($item->status_approval_rh) {
                 $item->status = 'Diapprove Region_Head';
@@ -186,61 +209,52 @@ class PembelianController extends Controller
             }
             return $item;
         });
-        return view('buyseeunit', compact('pembelians'));
+
+        $unitCode = $unit;
+        return view('buyseeunit', compact('pembelians', 'unitCode', 'tanggal'));
     }
-    public function approve($id)
+
+    public function approvePerUnit(Request $request, $unit)
     {
-        try {
-            $pembelian = Pembelian::findOrFail($id);
-            $userLevel = Auth::user()->level;
-            Log::info("[$userLevel] " . Auth::user()->username . " mencoba melakukan approval untuk pembelian ID: $id");
-
-            if ($userLevel == 'Manager') {
-                if ($pembelian->status_approval_admin || $pembelian->status_approval_gm || $pembelian->status_approval_rh) {
-                    Log::warning("Approval oleh Manager ditolak: Pembelian ID $id sudah disetujui oleh level di atas.");
-                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena sudah disetujui oleh level yang lebih tinggi.');
-                }
-                $pembelian->status_approval_manager = 1;
-
-            } elseif ($userLevel == 'Admin') {
-                if (!$pembelian->status_approval_manager) {
-                    Log::warning("Approval oleh Admin ditolak: Manager belum menyetujui pembelian ID $id.");
-                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena harus disetujui oleh Manager terlebih dahulu.');
-                }
-                if ($pembelian->status_approval_gm || $pembelian->status_approval_rh) {
-                    Log::warning("Approval oleh Admin ditolak: Pembelian ID $id sudah disetujui oleh level di atas.");
-                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena sudah disetujui oleh level yang lebih tinggi.');
-                }
-                $pembelian->status_approval_admin = 1;
-
-            } elseif ($userLevel == 'General_Manager') {
-                if (!$pembelian->status_approval_admin) {
-                    Log::warning("Approval oleh GM ditolak: Admin belum menyetujui pembelian ID $id.");
-                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena harus disetujui oleh Admin terlebih dahulu.');
-                }
-                if ($pembelian->status_approval_rh) {
-                    Log::warning("Approval oleh GM ditolak: Pembelian ID $id sudah disetujui oleh Region Head.");
-                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena sudah disetujui oleh Region Head.');
-                }
-                $pembelian->status_approval_gm = 1;
-
-            } elseif ($userLevel == 'Region_Head') {
-                if (!$pembelian->status_approval_gm) {
-                    Log::warning("Approval oleh RH ditolak: General Manager belum menyetujui pembelian ID $id.");
-                    return redirect()->back()->with('error', 'Approval tidak dapat diproses karena harus disetujui oleh General Manager terlebih dahulu.');
-                }
-                $pembelian->status_approval_rh = 1;
-            }
-
-            $pembelian->save();
-            Log::info("Approval berhasil oleh $userLevel untuk pembelian ID $id.");
-            return redirect()->route('buy.admin')->with('success', 'Pembelian berhasil diapprove.');
-
-        } catch (\Exception $e) {
-            Log::error("Terjadi kesalahan saat approval pembelian ID $id oleh $userLevel: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Approval tidak dapat diproses saat ini. Silakan coba beberapa saat lagi.');
+        $userLevel = Auth::user()->level;
+        $pembelians = Pembelian::where('kode_unit', $unit)->get();
+        if ($pembelians->isEmpty()) {
+            return redirect()->back()->with('error', "Tidak ada data pembelian untuk unit $unit.");
         }
+        foreach ($pembelians as $pembelian) {
+            switch ($userLevel) {
+                case 'Manager':
+                    if (!$pembelian->status_approval_manager) {
+                        $pembelian->status_approval_manager = 1;
+                    }
+                    break;
+                case 'Admin':
+                    if ($pembelian->status_approval_manager != 1) {
+                        return redirect()->back()->with('error', "Manager belum melakukan approval untuk unit $unit.");
+                    }
+                    if (!$pembelian->status_approval_admin) {
+                        $pembelian->status_approval_admin = 1;
+                    }
+                    break;
+                case 'General_Manager':
+                    if ($pembelian->status_approval_admin != 1) {
+                        return redirect()->back()->with('error', "Admin belum melakukan approval untuk unit $unit.");
+                    }
+                    if (!$pembelian->status_approval_gm) {
+                        $pembelian->status_approval_gm = 1;
+                    }
+                    break;
+                case 'Region_Head':
+                    if ($pembelian->status_approval_gm != 1) {
+                        return redirect()->back()->with('error', "General Manager belum melakukan approval untuk unit $unit.");
+                    }
+                    if (!$pembelian->status_approval_rh) {
+                        $pembelian->status_approval_rh = 1;
+                    }
+                    break;
+            }
+            $pembelian->save();
+        }
+        return redirect()->route('buy.admin')->with('success', "Approval per unit $unit berhasil diproses oleh $userLevel.");
     }
-
-
 }

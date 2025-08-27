@@ -99,7 +99,7 @@
                     </div>
                 </div>
                 <div class="max-w-5xl mx-auto overflow-x-auto">
-                    <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm">
+                    <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm table-auto">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
                                 <th class="px-4 py-3 text-left font-semibold">Unit</th>
@@ -107,7 +107,7 @@
                                 <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-100">
                             @forelse ($items as $pembelian)
                                 @php
                                     $unit = $pembelian->unit;
@@ -115,46 +115,51 @@
                                     $pembeliansPerUnit = \App\Models\Pembelian::where('kode_unit', $unitKode)
                                         ->whereDate('tanggal', $pembelian->tanggal)
                                         ->get();
-                                    $approvedLevels = $pembeliansPerUnit->map(function ($item) {
-                                        if ($item->status_approval_rh)
-                                            return 'Region Head';
-                                        if ($item->status_approval_gm)
-                                            return 'General Manager';
-                                        if ($item->status_approval_admin)
-                                            return 'Admin';
-                                        if ($item->status_approval_manager)
-                                            return 'Manager';
-                                        return null;
-                                    })->filter();
-                                    $jumlahApproval = $approvedLevels->count();
-                                    if ($jumlahApproval === 0) {
+                                    if ($pembeliansPerUnit->isEmpty()) {
                                         $status = 'Belum Diinput';
+                                        $badgeClass = 'bg-red-100 text-red-700';
                                     } else {
-                                        $uniqueLevels = $approvedLevels->unique();
-                                        if ($uniqueLevels->count() === 1) {
-                                            $status = "$jumlahApproval Diapprove " . $uniqueLevels->first();
+                                        $levelOrder = [
+                                            'Manager' => 1,
+                                            'Admin' => 2,
+                                            'General Manager' => 3,
+                                            'Region Head' => 4,
+                                        ];
+                                        $approvedLevels = $pembeliansPerUnit->map(function ($item) {
+                                            if ($item->status_approval_rh)
+                                                return 'Region Head';
+                                            if ($item->status_approval_gm)
+                                                return 'General Manager';
+                                            if ($item->status_approval_admin)
+                                                return 'Admin';
+                                            if ($item->status_approval_manager)
+                                                return 'Manager';
+                                            return null;
+                                        })->filter();
+                                        if ($approvedLevels->isEmpty()) {
+                                            $status = 'Sudah Diinput';
+                                            $badgeClass = 'bg-blue-100 text-blue-700';
                                         } else {
-                                            $status = "$jumlahApproval Diapprove";
+                                            $latestApproval = $approvedLevels->sortBy(fn($lvl) => $levelOrder[$lvl])->last();
+                                            $status = "Diapprove {$latestApproval}";
+                                            $badgeClass = 'bg-green-100 text-green-700';
                                         }
                                     }
-                                    $badgeClass = str_contains($status, 'Diapprove')
-                                        ? 'bg-green-100 text-green-700'
-                                        : 'bg-red-100 text-red-800';
                                 @endphp
-                                <tr class="transition-all duration-500 hover:bg-gray-50">
+                                <tr class="transition-all duration-300 hover:bg-gray-50">
                                     <td class="px-4 py-3">
                                         {{ $unit && $unit->jenis !== 'Kantor Regional' ? $unit->nama_unit : '-' }}
                                     </td>
-                                    <td class="text-center px-4 py-3">
-                                        <span class="text-xs px-2 py-1 rounded-full {{ $badgeClass }}">
+                                    <td class="px-4 py-3 text-center">
+                                        <span class="text-xs px-2 py-1 rounded-full font-medium {{ $badgeClass }}">
                                             {{ $status }}
                                         </span>
                                     </td>
-                                    <td class="text-center px-4 py-3">
+                                    <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
                                             @if ($unit && $pembelian->tanggal)
                                                 <a href="{{ route('pembelian.lihat.perunit', ['unit' => $unit->kode_unit, 'tanggal' => $pembelian->tanggal]) }}"
-                                                    class="detailForm flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
+                                                    class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                         fill="currentColor" viewBox="0 0 24 24">
                                                         <path
@@ -163,14 +168,14 @@
                                                     Lihat
                                                 </a>
                                             @else
-                                                <span class="text-xs text-gray-400">Data tidak lengkap</span>
+                                                <span class="text-xs text-gray-400"></span>
                                             @endif
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center px-4 py-3 text-gray-500">
+                                    <td colspan="3" class="text-center px-4 py-4 text-gray-500">
                                         Tidak ada data untuk tanggal ini.
                                     </td>
                                 </tr>

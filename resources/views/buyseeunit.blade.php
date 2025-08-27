@@ -27,20 +27,35 @@
             </span>
         </div>
         <div class="p-4 sm:ml-64">
-            @if (session('success'))
+            @if (session('success') || session('error'))
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 5000,
-                            timerProgressBar: true,
-                        });
-                        Toast.fire({
-                            icon: 'success',
-                            title: @json(session('success'))
-                        });
+                        @if (session('success'))
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 5000,
+                                timerProgressBar: true,
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: @json(session('success'))
+                            });
+                        @endif
+                            @if (session('error'))
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 5000,
+                                    timerProgressBar: true,
+                                });
+                                Toast.fire({
+                                    icon: 'error',
+                                    text: {!! json_encode(session('error')) !!}
+                                });
+                            @endif
                     });
                 </script>
             @endif
@@ -80,54 +95,32 @@
                 <div class="flex justify-end items-center mb-4">
                 </div>
                 <div class="max-w-5xl mx-auto overflow-x-auto">
-                    <table class="w-full text-sm divide-y divide-gray-200">
+                    <table class="w-full text-sm text-left divide-y divide-gray-200 table-auto">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
-                                <th class="w-1/4 px-4 py-3 text-left font-semibold">Grade</th>
-                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Margin</th>
-                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Status</th>
-                                <th class="w-1/4 px-6 py-3 text-center font-semibold">Aksi</th>
+                                <th class="px-4 py-3 font-semibold">Grade</th>
+                                <th class="px-4 py-3 font-semibold">Harga Penetapan</th>
+                                <th class="px-4 py-3 font-semibold">Harga Eskalasi</th>
+                                <th class="px-4 py-3 font-semibold">Margin</th>
+                                <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-100">
                             @forelse ($pembelians as $pembelian)
-                                <tr>
+                                <tr class="hover:bg-gray-50 transition">
                                     <td class="px-4 py-3">{{ $pembelian->grade }}</td>
-                                    <td class="px-6 py-3">
+                                    <td class="px-4 py-3">{{ $pembelian->harga_penetapan}}</td>
+                                    <td class="px-4 py-3">{{ $pembelian->harga_escalasi}}</td>
+                                    <td class="px-4 py-3">
                                         <span class="{{ $pembelian->margin < 0 ? 'text-red-600' : 'text-green-600' }}">
                                             {{ number_format($pembelian->margin, 2, ',', '.') }}%
                                         </span>
                                     </td>
-                                    <td class="px-6 py-3">
-                                        @php
-                                            if ($pembelian->status_approval_rh) {
-                                                $status = 'Diapprove Region_Head';
-                                            } elseif ($pembelian->status_approval_gm) {
-                                                $status = 'Diapprove General_Manager';
-                                            } elseif ($pembelian->status_approval_admin) {
-                                                $status = 'Diapprove Admin';
-                                            } elseif ($pembelian->status_approval_manager) {
-                                                $status = 'Diapprove Manager';
-                                            } else {
-                                                $status = 'Sudah Diinput';
-                                            }
-                                            $badgeClass = 'bg-gray-200 text-gray-800';
-                                            if (str_contains($status, 'Diapprove')) {
-                                                $badgeClass = 'bg-green-100 text-green-800';
-                                            } elseif ($status === 'Sudah Diinput') {
-                                                $badgeClass = 'bg-blue-100 text-blue-800';
-                                            } elseif ($status === 'Ditolak') {
-                                                $badgeClass = 'bg-red-100 text-red-800';
-                                            }
-                                        @endphp
-                                        <span class="text-xs px-2 py-1 rounded-full {{ $badgeClass }}">
-                                            {{ $status }}
-                                        </span>
-                                    </td>
-                                    <td class="text-center px-4 py-3">
+                                    
+                                    <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
                                             <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
-                                                class="detailForm flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
+                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path
@@ -136,7 +129,7 @@
                                                 Detail
                                             </a>
                                             <a href="{{ route('pembelian.edit', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
-                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
+                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path
@@ -149,9 +142,9 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" onclick="confirmDelete({{ $pembelian->id }})"
-                                                    class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-all">
+                                                    class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                        fill="currentColor" viewBox="0 0 24 24" class="inline-block">
+                                                        fill="currentColor" viewBox="0 0 24 24">
                                                         <path
                                                             d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
                                                     </svg>
@@ -163,13 +156,13 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center text-gray-500 py-3">Tidak ada data ditemukan.</td>
+                                    <td colspan="6" class="text-center text-gray-500 py-4">Tidak ada data ditemukan.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-end pt-4 border-t mt-4">
+                <div class="flex justify-between items-center pt-4 border-t mt-4">
                     <div class="pt-6">
                         <a id="backForm" href="{{ route('buy.admin') }}"
                             class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
@@ -182,48 +175,10 @@
                     </div>
                 </div>
             </div>
-
-            <div class="my-10"></div>
-            @if (Auth::user()->level === 'Admin')
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex justify-between items-start border-b pb-4 mb-4">
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-800">
-                            Riwayat Perubahan
-                        </h2>
-                    </div>
-                    <div class="flex gap-2">
-                    </div>
-                </div>
-                <div class="max-w-5xl mx-auto overflow-x-auto">
-                    <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm">
-                        <thead class="bg-gray-100 text-gray-700">
-                            <tr>
-                                <th class="px-4 py-3 text-left font-semibold">Update</th>
-                                <th class="px-4 py-3 text-left font-semibold">Manager</th>
-                                <th class="px-4 py-3 text-center font-semibold">Admin</th>
-                                <th class="px-4 py-3 text-center font-semibold">General Manager</th>
-                                <th class="px-4 py-3 text-center font-semibold">Region Head</th>
-                            </tr>
-                        </thead>
-                        <thead>
-                            <tr>
-                                <th class="px-4 py-3 text-left font-semibold">Harga Penetapan</th>
-                            </tr>
-                            <tr>
-                                <th class="px-4 py-3 text-left font-semibold">Harga Ekskalasi</th>
-                            </tr>
-                        </thead>
-                        
-                    </table>
-                </div>
-                <div class="flex justify-end pt-4 border-t mt-4"></div>
-            </div>
-            @endif
         </div>
     @endsection
-    <script src="{{ asset('js/buyseeunit.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{{ asset('js/buyseeunit.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

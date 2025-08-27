@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('pembelian/{pembelian}', [PembelianController::class, 'destroy'])->name('pembelian.destroy');
     Route::resource('pembelian', PembelianController::class)->except(['edit', 'update', 'destroy']);
     Route::get('/pembelian/unit/{unit}/tanggal/{tanggal}', [PembelianController::class, 'lihatPerUnit'])->name('pembelian.lihat.perunit');
-    Route::post('/pembelian/{id}/approve', [PembelianController::class, 'approve'])->name('pembelian.approve');
-
+    Route::post('/pembelian/approve-perunit/{unit}', [PembelianController::class, 'approvePerUnit'])
+        ->name('pembelian.approvePerUnit');
 
 });
