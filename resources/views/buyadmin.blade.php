@@ -186,9 +186,16 @@
                 <div class="flex justify-end pt-4 border-t mt-4"></div>
             </div>
             <footer class="footer p-5 bg-gray-50 border-t">
-                <div class="text-center text-muted text-m">
-                    &copy;
-                    <script>document.write(new Date().getFullYear())</script> PT. Perkebunan Nusantara IV
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="text-center text-muted text-m text-lg-start">
+                            Copyright &copy;
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                            PT. Perkebunan Nusantara IV
+                        </div>
+                    </div>
                 </div>
             </footer>
         </div>

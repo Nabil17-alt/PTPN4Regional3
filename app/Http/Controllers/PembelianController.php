@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Pembelian;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Models\PembelianApproval;
 
 class PembelianController extends Controller
 {
@@ -216,10 +217,13 @@ class PembelianController extends Controller
 
     public function approvePerUnit(Request $request, $unit)
     {
-        $userLevel = Auth::user()->level;
-        $pembelians = Pembelian::where('kode_unit', $unit)->get();
+        $user = Auth::user();
+        $userLevel = $user->level;
+        $pembelians = Pembelian::with('approvals')
+            ->where('kode_unit', $unit)
+            ->get();
         if ($pembelians->isEmpty()) {
-            return redirect()->back()->with('error', "Tidak ada data pembelian untuk unit $unit.");
+            return back()->with('error', "Tidak ada data pembelian untuk unit $unit.");
         }
         foreach ($pembelians as $pembelian) {
             switch ($userLevel) {
@@ -229,32 +233,62 @@ class PembelianController extends Controller
                     }
                     break;
                 case 'Admin':
-                    if ($pembelian->status_approval_manager != 1) {
-                        return redirect()->back()->with('error', "Manager belum melakukan approval untuk unit $unit.");
+                    if (!$pembelian->status_approval_manager) {
+                        return back()->with('error', "Manager belum melakukan approval untuk unit $unit.");
                     }
                     if (!$pembelian->status_approval_admin) {
                         $pembelian->status_approval_admin = 1;
                     }
                     break;
                 case 'General_Manager':
-                    if ($pembelian->status_approval_admin != 1) {
-                        return redirect()->back()->with('error', "Admin belum melakukan approval untuk unit $unit.");
+                    if (!$pembelian->status_approval_admin) {
+                        return back()->with('error', "Admin belum melakukan approval untuk unit $unit.");
                     }
                     if (!$pembelian->status_approval_gm) {
                         $pembelian->status_approval_gm = 1;
                     }
                     break;
                 case 'Region_Head':
-                    if ($pembelian->status_approval_gm != 1) {
-                        return redirect()->back()->with('error', "General Manager belum melakukan approval untuk unit $unit.");
+                    if (!$pembelian->status_approval_gm) {
+                        return back()->with('error', "General Manager belum melakukan approval untuk unit $unit.");
                     }
                     if (!$pembelian->status_approval_rh) {
                         $pembelian->status_approval_rh = 1;
                     }
                     break;
+                default:
+                    return back()->with('error', "Role $userLevel tidak dikenali untuk approval.");
             }
+            PembelianApproval::updateOrCreate(
+                [
+                    'pembelian_id' => $pembelian->id,
+                    'role' => $userLevel,
+                ],
+                [
+                    'approved_by' => $user->id,
+                    'approved_at' => now(),
+                    'harga_penetapan' => $pembelian->harga_penetapan,
+                    'harga_escalasi' => $pembelian->harga_escalasi,
+                ]
+            );
             $pembelian->save();
         }
-        return redirect()->route('buy.admin')->with('success', "Approval per unit $unit berhasil diproses oleh $userLevel.");
+        return redirect()->route('buy.admin')
+            ->with('success', "Approval per unit $unit berhasil diproses oleh $userLevel.");
     }
+
+    public function updateHarga(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'harga_penetapan' => 'required|numeric',
+            'harga_escalasi' => 'required|numeric',
+        ]);
+
+        $pembelian = Pembelian::findOrFail($id);
+        $pembelian->update($validated);
+
+        return redirect()->back()->with('success', 'Harga berhasil diperbarui');
+    }
+
+
 }

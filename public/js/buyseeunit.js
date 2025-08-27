@@ -65,4 +65,20 @@ function confirmDelete(id) {
             if (form) form.submit();
         }
     });
+
+    
+}
+function openEditModal(id, hargaPenetapan, hargaEskalasi) {
+    document.getElementById('editModal').classList.remove('hidden');
+
+    // Set value input
+    document.getElementById('harga_penetapan').value = hargaPenetapan;
+    document.getElementById('harga_escalasi').value = hargaEskalasi;
+
+    // Set form action
+    document.getElementById('editForm').action = `/pembelian/${id}/update-harga`;
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').classList.add('hidden');
 }

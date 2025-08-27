@@ -44,5 +44,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/pembelian/unit/{unit}/tanggal/{tanggal}', [PembelianController::class, 'lihatPerUnit'])->name('pembelian.lihat.perunit');
     Route::post('/pembelian/approve-perunit/{unit}', [PembelianController::class, 'approvePerUnit'])
         ->name('pembelian.approvePerUnit');
+    Route::put('/pembelian/{id}/update-harga', [PembelianController::class, 'updateHarga'])->name('pembelian.updateHarga');
 
 });

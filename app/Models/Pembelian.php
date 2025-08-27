@@ -34,5 +34,11 @@ class Pembelian extends Model
     {
         return $this->belongsTo(Unit::class, 'kode_unit', 'kode_unit');
     }
+
+    public function approvals()
+    {
+        return $this->hasMany(PembelianApproval::class, 'pembelian_id');
+    }
+
 }
 

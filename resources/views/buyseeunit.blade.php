@@ -56,7 +56,7 @@
                                     text: {!! json_encode(session('error')) !!}
                                 });
                             @endif
-                    });
+                                                                                                                                                            });
                 </script>
             @endif
             <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
@@ -116,7 +116,6 @@
                                             {{ number_format($pembelian->margin, 2, ',', '.') }}%
                                         </span>
                                     </td>
-                                    
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
                                             <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
@@ -128,7 +127,8 @@
                                                 </svg>
                                                 Detail
                                             </a>
-                                            <a href="{{ route('pembelian.edit', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
+                                            <a href="javascript:void(0)"
+                                                onclick="openEditModal({{ $pembelian->id }}, '{{ $pembelian->harga_penetapan }}', '{{ $pembelian->harga_escalasi }}')"
                                                 class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     fill="currentColor" viewBox="0 0 24 24">
@@ -161,6 +161,31 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+                <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                    <div class="bg-white rounded-lg shadow-lg w-96 p-6">
+                        <h2 class="text-lg font-semibold mb-4">Edit Harga</h2>
+                        <form id="editForm" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700">Harga Penetapan</label>
+                                <input type="number" name="harga_penetapan" id="harga_penetapan"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700">Harga Eskalasi</label>
+                                <input type="number" name="harga_escalasi" id="harga_escalasi"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" required>
+                            </div>
+                            <div class="flex justify-end gap-2">
+                                <button type="button" onclick="closeEditModal()"
+                                    class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
+                                <button type="submit"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="flex justify-between items-center pt-4 border-t mt-4">
                     <div class="pt-6">
@@ -200,7 +225,8 @@
                     @if (in_array($userLevel, ['Manager', 'Admin', 'General_Manager', 'Region_Head']))
                         @if ($approvalOrder >= $userOrder)
                             <span class="text-sm text-red-600 font-semibold">
-                                Telah disetujui oleh {{ str_replace('_', ' ', $latestApproval) }}, anda tidak dapat melakukan approval.
+                                Telah disetujui oleh {{ str_replace('_', ' ', $latestApproval) }}, anda tidak dapat melakukan
+                                approval.
                             </span>
                         @else
                             <form method="POST" action="{{ route('pembelian.approvePerUnit', ['unit' => $unitCode]) }}">
@@ -218,46 +244,102 @@
                     @endif
                 </div>
             </div>
-            
-            <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-                <div class="flex justify-between items-start border-b pb-4 mb-4">
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-800">Riwayat Perubahan</h2>
+            @if(auth()->check() && auth()->user()->level === 'Admin')
+                <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+                    <div class="flex justify-between items-start border-b pb-4 mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            Riwayat Perubahan ({{ $pembelians->count() }} Data)
+                        </h2>
+                    </div>
+                    <div class="max-w-5xl mx-auto overflow-x-auto">
+                        <table class="w-full text-sm text-left divide-y divide-gray-200 table-auto">
+                            <thead class="bg-gray-100 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3 font-semibold">Grade</th>
+                                    <th class="px-4 py-3 font-semibold text-center">Manager</th>
+                                    <th class="px-4 py-3 font-semibold text-center">Admin</th>
+                                    <th class="px-4 py-3 font-semibold text-center">General Manager</th>
+                                    <th class="px-4 py-3 font-semibold text-center">Region Head</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-100">
+                                @forelse($pembelians as $pembelian)
+                                    <tr class="hover:bg-gray-50 transition">
+                                        <td class="px-4 py-3 font-semibold">{{ $pembelian->grade }}</td>
+                                        <td class="px-4 py-3 text-center">
+                                            @php
+                                                $managerApproval = $pembelian->approvals->where('role', 'Manager')->first();
+                                            @endphp
+                                            @if($managerApproval)
+                                                <div>Penetapan: {{ $managerApproval->harga_penetapan }}</div>
+                                                <div>Eskalasi: {{ $managerApproval->harga_escalasi }}</div>
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3 text-center">
+                                            @php
+                                                $adminApproval = $pembelian->approvals->where('role', 'Admin')->first();
+                                            @endphp
+                                            @if($adminApproval)
+                                                <div>Penetapan: {{ $adminApproval->harga_penetapan }}</div>
+                                                <div>Eskalasi: {{ $adminApproval->harga_escalasi }}</div>
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3 text-center">
+                                            @php
+                                                $gmApproval = $pembelian->approvals->where('role', 'General_Manager')->first();
+                                            @endphp
+                                            @if($gmApproval)
+                                                <div>Penetapan: {{ $gmApproval->harga_penetapan }}</div>
+                                                <div>Eskalasi: {{ $gmApproval->harga_escalasi }}</div>
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3 text-center">
+                                            @php
+                                                $rhApproval = $pembelian->approvals->where('role', 'Region_Head')->first();
+                                            @endphp
+                                            @if($rhApproval)
+                                                <div>Penetapan: {{ $rhApproval->harga_penetapan }}</div>
+                                                <div>Eskalasi: {{ $rhApproval->harga_escalasi }}</div>
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center text-gray-500 py-4">Tidak ada riwayat ditemukan.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="flex justify-end items-center mb-4">
+            @endif
+            <footer class="footer p-5 bg-gray-50 border-t">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="text-center text-muted text-m text-lg-start">
+                            Copyright &copy;
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                            PT. Perkebunan Nusantara IV
+                        </div>
+                    </div>
                 </div>
-                <div class="max-w-5xl mx-auto overflow-x-auto">
-                    <table class="w-full text-sm text-left divide-y divide-gray-200 table-auto">
-                        <thead class="bg-gray-100 text-gray-700">
-                            <tr>
-                                <th class="px-4 py-3 font-semibold">Update</th>
-                                <th class="px-4 py-3 font-semibold">Manager</th>
-                                <th class="px-4 py-3 font-semibold">Admin</th>
-                                <th class="px-4 py-3 font-semibold">General Manager</th>
-                                <th class="px-4 py-3 text-center font-semibold">Region Head</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-100">
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-4 py-3">Harga Penetapan</td>
-                                <td class="px-4 py-3"></td>
-                                <td class="px-4 py-3"></td>
-                                <td class="px-4 py-3"></td>
-                                <td class="px-4 py-3"></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-4 py-3">Harga Eskalasi</td>
-                                <td class="px-4 py-3"></td>
-                                <td class="px-4 py-3"></td>
-                                <td class="px-4 py-3"></td>
-                                <td class="px-4 py-3"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+            </footer>
+        </div>
     @endsection
-        <script src="{{ asset('js/buyseeunit.js') }}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('js/buyseeunit.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+
 </body>
 
 </html>

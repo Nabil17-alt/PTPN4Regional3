@@ -56,7 +56,7 @@
                                     text: {!! json_encode(session('error')) !!}
                                 });
                             @endif
-                                                        });
+                                                                });
                 </script>
             @endif
             <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
@@ -206,6 +206,19 @@
                     </a>
                 </div>
             </div>
+            <footer class="footer p-5 bg-gray-50 border-t">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="text-center text-muted text-m text-lg-start">
+                            Copyright &copy;
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                            PT. Perkebunan Nusantara IV
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     @endsection
     <script src="{{ asset('js/buydetail.js') }}"></script>
