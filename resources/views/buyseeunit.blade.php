@@ -218,6 +218,43 @@
                     @endif
                 </div>
             </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+                <div class="flex justify-between items-start border-b pb-4 mb-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">Riwayat Perubahan</h2>
+                    </div>
+                </div>
+                <div class="flex justify-end items-center mb-4">
+                </div>
+                <div class="max-w-5xl mx-auto overflow-x-auto">
+                    <table class="w-full text-sm text-left divide-y divide-gray-200 table-auto">
+                        <thead class="bg-gray-100 text-gray-700">
+                            <tr>
+                                <th class="px-4 py-3 font-semibold">Update</th>
+                                <th class="px-4 py-3 font-semibold">Manager</th>
+                                <th class="px-4 py-3 font-semibold">Admin</th>
+                                <th class="px-4 py-3 font-semibold">General Manager</th>
+                                <th class="px-4 py-3 text-center font-semibold">Region Head</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-4 py-3">Harga Penetapan</td>
+                                <td class="px-4 py-3"></td>
+                                <td class="px-4 py-3"></td>
+                                <td class="px-4 py-3"></td>
+                                <td class="px-4 py-3"></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-4 py-3">Harga Eskalasi</td>
+                                <td class="px-4 py-3"></td>
+                                <td class="px-4 py-3"></td>
+                                <td class="px-4 py-3"></td>
+                                <td class="px-4 py-3"></td>
+                            </tr>
+                        </tbody>
+                    </table>
     @endsection
         <script src="{{ asset('js/buyseeunit.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
