@@ -56,7 +56,7 @@
                                     text: {!! json_encode(session('error')) !!}
                                 });
                             @endif
-                                                                                                                                                            });
+                                                                                                                                                                            });
                 </script>
             @endif
             <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
@@ -100,7 +100,7 @@
                             <tr>
                                 <th class="px-4 py-3 font-semibold">Grade</th>
                                 <th class="px-4 py-3 font-semibold">Harga Penetapan</th>
-                                <th class="px-4 py-3 font-semibold">Harga Eskalasi</th>
+                                <th class="px-4 py-3 font-semibold">Harga Ekskalasi</th>
                                 <th class="px-4 py-3 font-semibold">Margin</th>
                                 <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                             </tr>
@@ -116,6 +116,27 @@
                                             {{ number_format($pembelian->margin, 2, ',', '.') }}%
                                         </span>
                                     </td>
+                                    @php
+                                        $levelOrder = [
+                                            'Manager' => 1,
+                                            'Admin' => 2,
+                                            'General_Manager' => 3,
+                                            'Region_Head' => 4,
+                                        ];
+                                        $userLevel = Auth::user()->level;
+                                        $userOrder = $levelOrder[$userLevel] ?? 0;
+                                        $highestApproval = 0;
+                                        if ($pembelian->status_approval_rh) {
+                                            $highestApproval = $levelOrder['Region_Head'];
+                                        } elseif ($pembelian->status_approval_gm) {
+                                            $highestApproval = $levelOrder['General_Manager'];
+                                        } elseif ($pembelian->status_approval_admin) {
+                                            $highestApproval = $levelOrder['Admin'];
+                                        } elseif ($pembelian->status_approval_manager) {
+                                            $highestApproval = $levelOrder['Manager'];
+                                        }
+                                        $canEdit = $userOrder > 0 && $userOrder > $highestApproval;
+                                    @endphp
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
                                             <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
@@ -182,7 +203,7 @@
                                 <button type="button" onclick="closeEditModal()"
                                     class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
                                 <button type="submit"
-                                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
+                                    class="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">Simpan</button>
                             </div>
                         </form>
                     </div>

@@ -1,32 +1,33 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('pageLoader');
     const logoutBtn = document.getElementById('logoutForm');
     const backBtn = document.getElementById('backForm');
+    const greetingEl = document.getElementById('greeting');
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function (e) {
+    /**
+     * Tampilkan loader lalu redirect ke URL yang ditentukan
+     * @param {HTMLElement} element
+     */
+    const handleRedirectWithLoader = (element) => {
+        if (!element) return;
+        element.addEventListener('click', (e) => {
             e.preventDefault();
             if (loader) loader.classList.remove('hidden');
-            setTimeout(() => {
-                window.location.href = logoutBtn.getAttribute('href');
-            }, 300);
+            const targetUrl = element.getAttribute('href');
+            if (targetUrl) {
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 300);
+            }
         });
-    }
+    };
 
-    if (backBtn) {
-        backBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (loader) loader.classList.remove('hidden');
-            setTimeout(() => {
-                window.location.href = backBtn.getAttribute('href');
-            }, 300);
-        });
-    }
+    handleRedirectWithLoader(logoutBtn);
+    handleRedirectWithLoader(backBtn);
 
-    const greetingEl = document.getElementById("greeting");
     if (greetingEl) {
         const hour = new Date().getHours();
-        let greetingText = "Selamat datang";
+        let greetingText;
 
         if (hour >= 3 && hour < 10) {
             greetingText = "Selamat pagi";
@@ -38,22 +39,26 @@ document.addEventListener('DOMContentLoaded', function () {
             greetingText = "Selamat malam";
         }
 
-        greetingEl.textContent = greetingText + ", " + greetingEl.dataset.username;
+        greetingEl.textContent = `${greetingText}, ${greetingEl.dataset.username || ''}`;
     }
 });
 
+/**
+ * Konfirmasi penghapusan data
+ * @param {number|string} id
+ */
 function confirmDelete(id) {
     Swal.fire({
-        title: 'Apakah kamu yakin?',
-        text: "Data yang dihapus tidak bisa dikembalikan!",
+        title: 'Apakah Anda yakin?',
+        text: "Data yang dihapus tidak dapat dikembalikan!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Ya, hapus!',
         cancelButtonText: 'Batal',
         buttonsStyling: false,
         customClass: {
-            confirmButton: 'btn-danger',
-            cancelButton: 'btn-secondary'
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-secondary'
         },
         preConfirm: () => {
             const loader = document.getElementById('pageLoader');
@@ -61,24 +66,34 @@ function confirmDelete(id) {
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            const form = document.getElementById('delete-form-' + id);
+            const form = document.getElementById(`delete-form-${id}`);
             if (form) form.submit();
         }
     });
-
-    
 }
+
+/**
+ * Buka modal edit dan isi dengan data
+ * @param {number|string} id
+ * @param {string|number} hargaPenetapan
+ * @param {string|number} hargaEskalasi
+ */
 function openEditModal(id, hargaPenetapan, hargaEskalasi) {
-    document.getElementById('editModal').classList.remove('hidden');
+    const modal = document.getElementById('editModal');
+    if (!modal) return;
 
-    // Set value input
-    document.getElementById('harga_penetapan').value = hargaPenetapan;
-    document.getElementById('harga_escalasi').value = hargaEskalasi;
+    modal.classList.remove('hidden');
 
-    // Set form action
-    document.getElementById('editForm').action = `/pembelian/${id}/update-harga`;
+    const hargaPenetapanInput = document.getElementById('harga_penetapan');
+    const hargaEskalasiInput = document.getElementById('harga_escalasi');
+    const editForm = document.getElementById('editForm');
+
+    if (hargaPenetapanInput) hargaPenetapanInput.value = hargaPenetapan;
+    if (hargaEskalasiInput) hargaEskalasiInput.value = hargaEskalasi;
+    if (editForm) editForm.action = `/pembelian/${id}/update-harga`;
 }
 
 function closeEditModal() {
-    document.getElementById('editModal').classList.add('hidden');
+    const modal = document.getElementById('editModal');
+    if (modal) modal.classList.add('hidden');
 }

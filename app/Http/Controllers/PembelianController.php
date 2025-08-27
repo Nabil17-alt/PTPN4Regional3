@@ -285,10 +285,36 @@ class PembelianController extends Controller
         ]);
 
         $pembelian = Pembelian::findOrFail($id);
+
+        $levelOrder = [
+            'Manager' => 1,
+            'Admin' => 2,
+            'General_Manager' => 3,
+            'Region_Head' => 4,
+        ];
+        $userLevel = Auth::user()->level;
+        $userOrder = $levelOrder[$userLevel] ?? 0;
+
+        $highestApproval = 0;
+        if ($pembelian->status_approval_rh) {
+            $highestApproval = $levelOrder['Region_Head'];
+        } elseif ($pembelian->status_approval_gm) {
+            $highestApproval = $levelOrder['General_Manager'];
+        } elseif ($pembelian->status_approval_admin) {
+            $highestApproval = $levelOrder['Admin'];
+        } elseif ($pembelian->status_approval_manager) {
+            $highestApproval = $levelOrder['Manager'];
+        }
+
+        if ($userOrder <= $highestApproval) {
+            return back()->with('error', 'Perubahan dibatasi');
+        }
+
         $pembelian->update($validated);
 
         return redirect()->back()->with('success', 'Harga berhasil diperbarui');
     }
+
 
 
 }
