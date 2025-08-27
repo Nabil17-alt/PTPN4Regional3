@@ -27,20 +27,35 @@
             </span>
         </div>
         <div class="p-4 sm:ml-64">
-            @if (session('success'))
+            @if (session('success') || session('error'))
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 5000,
-                            timerProgressBar: true,
-                        });
-                        Toast.fire({
-                            icon: 'success',
-                            title: @json(session('success'))
-                        });
+                        @if (session('success'))
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 5000,
+                                timerProgressBar: true,
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: @json(session('success'))
+                            });
+                        @endif
+                            @if (session('error'))
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 5000,
+                                    timerProgressBar: true,
+                                });
+                                Toast.fire({
+                                    icon: 'error',
+                                    text: {!! json_encode(session('error')) !!}
+                                });
+                            @endif
                     });
                 </script>
             @endif
@@ -87,7 +102,6 @@
                                 <th class="px-4 py-3 font-semibold">Harga Penetapan</th>
                                 <th class="px-4 py-3 font-semibold">Harga Eskalasi</th>
                                 <th class="px-4 py-3 font-semibold">Margin</th>
-                                <th class="px-4 py-3 font-semibold">Status</th>
                                 <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>
@@ -102,36 +116,13 @@
                                             {{ number_format($pembelian->margin, 2, ',', '.') }}%
                                         </span>
                                     </td>
-                                    <td class="px-4 py-3">
-                                        @php
-                                            if ($pembelian->status_approval_rh) {
-                                                $status = 'Diapprove Region Head';
-                                            } elseif ($pembelian->status_approval_gm) {
-                                                $status = 'Diapprove General Manager';
-                                            } elseif ($pembelian->status_approval_admin) {
-                                                $status = 'Diapprove Admin';
-                                            } elseif ($pembelian->status_approval_manager) {
-                                                $status = 'Diapprove Manager';
-                                            } else {
-                                                $status = 'Sudah Diinput';
-                                            }
-                                            $badgeClass = match (true) {
-                                                str_contains($status, 'Diapprove') => 'bg-green-100 text-green-800',
-                                                $status === 'Sudah Diinput' => 'bg-blue-100 text-blue-800',
-                                                $status === 'Ditolak' => 'bg-red-100 text-red-800',
-                                                default => 'bg-gray-200 text-gray-800',
-                                            };
-                                        @endphp
-                                        <span class="text-xs px-2 py-1 rounded-full font-medium {{ $badgeClass }}">
-                                            {{ $status }}
-                                        </span>
-                                    </td>
+                                    
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
                                             <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
                                                 class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                                    viewBox="0 0 24 24">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                    fill="currentColor" viewBox="0 0 24 24">
                                                     <path
                                                         d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
                                                 </svg>
@@ -139,8 +130,8 @@
                                             </a>
                                             <a href="{{ route('pembelian.edit', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
                                                 class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                                    viewBox="0 0 24 24">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                    fill="currentColor" viewBox="0 0 24 24">
                                                     <path
                                                         d="M5 20h14v2H5c-1.103 0-2-.897-2-2V6h2v14zM20.707 7.293l-1-1a1.001 1.001 0 0 0-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 0 0 0-1.414z" />
                                                 </svg>
@@ -152,9 +143,10 @@
                                                 @method('DELETE')
                                                 <button type="button" onclick="confirmDelete({{ $pembelian->id }})"
                                                     class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                        fill="currentColor" viewBox="0 0 24 24">
+                                                        <path
+                                                            d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
                                                     </svg>
                                                     Hapus
                                                 </button>
@@ -170,7 +162,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-end pt-4 border-t mt-4">
+                <div class="flex justify-between items-center pt-4 border-t mt-4">
                     <div class="pt-6">
                         <a id="backForm" href="{{ route('buy.admin') }}"
                             class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
@@ -181,12 +173,54 @@
                             Kembali
                         </a>
                     </div>
+                    @php
+                        $latestApproval = null;
+                        foreach ($pembelians as $pembelian) {
+                            if ($pembelian->status_approval_rh) {
+                                $latestApproval = 'Region_Head';
+                            } elseif ($pembelian->status_approval_gm) {
+                                $latestApproval = 'General_Manager';
+                            } elseif ($pembelian->status_approval_admin) {
+                                $latestApproval = 'Admin';
+                            } elseif ($pembelian->status_approval_manager) {
+                                $latestApproval = 'Manager';
+                            }
+                        }
+                        $levelOrder = [
+                            'Manager' => 1,
+                            'Admin' => 2,
+                            'General_Manager' => 3,
+                            'Region_Head' => 4,
+                        ];
+                        $userLevel = Auth::user()->level;
+                        $userOrder = $levelOrder[$userLevel] ?? 0;
+                        $approvalOrder = $levelOrder[$latestApproval] ?? 0;
+                        $canApprove = $userOrder > 0 && $userOrder == $approvalOrder + 1;
+                    @endphp
+                    @if (in_array($userLevel, ['Manager', 'Admin', 'General_Manager', 'Region_Head']))
+                        @if ($approvalOrder >= $userOrder)
+                            <span class="text-sm text-red-600 font-semibold">
+                                Telah disetujui oleh {{ str_replace('_', ' ', $latestApproval) }}, anda tidak dapat melakukan approval.
+                            </span>
+                        @else
+                            <form method="POST" action="{{ route('pembelian.approvePerUnit', ['unit' => $unitCode]) }}">
+                                @csrf
+                                <button type="submit" id="approveBtnUnit"
+                                    class="flex items-center gap-1 text-sm px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                    </svg>
+                                    Approve
+                                </button>
+                            </form>
+                        @endif
+                    @endif
                 </div>
             </div>
-        </div>
     @endsection
-    <script src="{{ asset('js/buyseeunit.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{{ asset('js/buyseeunit.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

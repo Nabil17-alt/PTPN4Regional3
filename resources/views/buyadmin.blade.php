@@ -115,24 +115,36 @@
                                     $pembeliansPerUnit = \App\Models\Pembelian::where('kode_unit', $unitKode)
                                         ->whereDate('tanggal', $pembelian->tanggal)
                                         ->get();
-                                    $approvedLevels = $pembeliansPerUnit->map(function ($item) {
-                                        return $item->status_approval_rh ? 'Region Head'
-                                            : ($item->status_approval_gm ? 'General Manager'
-                                                : ($item->status_approval_admin ? 'Admin'
-                                                    : ($item->status_approval_manager ? 'Manager' : null)));
-                                    })->filter();
-                                    $jumlahApproval = $approvedLevels->count();
-                                    if ($jumlahApproval === 0) {
+                                    if ($pembeliansPerUnit->isEmpty()) {
                                         $status = 'Belum Diinput';
+                                        $badgeClass = 'bg-red-100 text-red-700';
                                     } else {
-                                        $uniqueLevels = $approvedLevels->unique();
-                                        $status = $uniqueLevels->count() === 1
-                                            ? "$jumlahApproval Diapprove " . $uniqueLevels->first()
-                                            : "$jumlahApproval Diapprove";
+                                        $levelOrder = [
+                                            'Manager' => 1,
+                                            'Admin' => 2,
+                                            'General Manager' => 3,
+                                            'Region Head' => 4,
+                                        ];
+                                        $approvedLevels = $pembeliansPerUnit->map(function ($item) {
+                                            if ($item->status_approval_rh)
+                                                return 'Region Head';
+                                            if ($item->status_approval_gm)
+                                                return 'General Manager';
+                                            if ($item->status_approval_admin)
+                                                return 'Admin';
+                                            if ($item->status_approval_manager)
+                                                return 'Manager';
+                                            return null;
+                                        })->filter();
+                                        if ($approvedLevels->isEmpty()) {
+                                            $status = 'Sudah Diinput';
+                                            $badgeClass = 'bg-blue-100 text-blue-700';
+                                        } else {
+                                            $latestApproval = $approvedLevels->sortBy(fn($lvl) => $levelOrder[$lvl])->last();
+                                            $status = "Diapprove {$latestApproval}";
+                                            $badgeClass = 'bg-green-100 text-green-700';
+                                        }
                                     }
-                                    $badgeClass = str_contains($status, 'Diapprove')
-                                        ? 'bg-green-100 text-green-700'
-                                        : 'bg-blue-100 text-blue-700';
                                 @endphp
                                 <tr class="transition-all duration-300 hover:bg-gray-50">
                                     <td class="px-4 py-3">
@@ -156,7 +168,7 @@
                                                     Lihat
                                                 </a>
                                             @else
-                                                <span class="text-xs text-gray-400">Data tidak lengkap</span>
+                                                <span class="text-xs text-gray-400"></span>
                                             @endif
                                         </div>
                                     </td>
