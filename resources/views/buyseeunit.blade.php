@@ -182,6 +182,44 @@
                     </div>
                 </div>
             </div>
+
+            <div class="my-10"></div>
+            @if (Auth::user()->level === 'Admin')
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-start border-b pb-4 mb-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            Riwayat Perubahan
+                        </h2>
+                    </div>
+                    <div class="flex gap-2">
+                    </div>
+                </div>
+                <div class="max-w-5xl mx-auto overflow-x-auto">
+                    <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm">
+                        <thead class="bg-gray-100 text-gray-700">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Update</th>
+                                <th class="px-4 py-3 text-left font-semibold">Manager</th>
+                                <th class="px-4 py-3 text-center font-semibold">Admin</th>
+                                <th class="px-4 py-3 text-center font-semibold">General Manager</th>
+                                <th class="px-4 py-3 text-center font-semibold">Region Head</th>
+                            </tr>
+                        </thead>
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Harga Penetapan</th>
+                            </tr>
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Harga Ekskalasi</th>
+                            </tr>
+                        </thead>
+                        
+                    </table>
+                </div>
+                <div class="flex justify-end pt-4 border-t mt-4"></div>
+            </div>
+            @endif
         </div>
     @endsection
     <script src="{{ asset('js/buyseeunit.js') }}"></script>
