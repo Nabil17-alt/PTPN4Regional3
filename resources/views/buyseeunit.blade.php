@@ -173,9 +173,51 @@
                             Kembali
                         </a>
                     </div>
+                    @php
+                        $latestApproval = null;
+                        foreach ($pembelians as $pembelian) {
+                            if ($pembelian->status_approval_rh) {
+                                $latestApproval = 'Region_Head';
+                            } elseif ($pembelian->status_approval_gm) {
+                                $latestApproval = 'General_Manager';
+                            } elseif ($pembelian->status_approval_admin) {
+                                $latestApproval = 'Admin';
+                            } elseif ($pembelian->status_approval_manager) {
+                                $latestApproval = 'Manager';
+                            }
+                        }
+                        $levelOrder = [
+                            'Manager' => 1,
+                            'Admin' => 2,
+                            'General_Manager' => 3,
+                            'Region_Head' => 4,
+                        ];
+                        $userLevel = Auth::user()->level;
+                        $userOrder = $levelOrder[$userLevel] ?? 0;
+                        $approvalOrder = $levelOrder[$latestApproval] ?? 0;
+                        $canApprove = $userOrder > 0 && $userOrder == $approvalOrder + 1;
+                    @endphp
+                    @if (in_array($userLevel, ['Manager', 'Admin', 'General_Manager', 'Region_Head']))
+                        @if ($approvalOrder >= $userOrder)
+                            <span class="text-sm text-red-600 font-semibold">
+                                Telah disetujui oleh {{ str_replace('_', ' ', $latestApproval) }}, anda tidak dapat melakukan approval.
+                            </span>
+                        @else
+                            <form method="POST" action="{{ route('pembelian.approvePerUnit', ['unit' => $unitCode]) }}">
+                                @csrf
+                                <button type="submit" id="approveBtnUnit"
+                                    class="flex items-center gap-1 text-sm px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                    </svg>
+                                    Approve
+                                </button>
+                            </form>
+                        @endif
+                    @endif
                 </div>
             </div>
-        </div>
     @endsection
         <script src="{{ asset('js/buyseeunit.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
