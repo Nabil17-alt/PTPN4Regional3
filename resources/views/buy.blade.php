@@ -88,9 +88,9 @@
                     @php
                         $groupedPembelians = $pembelians->groupBy(function ($item) {
                             return \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d');
-                        });
+                        })->sortKeysDesc();
                     @endphp
-                    <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm">
+                    <table class="w-full min-w-[800px] divide-y divide-gray-200 text-sm table-auto">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
                                 <th class="px-4 py-3 text-left font-semibold">Tanggal</th>
@@ -98,7 +98,7 @@
                                 <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-100">
                             @forelse ($groupedPembelians as $tanggal => $items)
                                 @php
                                     $approvedLevels = $items->map(function ($item) {
@@ -128,25 +128,25 @@
                                         }
                                     }
                                     $badgeColors = [
-                                        'Belum Diinput' => 'bg-red-100 text-red-800',
-                                        'Sudah Diinput' => 'bg-blue-100 text-blue-800',
+                                        'Belum Diinput' => 'bg-red-100 text-red-700',
+                                        'Sudah Diinput' => 'bg-blue-100 text-blue-700',
                                     ];
                                     $badgeClass = collect($badgeColors)->filter(fn($v, $k) => str($statusText)->contains($k))->first()
                                         ?? 'bg-green-100 text-green-700';
                                 @endphp
-                                <tr class="transition-all duration-500 hover:bg-gray-50">
+                                <tr class="transition-all duration-300 hover:bg-gray-50">
                                     <td class="px-4 py-3 text-gray-800 font-medium">
                                         {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}
                                     </td>
-                                    <td class="text-center px-4 py-3">
-                                        <span class="text-xs px-2 py-1 rounded-full {{ $badgeClass }}">
+                                    <td class="px-4 py-3 text-center">
+                                        <span class="text-xs px-2 py-1 rounded-full font-medium {{ $badgeClass }}">
                                             {{ $statusText }}
                                         </span>
                                     </td>
-                                    <td class="text-center px-4 py-3">
+                                    <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
                                             <a href="{{ route('pembelian.lihat.tanggal', ['tanggal' => $tanggal]) }}"
-                                                class="lihatForm flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
+                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path
@@ -159,13 +159,14 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center px-4 py-3 text-gray-500">
+                                    <td colspan="3" class="text-center px-4 py-4 text-gray-500">
                                         Tidak ada data.
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+
                 </div>
                 <div class="flex justify-end pt-4 border-t mt-4">
                 </div>

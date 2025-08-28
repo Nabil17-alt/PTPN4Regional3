@@ -56,7 +56,7 @@
                                     text: {!! json_encode(session('error')) !!}
                                 });
                             @endif
-                                                                                                                                                                            });
+                                                                                                                                                                                                            });
                 </script>
             @endif
             <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
@@ -148,8 +148,7 @@
                                                 </svg>
                                                 Detail
                                             </a>
-                                            <a href="javascript:void(0)"
-                                                onclick="openEditModal({{ $pembelian->id }}, '{{ $pembelian->harga_penetapan }}', '{{ $pembelian->harga_escalasi }}')"
+                                            <a href="{{ route('pembelian.edit', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
                                                 class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     fill="currentColor" viewBox="0 0 24 24">
@@ -183,31 +182,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                    <div class="bg-white rounded-lg shadow-lg w-96 p-6">
-                        <h2 class="text-lg font-semibold mb-4">Edit Harga</h2>
-                        <form id="editForm" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700">Harga Penetapan</label>
-                                <input type="number" name="harga_penetapan" id="harga_penetapan"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" required>
-                            </div>
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700">Harga Eskalasi</label>
-                                <input type="number" name="harga_escalasi" id="harga_escalasi"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" required>
-                            </div>
-                            <div class="flex justify-end gap-2">
-                                <button type="button" onclick="closeEditModal()"
-                                    class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
-                                <button type="submit"
-                                    class="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">Simpan</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+
                 <div class="flex justify-between items-center pt-4 border-t mt-4">
                     <div class="pt-6">
                         <a id="backForm" href="{{ route('buy.admin') }}"
@@ -292,8 +267,8 @@
                                                 $managerApproval = $pembelian->approvals->where('role', 'Manager')->first();
                                             @endphp
                                             @if($managerApproval)
-                                                <div>Penetapan: {{ $managerApproval->harga_penetapan }}</div>
-                                                <div>Eskalasi: {{ $managerApproval->harga_escalasi }}</div>
+                                                <div>Penetapan: {{ number_format($managerApproval->harga_penetapan, 2, '.', '') }}</div>
+                                                <div>Ekskalasi: {{ number_format($managerApproval->harga_escalasi, 0, '', '') }}</div>
                                             @else
                                                 <span class="text-gray-400">-</span>
                                             @endif
@@ -303,8 +278,8 @@
                                                 $adminApproval = $pembelian->approvals->where('role', 'Admin')->first();
                                             @endphp
                                             @if($adminApproval)
-                                                <div>Penetapan: {{ $adminApproval->harga_penetapan }}</div>
-                                                <div>Eskalasi: {{ $adminApproval->harga_escalasi }}</div>
+                                                <div>Penetapan: {{ number_format($adminApproval->harga_penetapan, 2, '.', '') }}</div>
+                                                <div>Ekskalasi: {{ number_format($adminApproval->harga_escalasi, 0, '', '') }}</div>
                                             @else
                                                 <span class="text-gray-400">-</span>
                                             @endif
@@ -314,8 +289,8 @@
                                                 $gmApproval = $pembelian->approvals->where('role', 'General_Manager')->first();
                                             @endphp
                                             @if($gmApproval)
-                                                <div>Penetapan: {{ $gmApproval->harga_penetapan }}</div>
-                                                <div>Eskalasi: {{ $gmApproval->harga_escalasi }}</div>
+                                                <div>Penetapan: {{ number_format($gmApproval->harga_penetapan, 2, '.', '') }}</div>
+                                                <div>Ekskalasi: {{ number_format($gmApproval->harga_escalasi, 0, '', '') }}</div>
                                             @else
                                                 <span class="text-gray-400">-</span>
                                             @endif
@@ -325,8 +300,8 @@
                                                 $rhApproval = $pembelian->approvals->where('role', 'Region_Head')->first();
                                             @endphp
                                             @if($rhApproval)
-                                                <div>Penetapan: {{ $rhApproval->harga_penetapan }}</div>
-                                                <div>Eskalasi: {{ $rhApproval->harga_escalasi }}</div>
+                                                <div>Penetapan: {{ number_format($rhApproval->harga_penetapan, 2, '.', '') }}</div>
+                                                <div>Ekskalasi: {{ number_format($rhApproval->harga_escalasi, 0, '', '') }}</div>
                                             @else
                                                 <span class="text-gray-400">-</span>
                                             @endif
@@ -339,6 +314,7 @@
                                 @endforelse
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             @endif
@@ -359,7 +335,6 @@
     @endsection
     <script src="{{ asset('js/buyseeunit.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="//unpkg.com/alpinejs" defer></script>
 
 </body>
 

@@ -85,11 +85,11 @@
                         </div>
                         <div class="flex flex-col gap-6">
                             <div class="w-full">
-                                <label class="block text-sm font-medium text-gray-700">Unit</label>
+                                <label class="block text-sm font-medium text-gray-700">Unit Kerja</label>
                                 @php
                                     $user = auth()->user();
                                 @endphp
-                                @if ($user->level === 'Admin' || $user->level === 'Asisten')
+                                @if ($user->level === 'Admin' || $user->level === 'General_Manager' || $user->level === 'Region_Head')
                                     <select name="kode_unit"
                                         class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-white">
                                         @foreach ($units as $unit)

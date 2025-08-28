@@ -6,10 +6,11 @@ function closeAddModal() {
     document.getElementById('addModal').classList.add('hidden');
 }
 
-function openEditModal(username, name, email, level) {
-    document.getElementById('editUsername').value = name;
+function openEditModal(username, name, email, level, kodeUnit) {
+    document.getElementById('editUsername').value = username;
     document.getElementById('editEmail').value = email;
     document.getElementById('editLevel').value = level;
+    document.getElementById('unitSelectEdit').value = kodeUnit;
     document.getElementById('editPassword').value = '';
 
     const form = document.getElementById('editForm');
@@ -33,9 +34,7 @@ function confirmDelete(username) {
         cancelButtonText: 'Batal',
         preConfirm: () => {
             const loader = document.getElementById('pageLoader');
-            if (loader) {
-                loader.classList.remove('hidden');
-            }
+            if (loader) loader.classList.remove('hidden');
 
             return new Promise((resolve) => {
                 setTimeout(() => {
@@ -62,78 +61,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const addakunForm = document.getElementById('addakunForm');
-    if (addakunForm) {
+    const unitSelectAdd = document.getElementById('unitSelectAdd');
+    const kodeUnitHidden = document.getElementById('kodeUnitHidden');
+
+    if (addakunForm && unitSelectAdd && kodeUnitHidden) {
         addakunForm.addEventListener('submit', () => {
-            loader.classList.remove('hidden');
+            kodeUnitHidden.value = unitSelectAdd.value || '';
         });
     }
 
     const cariForm = document.getElementById('cariForm');
-    if (cariForm) {
-        cariForm.addEventListener('submit', () => {
-            loader.classList.remove('hidden');
-        });
-    }
+    if (cariForm) cariForm.addEventListener('submit', () => loader.classList.remove('hidden'));
 
     const editForm = document.getElementById('editForm');
-    if (editForm) {
-        editForm.addEventListener('submit', () => {
-            loader.classList.remove('hidden');
-        });
-    }
+    if (editForm) editForm.addEventListener('submit', () => loader.classList.remove('hidden'));
 
     const greetingEl = document.getElementById("greeting");
     if (greetingEl) {
         const hour = new Date().getHours();
         let greetingText = "Selamat datang";
-
-        if (hour >= 3 && hour < 10) {
-            greetingText = "Selamat pagi";
-        } else if (hour >= 10 && hour < 15) {
-            greetingText = "Selamat siang";
-        } else if (hour >= 15 && hour < 18) {
-            greetingText = "Selamat sore";
-        } else {
-            greetingText = "Selamat malam";
-        }
+        if (hour >= 3 && hour < 10) greetingText = "Selamat pagi";
+        else if (hour >= 10 && hour < 15) greetingText = "Selamat siang";
+        else if (hour >= 15 && hour < 18) greetingText = "Selamat sore";
+        else greetingText = "Selamat malam";
 
         greetingEl.textContent = greetingText + ", " + greetingEl.dataset.username;
     }
-});
 
-document.addEventListener("DOMContentLoaded", () => {
     const jabatanSelect = document.getElementById("jabatanSelect");
-    const unitSelect = document.getElementById("unitSelect");
-    const kodeUnitHidden = document.getElementById("kodeUnitHidden");
-
-    if (jabatanSelect && unitSelect && kodeUnitHidden) {
+    if (jabatanSelect && unitSelectAdd && kodeUnitHidden) {
         function updateUnitField() {
             const selectedJabatan = jabatanSelect.value;
-
-            if (selectedJabatan === "Admin" || selectedJabatan === "Asisten") {
-                const kantorOption = Array.from(unitSelect.options).find(opt =>
+            if (selectedJabatan === "Admin" || selectedJabatan === "General_Manager" || selectedJabatan === "Region_Head") {
+                const kantorOption = Array.from(unitSelectAdd.options).find(opt =>
                     opt.textContent.trim().toLowerCase() === "kantor regional"
                 );
-
                 if (kantorOption) {
-                    unitSelect.value = kantorOption.value;
+                    unitSelectAdd.value = kantorOption.value;
                     kodeUnitHidden.value = kantorOption.value;
                 }
-
-                unitSelect.setAttribute("disabled", "disabled");
-                unitSelect.classList.add("bg-gray-100");
+                unitSelectAdd.setAttribute("disabled", "disabled");
+                unitSelectAdd.classList.add("bg-gray-100");
             } else {
-                unitSelect.removeAttribute("disabled");
-                unitSelect.classList.remove("bg-gray-100");
-                kodeUnitHidden.value = unitSelect.value;
+                unitSelectAdd.removeAttribute("disabled");
+                unitSelectAdd.classList.remove("bg-gray-100");
+                kodeUnitHidden.value = unitSelectAdd.value;
             }
         }
 
         jabatanSelect.addEventListener("change", updateUnitField);
-        unitSelect.addEventListener("change", () => {
-            kodeUnitHidden.value = unitSelect.value;
+        unitSelectAdd.addEventListener("change", () => {
+            kodeUnitHidden.value = unitSelectAdd.value;
         });
-
         updateUnitField();
     }
 });

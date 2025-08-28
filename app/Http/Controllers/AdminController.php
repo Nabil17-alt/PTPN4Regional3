@@ -92,48 +92,68 @@ class AdminController extends Controller
         $me = Auth::user();
         $user = User::where('username', $username)->firstOrFail();
 
+        // Cek hak akses
         if (!in_array($me->level, ['Admin', 'Asisten']) && $me->username !== $username) {
             return redirect()->route('admin.akun')->withErrors(['error' => 'Tidak memiliki izin mengubah akun lain.']);
         }
 
+        // Validasi berbeda untuk Admin/Asisten vs User biasa
         if (in_array($me->level, ['Admin', 'Asisten'])) {
             $rules = [
                 'username' => 'required|string',
                 'email' => 'required|email|unique:tb_users,email,' . $user->id,
                 'level' => 'required|string',
+                'kode_unit' => 'required|string',
                 'password' => 'nullable|string|min:6',
             ];
-
-            $validated = $request->validate($rules);
-
-            $user->username = $validated['username'];
-            $user->email = $validated['email'];
-            $user->level = $validated['level'];
-            if (!empty($validated['password'])) {
-                $user->password = Hash::make($validated['password']);
-            }
         } else {
             $rules = [
                 'username' => 'required|string',
                 'password' => 'nullable|string|min:6',
             ];
-
-            $validated = $request->validate($rules);
-
-            $user->username = $validated['username'];
-            if (!empty($validated['password'])) {
-                $user->password = Hash::make($validated['password']);
-            }
         }
 
-        $user->save();
+        $validated = $request->validate($rules);
+
+        // Update hanya jika ada perubahan
+        $updated = false;
+
+        if ($user->username !== $validated['username']) {
+            $user->username = $validated['username'];
+            $updated = true;
+        }
+
+        if (isset($validated['email']) && $user->email !== $validated['email']) {
+            $user->email = $validated['email'];
+            $updated = true;
+        }
+
+        if (isset($validated['level']) && $user->level !== $validated['level']) {
+            $user->level = $validated['level'];
+            $updated = true;
+        }
+
+        if (isset($validated['kode_unit']) && $user->kode_unit !== $validated['kode_unit']) {
+            $user->kode_unit = $validated['kode_unit'];
+            $updated = true;
+        }
+
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+            $updated = true;
+        }
+
+        if ($updated) {
+            $user->save();
+        }
 
         return redirect()->route('admin.akun')->with('success', 'Akun berhasil diedit');
     }
+
     public function deleteAccount($username)
     {
         $me = Auth::user();
-        if (!in_array($me->level, ['Admin', 'Asisten'])) {
+        if (!in_array($me->level, ['Admin'])) {
             return redirect()->route('admin.akun')->withErrors(['error' => 'Tidak memiliki izin untuk menghapus akun.']);
         }
 

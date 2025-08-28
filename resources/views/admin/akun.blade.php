@@ -48,12 +48,10 @@
                             <li>
                                 <a id="greeting" class="hover:text-gray-700"
                                     data-username="{{ Auth::user()->username }}"></a>
-
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
                             </li>
-
                         </ol>
                         <h6 class="text-xl font-semibold text-gray-800 mt-1">
                             {{ Auth::user()->level }}
@@ -85,131 +83,131 @@
                         </button>
                     @endif
                 </div>
-                @if(in_array(Auth::user()->level, ['Admin','Asisten']))
-                <form id="cariForm" method="GET" action="{{ route('admin.akun') }}"
-                    class="flex justify-end items-center mb-4">
-                    <div class="relative w-64">
-                        <input type="text" name="search" value="{{ request('search') }}"
-                            class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Cari akun..." />
-                        <div class="absolute right-3 top-2.5 text-gray-500">
-                            <button type="submit">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 21l-4.35-4.35M16.65 10.5a6.15 6.15 0 11-12.3 0 6.15 6.15 0 0112.3 0z" />
-                                </svg>
-                            </button>
+                @if(in_array(Auth::user()->level, ['Admin', 'Asisten']))
+                    <form id="cariForm" method="GET" action="{{ route('admin.akun') }}"
+                        class="flex justify-end items-center mb-4">
+                        <div class="relative w-64">
+                            <input type="text" name="search" value="{{ request('search') }}"
+                                class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Cari akun..." />
+                            <div class="absolute right-3 top-2.5 text-gray-500">
+                                <button type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 21l-4.35-4.35M16.65 10.5a6.15 6.15 0 11-12.3 0 6.15 6.15 0 0112.3 0z" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
                 @endif
-                
                 <div class="overflow-x-auto">
                     <table class="w-full min-w-[1000px] divide-y divide-gray-200 text-sm">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
-                                <th class="px-4 py-3 text-left font-semibold">Nama</th>
-                                <th class="px-4 py-3 text-center font-semibold">Email</th>
+                                <th class="px-4 py-3 text-left font-semibold">Username</th>
                                 <th class="px-4 py-3 text-center font-semibold">Jabatan</th>
+                                <th class="px-4 py-3 text-center font-semibold">Unit Kerja</th>
                                 <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($users as $user)
-                            @if(in_array(Auth::user()->level, ['Admin','Asisten']) || Auth::user()->username == $user->username)
-                                <tr>
-                                    <td class="px-4 py-3 flex items-center space-x-3">
-                                        <img src="https://i.pravatar.cc/40?u={{ $user->username }}" alt="{{ $user->username }}"
-                                            class="rounded-full h-8 w-8" />
-                                        <div class="font-medium text-gray-800">{{ $user->username }}</div>
-                                    </td>
-                                    <td class="text-center px-4 py-3 text-gray-600">{{ $user->email }}</td>
-                                    <td class="text-center px-4 py-3 text-gray-600">{{ $user->level }}</td>
-                                    <td class="px-4 py-3 text-center">
-                                        <div class="flex justify-center items-center gap-2">
-                                            @if(in_array(Auth::user()->level, ['Admin','Asisten']) || Auth::user()->username == $user->username)
-                                            <button type="button"
-                                                onclick="openEditModal('{{ $user->username }}', '{{ $user->name }}', '{{ $user->email }}', '{{ $user->level }}')"
-                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    fill="currentColor" viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M5 19h14v2H5c-1.103 0-2-.897-2-2V7h2v12zM20.707 7.293l-1-1a1 1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
-                                                </svg>
-                                                Edit
-                                            </button>
-                                            @endif
-                                            @if(in_array(Auth::user()->level, ['Admin','Asisten']))
-                                            <form id="delete-form-{{ $user->username }}" 
-                                                action="{{ route('akun.delete', $user->username) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" onclick="confirmDelete('{{ $user->username }}')"
-                                                    class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-all">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                        fill="currentColor" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
-                                                    </svg>
-                                                    Hapus
-                                                </button>
-                                            </form>
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endif
+                                @if(in_array(Auth::user()->level, ['Admin']) || Auth::user()->username == $user->username)
+                                    <tr>
+                                        <td class="px-4 py-3 flex items-center space-x-3">
+                                            <img src="https://i.pravatar.cc/40?u={{ $user->username }}" alt="{{ $user->username }}"
+                                                class="rounded-full h-8 w-8" />
+                                            <div class="font-medium text-gray-800">{{ $user->username }}</div>
+                                        </td>
+                                        <td class="text-center px-4 py-3 text-gray-600">{{ $user->level }}</td>
+                                        <td class="text-center px-4 py-3 text-gray-600">
+                                            {{ $user->unit ? $user->unit->nama_unit : '-' }}
+                                        </td>
+                                        <td class="px-4 py-3 text-center">
+                                            <div class="flex justify-center items-center gap-2">
+                                                @if(in_array(Auth::user()->level, ['Admin']) || Auth::user()->username == $user->username)
+                                                    <button type="button"
+                                                        onclick="openEditModal('{{ $user->username }}', '{{ $user->name }}', '{{ $user->email }}', '{{ $user->level }}', '{{ $user->kode_unit }}')"
+                                                        class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-800 transition-all">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                            fill="currentColor" viewBox="0 0 24 24">
+                                                            <path
+                                                                d="M5 19h14v2H5c-1.103 0-2-.897-2-2V7h2v12zM20.707 7.293l-1-1a1 1 0 00-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 000-1.414z" />
+                                                        </svg>
+                                                        Edit
+                                                    </button>
+                                                @endif
+                                                @if(in_array(Auth::user()->level, ['Admin']))
+                                                    <form id="delete-form-{{ $user->username }}"
+                                                        action="{{ route('akun.delete', $user->username) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" onclick="confirmDelete('{{ $user->username }}')"
+                                                            class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-all">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                                fill="currentColor" viewBox="0 0 24 24">
+                                                                <path
+                                                                    d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
+                                                            </svg>
+                                                            Hapus
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-
-                @if(in_array(Auth::user()->level, ['Admin','Asisten']))
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t mt-6">
-                    <p class="text-sm text-gray-500">
-                        Menampilkan <span class="font-medium text-gray-700">{{ $users->firstItem() }}</span>
-                        sampai <span class="font-medium text-gray-700">{{ $users->lastItem() }}</span>
-                        dari <span class="font-medium text-gray-700">{{ $users->total() }}</span> akun
-                    </p>
-                    <div class="flex items-center space-x-2">
-                        @php
-                            $start = max(1, $users->currentPage() - 2);
-                            $end = min($users->lastPage(), $users->currentPage() + 2);
-                        @endphp
-                        @if ($start > 1)
-                            <a href="{{ $users->url(1) }}"
-                                class="px-4 py-2 text-sm text-gray-900 border border-gray-400 rounded-lg hover:bg-gray-100 transition-all">
-                                1
-                            </a>
-                            @if ($start > 2)
-                                <span class="px-2 text-sm text-gray-500">...</span>
+                @if(in_array(Auth::user()->level, ['Admin']))
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t mt-6">
+                        <p class="text-sm text-gray-500">
+                            Menampilkan <span class="font-medium text-gray-700">{{ $users->firstItem() }}</span>
+                            sampai <span class="font-medium text-gray-700">{{ $users->lastItem() }}</span>
+                            dari <span class="font-medium text-gray-700">{{ $users->total() }}</span> akun
+                        </p>
+                        <div class="flex items-center space-x-2">
+                            @php
+                                $start = max(1, $users->currentPage() - 2);
+                                $end = min($users->lastPage(), $users->currentPage() + 2);
+                            @endphp
+                            @if ($start > 1)
+                                <a href="{{ $users->url(1) }}"
+                                    class="px-4 py-2 text-sm text-gray-900 border border-gray-400 rounded-lg hover:bg-gray-100 transition-all">
+                                    1
+                                </a>
+                                @if ($start > 2)
+                                    <span class="px-2 text-sm text-gray-500">...</span>
+                                @endif
                             @endif
-                        @endif
-                        @for ($page = $start; $page <= $end; $page++)
-                            @if ($page == $users->currentPage())
-                                <span
-                                    class="px-4 py-2 text-sm font-semibold text-white bg-gray-700 rounded-lg shadow hover:bg-gray-800 transition-all">
-                                    {{ $page }}
-                                </span>
-                            @else
-                                <a href="{{ $users->url($page) }}"
+                            @for ($page = $start; $page <= $end; $page++)
+                                @if ($page == $users->currentPage())
+                                    <span
+                                        class="px-4 py-2 text-sm font-semibold text-white bg-gray-700 rounded-lg shadow hover:bg-gray-800 transition-all">
+                                        {{ $page }}
+                                    </span>
+                                @else
+                                    <a href="{{ $users->url($page) }}"
+                                        class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all">
+                                        {{ $page }}
+                                    </a>
+                                @endif
+                            @endfor
+                            @if ($end < $users->lastPage())
+                                @if ($end < $users->lastPage() - 1)
+                                    <span class="px-2 text-sm text-gray-500">...</span>
+                                @endif
+                                <a href="{{ $users->url($users->lastPage()) }}"
                                     class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all">
-                                    {{ $page }}
+                                    {{ $users->lastPage() }}
                                 </a>
                             @endif
-                        @endfor
-                        @if ($end < $users->lastPage())
-                            @if ($end < $users->lastPage() - 1)
-                                <span class="px-2 text-sm text-gray-500">...</span>
-                            @endif
-                            <a href="{{ $users->url($users->lastPage()) }}"
-                                class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all">
-                                {{ $users->lastPage() }}
-                            </a>
-                        @endif
+                        </div>
                     </div>
-                </div>
                 @endif
             </div>
             <footer class="footer p-5 bg-gray-50 border-t">
@@ -240,25 +238,43 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
                         <input type="text" id="editUsername" name="username" required
+                            value="{{ old('username', $editUser->username ?? '') }}"
                             class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                         <input type="email" id="editEmail" name="email" required
+                            value="{{ old('email', $editUser->email ?? '') }}"
                             class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2"
                             @if(!in_array(Auth::user()->level, ['Admin', 'Asisten'])) readonly @endif>
-
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
                         <select id="editLevel" name="level" required
                             class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2"
                             @if(!in_array(Auth::user()->level, ['Admin', 'Asisten'])) disabled @endif>
-                            <option value="" disabled selected>Pilih Jabatan</option>
+                            <option value="" disabled>Pilih Jabatan</option>
                             @foreach ($jabatanOptions as $option)
-                                <option value="{{ $option }}">{{ str_replace('_', ' ', $option) }}</option>
+                                <option value="{{ $option }}" {{ old('level', $editUser->level ?? '') == $option ? 'selected' : '' }}>{{ str_replace('_', ' ', $option) }}
+                                </option>
                             @endforeach
                         </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Unit Kerja</label>
+                        <select id="unitSelectEdit" name="kode_unit" required
+                            class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-500 focus:border-gray-500 px-3 py-2"
+                            @if(!in_array(Auth::user()->level, ['Admin', 'Asisten'])) disabled @endif>
+                            <option value="" disabled>Pilih Unit</option>
+                            @foreach ($units as $unit)
+                                <option value="{{ $unit->kode_unit }}" {{ old('kode_unit', $editUser->kode_unit ?? '') == $unit->kode_unit ? 'selected' : '' }}>
+                                    {{ $unit->nama_unit }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('kode_unit')
+                            <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Password Baru (opsional)</label>
@@ -315,7 +331,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Kode Unit</label>
                             <input type="hidden" name="kode_unit" id="kodeUnitHidden">
-                            <select id="unitSelect"
+                            <select id="unitSelectAdd"
                                 class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-500 focus:border-gray-500 px-3 py-2">
                                 <option value="" disabled selected>Pilih Unit</option>
                                 @foreach ($units as $unit)
