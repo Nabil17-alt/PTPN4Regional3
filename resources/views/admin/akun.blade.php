@@ -317,7 +317,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Kode Unit</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Unit Kerja</label>
                             <input type="hidden" name="kode_unit" id="kodeUnitHidden">
                             <select id="unitSelectAdd"
                                 class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-500 focus:border-gray-500 px-3 py-2">
