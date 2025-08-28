@@ -72,7 +72,7 @@
                             </li>
                         </ol>
                         <h6 class="text-xl font-semibold text-gray-800 mt-1">
-                            {{ Auth::user()->level }}
+                            {{ Auth::user()->level }} - {{ Auth::user()->unit->nama_unit ?? Auth::user()->kode_unit }}
                         </h6>
                     </div>
                     <div class="flex items-center gap-6">

@@ -7,7 +7,7 @@ class Unit extends Model
 {
     protected $table = 'tb_unit';
     public $primaryKey = 'id_unit';
-
+    protected $fillable = ['kode_unit', 'nama_unit'];
     protected $guarded  = ['id_unit'];
 
     public $timestamps = false;
