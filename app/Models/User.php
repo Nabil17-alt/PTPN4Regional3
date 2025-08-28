@@ -14,7 +14,7 @@ class User extends Authenticatable
 
     public $timestamps = true;
 
-    protected $fillable = ['username', 'email','password', 'level', 'kode_unit', 'created_at','updated_at'];
+    protected $fillable = ['username', 'password', 'level', 'kode_unit', 'created_at','updated_at'];
 
     public function getAuthPassword()
     {

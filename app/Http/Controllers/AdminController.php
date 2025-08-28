@@ -31,7 +31,6 @@ class AdminController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('tb_users.username', 'like', "%$search%")
-                    ->orWhere('tb_users.email', 'like', "%$search%")
                     ->orWhere('tb_users.level', 'like', "%$search%")
                     ->orWhere('tb_unit.nama_unit', 'like', "%$search%");
             });
@@ -92,16 +91,13 @@ class AdminController extends Controller
         $me = Auth::user();
         $user = User::where('username', $username)->firstOrFail();
 
-        // Cek hak akses
-        if (!in_array($me->level, ['Admin', 'Asisten']) && $me->username !== $username) {
+        if (!in_array($me->level, ['Admin']) && $me->username !== $username) {
             return redirect()->route('admin.akun')->withErrors(['error' => 'Tidak memiliki izin mengubah akun lain.']);
         }
 
-        // Validasi berbeda untuk Admin/Asisten vs User biasa
         if (in_array($me->level, ['Admin', 'Asisten'])) {
             $rules = [
                 'username' => 'required|string',
-                'email' => 'required|email|unique:tb_users,email,' . $user->id,
                 'level' => 'required|string',
                 'kode_unit' => 'required|string',
                 'password' => 'nullable|string|min:6',
@@ -115,16 +111,10 @@ class AdminController extends Controller
 
         $validated = $request->validate($rules);
 
-        // Update hanya jika ada perubahan
         $updated = false;
 
         if ($user->username !== $validated['username']) {
             $user->username = $validated['username'];
-            $updated = true;
-        }
-
-        if (isset($validated['email']) && $user->email !== $validated['email']) {
-            $user->email = $validated['email'];
             $updated = true;
         }
 
@@ -172,7 +162,6 @@ class AdminController extends Controller
 
             $rules = [
                 'username' => 'required|string|unique:tb_users,username',
-                'email' => 'required|email|unique:tb_users,email',
                 'password' => 'required|string|min:6',
                 'kode_unit' => 'required|string',
                 'level' => 'required|string',
@@ -182,7 +171,6 @@ class AdminController extends Controller
 
             $user = User::create([
                 'username' => $validated['username'],
-                'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'level' => $validated['level'],
                 'kode_unit' => $validated['kode_unit'],

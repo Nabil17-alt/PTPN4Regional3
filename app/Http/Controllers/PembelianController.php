@@ -314,7 +314,4 @@ class PembelianController extends Controller
 
         return redirect()->back()->with('success', 'Harga berhasil diperbarui');
     }
-
-
-
 }

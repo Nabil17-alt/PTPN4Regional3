@@ -56,7 +56,7 @@
                             </li>
                         </ol>
                         <h6 class="text-xl font-semibold text-gray-800 mt-1">
-                            {{ Auth::user()->level }}
+                            {{ Auth::user()->level }} 
                         </h6>
                     </div>
                     <div class="flex items-center gap-6">
@@ -82,9 +82,11 @@
                     <table class="min-w-[800px] w-full table-fixed">
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
-                                <th class="w-1/3 px-4 py-3 text-left font-semibold">Grade</th>
-                                <th class="w-1/3 px-6 py-3 text-left font-semibold">Margin</th>
-                                <th class="w-1/3 px-6 py-3 text-center font-semibold">Aksi</th>
+                                <th class="w-1/4 px-4 py-3 text-left font-semibold">Grade</th>
+                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Harga Penetapan</th>
+                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Harga Ekskalasi</th>
+                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Margin</th>
+                                <th class="w-1/4 px-6 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -92,10 +94,17 @@
                                 <tr>
                                     <td class="px-4 py-3">{{ $pembelian->grade }}</td>
                                     <td class="px-6 py-3">
+                                        {{ $pembelian->harga_penetapan}}
+                                    </td>
+                                    <td class="px-6 py-3">
+                                        {{ $pembelian->harga_escalasi }}
+                                    </td>
+                                    <td class="px-6 py-3">
                                         <span class="{{ $pembelian->margin < 0 ? 'text-red-600' : 'text-green-600' }}">
                                             {{ number_format($pembelian->margin, 2, ',', '.') }}%
                                         </span>
                                     </td>
+
                                     <td class="text-center px-4 py-3">
                                         <div class="flex justify-center items-center gap-2">
                                             <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"

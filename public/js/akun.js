@@ -8,7 +8,6 @@ function closeAddModal() {
 
 function openEditModal(username, name, email, level, kodeUnit) {
     document.getElementById('editUsername').value = username;
-    document.getElementById('editEmail').value = email;
     document.getElementById('editLevel').value = level;
     document.getElementById('unitSelectEdit').value = kodeUnit;
     document.getElementById('editPassword').value = '';

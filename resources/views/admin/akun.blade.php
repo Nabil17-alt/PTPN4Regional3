@@ -117,7 +117,7 @@
                                 @if(in_array(Auth::user()->level, ['Admin']) || Auth::user()->username == $user->username)
                                     <tr>
                                         <td class="px-4 py-3 flex items-center space-x-3">
-                                            <img src="https://i.pravatar.cc/40?u={{ $user->username }}" alt="{{ $user->username }}"
+                                            <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Logo PTPN4"
                                                 class="rounded-full h-8 w-8" />
                                             <div class="font-medium text-gray-800">{{ $user->username }}</div>
                                         </td>
@@ -242,13 +242,6 @@
                             class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" id="editEmail" name="email" required
-                            value="{{ old('email', $editUser->email ?? '') }}"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2"
-                            @if(!in_array(Auth::user()->level, ['Admin', 'Asisten'])) readonly @endif>
-                    </div>
-                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
                         <select id="editLevel" name="level" required
                             class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2"
@@ -311,11 +304,6 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Username</label>
                             <input type="text" name="username" required
-                                class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-500 focus:border-gray-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" name="email" required
                                 class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-500 focus:border-gray-500">
                         </div>
                         <div>
