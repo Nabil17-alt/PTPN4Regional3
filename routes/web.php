@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -24,6 +25,8 @@ Route::get('/dashboard', function () {
     $user = Auth::user();
     return view('dashboard', ['user' => $user]);
 })->name('dashboard');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/akun', [AdminController::class, 'akun'])->name('admin.akun');

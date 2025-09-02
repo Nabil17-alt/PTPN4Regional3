@@ -30,11 +30,7 @@
                     <input type="text" id="username" name="username" value="{{ old('username') }}" required>
                     @error('username') <div class="error-messages">{{ $message }}</div> @enderror
                 </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required>
-                    @error('email') <div class="error-messages">{{ $message }}</div> @enderror
-                </div>
+                
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required>

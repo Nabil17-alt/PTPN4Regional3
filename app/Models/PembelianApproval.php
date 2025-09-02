@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PembelianApproval extends Model
 {
-    protected $table = 'pembelian_approvals';
+    protected $table = 'tb_pembelian_approvals';
 
     protected $fillable = [
         'pembelian_id',

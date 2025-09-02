@@ -31,16 +31,16 @@
                     <div>
                         <ol class="flex items-center space-x-2 text-sm text-gray-500">
                             <li>
-                                <a id="greeting" class="hover:text-gray-700" data-username="{{ Auth::user()->username }}"></a>
-
+                                <a id="greeting" class="hover:text-gray-700"
+                                    data-username="{{ Auth::user()->username }}"></a>
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
                             </li>
-                            
                         </ol>
                         <h6 class="text-lg font-semibold text-gray-800 mt-1">
-                            {{ Auth::user()->level }} - {{ Auth::user()->unit->nama_unit ?? Auth::user()->kode_unit }}
+                            {{ Auth::user()->level }} -
+                            {{ Auth::user()->unit->nama_unit ?? Auth::user()->kode_unit }}
                         </h6>
                     </div>
                     <div class="flex items-center gap-6">
@@ -54,27 +54,110 @@
                     </div>
                 </nav>
             </div>
-            <div
-                class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center justify-center text-center min-h-[400px]">
-                <div id="greeting" data-username="{{ Auth::user()->username }}" class="text-xl md:text-2xl font-semibold text-gray-700 mb-4"></div>
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">SELAMAT DATANG DI </h1>
-                <p class="text-sm md:text-base text-gray-600 mb-1">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                <p class="text-sm md:text-base text-gray-600 mb-6">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                <div class="w-40 md:w-48">
-                    <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Logo PTPN4" class="w-full h-auto" />
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-2xl shadow p-6">
+                    <h2 class="text-sm font-medium text-gray-500">Total Pembelian</h2>
+                    <p class="mt-2 text-2xl font-bold text-indigo-600">
+                        {{ number_format($totalPembelian, 0, ',', '.') }}
+                    </p>
+                </div>
+                <div class="bg-white rounded-2xl shadow p-6">
+                    <h2 class="text-sm font-medium text-gray-500">Rata-rata Margin</h2>
+                    <p class="mt-2 text-2xl font-bold {{ $rataRataMargin < 0 ? 'text-red-600' : 'text-green-600' }}">
+                        {{ number_format($rataRataMargin, 2, ',', '.') }}
+                    </p>
+                </div>
+                <div class="bg-white rounded-2xl shadow p-6">
+                    <h2 class="text-sm font-medium text-gray-500">Rata-rata Biaya Produksi</h2>
+                    <p class="mt-2 text-2xl font-bold text-green-600">
+                        {{ number_format($rataRataBiaya, 2, ',', '.') }}
+                    </p>
                 </div>
             </div>
-            <footer class="footer p-5 bg-gray-50 border-t">
-                <div class="row align-items-center justify-content-lg-between">
-                    <div class="col-lg-6 mb-lg-0 mb-4">
-                        <div class="text-center text-muted text-m text-lg-start">
-                            Copyright &copy;
-                            <script>
-                                document.write(new Date().getFullYear())
-                            </script>
-                            PT. Perkebunan Nusantara IV
-                        </div>
-                    </div>
+            <div class="bg-white rounded-2xl shadow p-6 mb-8">
+                <h2 class="text-lg font-semibold text-gray-700 mb-4">Status Approval - Hari Ini</h2>
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full min-w-[900px] divide-y divide-gray-200 text-sm table-auto">
+                        <thead class="bg-gray-100 text-gray-700">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Unit</th>
+                                <th class="px-4 py-3 text-left font-semibold">Grade</th>
+                                <th class="px-4 py-3 text-left font-semibold">Harga Penetapan</th>
+                                <th class="px-4 py-3 text-left font-semibold">Harga Eskalasi</th>
+                                <th class="px-4 py-3 text-left font-semibold">Margin</th>
+                                <th class="px-4 py-3 text-center font-semibold">Approval</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            @forelse($pembelianHariIni as $p)
+                                <tr class="transition-all duration-300 hover:bg-gray-50">
+                                    <td class="px-4 py-3">{{ $p->nama_unit ?? $p->kode_unit }}</td>
+                                    <td class="px-4 py-3">{{ $p->grade }}</td>
+                                    <td class="px-4 py-3">{{ number_format($p->harga_penetapan, 2, ',', '.') }}</td>
+                                    <td class="px-4 py-3">{{ number_format($p->harga_escalasi, 0, ',', '.') }}</td>
+                                    <td
+                                        class="px-4 py-3 
+                                                                {{ $p->margin < 0 ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold' }}">
+                                        {{ number_format($p->margin, 2, ',', '.') }}
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        @php
+                                            $unitKode = $p->kode_unit ?? null;
+                                            $pembeliansPerUnit = \App\Models\Pembelian::where('kode_unit', $unitKode)
+                                                ->whereDate('tanggal', $p->tanggal)
+                                                ->get();
+                                            if ($pembeliansPerUnit->isEmpty()) {
+                                                $status = 'Belum Diinput';
+                                                $badgeClass = 'bg-red-100 text-red-700';
+                                            } else {
+                                                $levelOrder = [
+                                                    'Manager' => 1,
+                                                    'Admin' => 2,
+                                                    'General Manager' => 3,
+                                                    'Region Head' => 4,
+                                                ];
+                                                $approvedLevels = $pembeliansPerUnit->map(function ($item) {
+                                                    if ($item->status_approval_rh)
+                                                        return 'Region Head';
+                                                    if ($item->status_approval_gm)
+                                                        return 'General Manager';
+                                                    if ($item->status_approval_admin)
+                                                        return 'Admin';
+                                                    if ($item->status_approval_manager)
+                                                        return 'Manager';
+                                                    return null;
+                                                })->filter();
+                                                if ($approvedLevels->isEmpty()) {
+                                                    $status = 'Sudah Diinput';
+                                                    $badgeClass = 'bg-blue-100 text-blue-700';
+                                                } else {
+                                                    $latestApproval = $approvedLevels->sortBy(fn($lvl) => $levelOrder[$lvl])->last();
+                                                    $status = "Diapprove {$latestApproval}";
+                                                    $badgeClass = 'bg-green-100 text-green-700';
+                                                }
+                                            }
+                                        @endphp
+                                        <span class="text-xs px-2 py-1 rounded-full font-medium {{ $badgeClass }}">
+                                            {{ $status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-4 text-center text-gray-500">
+                                        Tidak ada data pembelian hari ini
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <footer class="footer p-5 bg-gray-50">
+                <div class="text-center text-muted text-m">
+                    Copyright &copy;
+                    <script>document.write(new Date().getFullYear())</script>
+                    PT. Perkebunan Nusantara IV
                 </div>
             </footer>
         </div>

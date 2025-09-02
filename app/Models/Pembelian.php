@@ -28,6 +28,10 @@ class Pembelian extends Model
         'harga_penetapan',
         'harga_escalasi',
         'margin',
+        'status_approval_manager',
+        'status_approval_admin',
+        'status_approval_gm',
+        'status_approval_rh',
     ];
 
     public function unit()

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const loader = document.getElementById('pageLoader');
     const logoutBtn = document.getElementById('logoutForm');
+    const greetingEl = document.getElementById("greeting");
 
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function (e) {
@@ -12,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const greetingEl = document.getElementById("greeting");
     if (greetingEl) {
         const hour = new Date().getHours();
         let greetingText = "Selamat datang";

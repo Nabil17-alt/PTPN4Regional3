@@ -36,12 +36,9 @@ return new class extends Migration {
             $table->float('total_biaya')->nullable();
             $table->float('harga_penetapan')->nullable();
             $table->float('margin')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });
-
-
-
     }
     /**
      * Reverse the migrations.

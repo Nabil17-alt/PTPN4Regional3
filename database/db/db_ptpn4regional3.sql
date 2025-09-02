@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 13, 2025 at 09:06 AM
+-- Generation Time: Sep 02, 2025 at 03:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -112,6 +112,32 @@ INSERT INTO `tb_grade` (`id`, `nama_grade`, `jenis`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tb_pembelian_approvals`
+--
+
+CREATE TABLE `tb_pembelian_approvals` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `pembelian_id` bigint(20) UNSIGNED NOT NULL,
+  `role` varchar(255) NOT NULL,
+  `harga_penetapan` decimal(15,2) DEFAULT NULL,
+  `harga_escalasi` decimal(15,2) DEFAULT NULL,
+  `approved_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `approved_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tb_pembelian_approvals`
+--
+
+INSERT INTO `tb_pembelian_approvals` (`id`, `pembelian_id`, `role`, `harga_penetapan`, `harga_escalasi`, `approved_by`, `approved_at`, `created_at`, `updated_at`) VALUES
+(13, 3, 'Manager', 2874.07, 2970.00, NULL, '2025-08-28 02:03:18', '2025-08-28 02:03:18', '2025-08-28 02:03:18'),
+(15, 11, 'Manager', 2874.07, 2970.00, NULL, '2025-08-28 02:03:18', '2025-08-28 02:03:18', '2025-08-28 02:03:18');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tb_pembelian_cpo_pk`
 --
 
@@ -119,7 +145,11 @@ CREATE TABLE `tb_pembelian_cpo_pk` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `kode_unit` varchar(255) NOT NULL,
   `tanggal` date NOT NULL,
-  `grade` varchar(50) NOT NULL,
+  `status_approval_admin` tinyint(4) DEFAULT NULL,
+  `status_approval_manager` tinyint(4) DEFAULT NULL,
+  `status_approval_gm` tinyint(4) DEFAULT NULL,
+  `status_approval_rh` tinyint(4) DEFAULT NULL,
+  `grade` varchar(50) DEFAULT NULL,
   `harga_cpo` float DEFAULT NULL,
   `harga_pk` float DEFAULT NULL,
   `rendemen_cpo` float DEFAULT NULL,
@@ -129,40 +159,30 @@ CREATE TABLE `tb_pembelian_cpo_pk` (
   `tarif_angkut_pk` float DEFAULT NULL,
   `biaya_angkut_jual` float DEFAULT NULL,
   `harga_escalasi` float DEFAULT NULL,
-  `total_rendemen` float GENERATED ALWAYS AS (`rendemen_cpo` + `rendemen_pk`) STORED,
-  `pendapatan_cpo` float GENERATED ALWAYS AS (`harga_cpo` * (`rendemen_cpo` / 100)) STORED,
-  `pendapatan_pk` float GENERATED ALWAYS AS (`harga_pk` * (`rendemen_pk` / 100)) STORED,
-  `total_pendapatan` float GENERATED ALWAYS AS (`pendapatan_cpo` + `pendapatan_pk`) STORED,
-  `biaya_produksi` float GENERATED ALWAYS AS (`biaya_olah` / 100 * (`rendemen_cpo` + `rendemen_pk`)) STORED,
-  `total_biaya` float GENERATED ALWAYS AS (`biaya_produksi` + `biaya_angkut_jual`) STORED,
-  `harga_penetapan` float GENERATED ALWAYS AS (`total_pendapatan` - `total_biaya`) STORED,
+  `total_rendemen` float DEFAULT NULL,
+  `pendapatan_cpo` float DEFAULT NULL,
+  `pendapatan_pk` float DEFAULT NULL,
+  `total_pendapatan` float DEFAULT NULL,
+  `biaya_produksi` float DEFAULT NULL,
+  `total_biaya` float DEFAULT NULL,
+  `harga_penetapan` float DEFAULT NULL,
+  `margin` float DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `margin` float GENERATED ALWAYS AS (round((1 - `harga_escalasi` / nullif(`harga_penetapan`,0)) * 100,2)) STORED
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tb_pembelian_cpo_pk`
 --
 
-INSERT INTO `tb_pembelian_cpo_pk` (`id`, `kode_unit`, `tanggal`, `grade`, `harga_cpo`, `harga_pk`, `rendemen_cpo`, `rendemen_pk`, `biaya_olah`, `tarif_angkut_cpo`, `tarif_angkut_pk`, `biaya_angkut_jual`, `harga_escalasi`, `created_at`, `updated_at`) VALUES
-(1, '3E06', '2025-08-01', 'PSR (Gemah Ripah)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 01:23:11', '2025-08-12 01:23:11'),
-(2, '3E06', '2025-08-05', 'PSR (Lembah Sawit)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-11 23:56:21', '2025-08-11 23:56:21'),
-(3, '3E06', '2025-08-06', 'A+5', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 00:21:26', '2025-08-12 00:21:26'),
-(4, '3E06', '2025-08-07', 'Plasma (Tri Manuggal)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 00:21:43', '2025-08-12 00:21:43'),
-(5, '3E06', '2025-08-11', 'PSR (Makarti Jaya 2019)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 00:23:26', '2025-08-12 00:23:26'),
-(6, '3E06', '2025-08-12', 'PSR (Makarti Jaya 2020)', 13400, 8600, 19.54, 4.2, 294.94, 171, 192.5, 35.47, 2970, '2025-08-12 00:43:22', '2025-08-12 00:43:22'),
-(7, '3E06', '2025-08-12', 'Revit (Karya Darma III)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 00:23:45', '2025-08-12 00:23:45'),
-(8, '3E06', '2025-08-13', 'PSR (Budi Sawit)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 00:01:25', '2025-08-12 00:01:25'),
-(9, '3E06', '2025-08-14', 'A2', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 00:24:11', '2025-08-12 00:24:11'),
-(10, '3E06', '2025-08-15', 'PSR-E (Marga Bhakti)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 00:24:29', '2025-08-12 00:24:29'),
-(11, '3E06', '2025-08-28', 'PSR (Gemah Ripah)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 01:18:21', '2025-08-12 01:18:21'),
-(12, '3E06', '2025-09-06', 'Plasma (Plasma Tua)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 01:16:25', '2025-08-12 01:16:25'),
-(13, '3E06', '2025-09-19', 'PSR (Subur Makmur)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 01:14:06', '2025-08-12 01:14:06'),
-(14, '3E06', '2025-10-08', 'PSR (Subur Makmur)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 01:01:29', '2025-08-12 01:01:29'),
-(15, '3E25', '2025-08-12', 'PSR (Gemah Ripah)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 02:16:21', '2025-08-12 02:16:21'),
-(16, '3E25', '2025-08-12', 'PSR (Subur Makmur)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 02:16:34', '2025-08-12 02:16:34'),
-(17, '3E25', '2025-08-12', 'PSR (Budi Sawit)', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, '2025-08-12 02:16:45', '2025-08-12 02:16:45');
+INSERT INTO `tb_pembelian_cpo_pk` (`id`, `kode_unit`, `tanggal`, `status_approval_admin`, `status_approval_manager`, `status_approval_gm`, `status_approval_rh`, `grade`, `harga_cpo`, `harga_pk`, `rendemen_cpo`, `rendemen_pk`, `biaya_olah`, `tarif_angkut_cpo`, `tarif_angkut_pk`, `biaya_angkut_jual`, `harga_escalasi`, `total_rendemen`, `pendapatan_cpo`, `pendapatan_pk`, `total_pendapatan`, `biaya_produksi`, `total_biaya`, `harga_penetapan`, `margin`, `created_at`, `updated_at`) VALUES
+(3, '3E12', '2025-08-25', NULL, 1, NULL, NULL, 'A3', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, 23.74, 2618.36, 361.2, 2979.56, 70.02, 105.49, 2874.07, -3.34, '2025-08-26 07:58:34', '2025-08-28 02:03:18'),
+(6, '3E25', '2025-08-26', NULL, NULL, NULL, NULL, 'A+1', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, 23.74, 2618.36, 361.2, 2979.56, 70.02, 105.49, 2874.07, -3.34, '2025-08-27 07:24:05', '2025-08-27 07:24:05'),
+(7, '3E25', '2025-08-26', NULL, NULL, NULL, NULL, 'A+2', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, 23.74, 2618.36, 361.2, 2979.56, 70.02, 105.49, 2874.07, -3.34, '2025-08-27 07:25:26', '2025-08-27 07:25:26'),
+(8, '3E06', '2025-08-26', NULL, NULL, NULL, NULL, 'BROND A', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, 23.74, 2618.36, 361.2, 2979.56, 70.02, 105.49, 2874.07, -3.34, '2025-08-27 09:18:09', '2025-08-27 09:18:09'),
+(11, '3E12', '2025-08-22', NULL, 1, NULL, NULL, 'A3', 13400, 8600, 19.54, 4.2, 294.94, 171, 194.5, 35.47, 2970, 23.74, 2618.36, 361.2, 2979.56, 70.02, 105.49, 2874.07, -3.34, '2025-08-28 01:55:19', '2025-08-28 02:03:18'),
+(13, '3E07', '2025-08-27', NULL, NULL, NULL, NULL, 'PSR (Lembah Sawit)', 13400, 8600, 1, 1, 1, 1, 1, 1, 1, 2, 134, 86, 220, 0.02, 1.02, 218.98, 99.54, '2025-08-28 04:49:54', '2025-08-28 04:49:54'),
+(14, '3E25', '2025-08-27', NULL, NULL, NULL, NULL, 'PSR (Karya Tani)', 13400, 8600, 2, 2, 2, 2, 2, 2, 2, 4, 268, 172, 440, 0.08, 2.08, 437.92, 99.54, '2025-08-28 04:50:51', '2025-08-28 04:50:51');
 
 -- --------------------------------------------------------
 
@@ -201,7 +221,6 @@ INSERT INTO `tb_unit` (`id_unit`, `kode_unit`, `nama_unit`, `nama_distrik`, `jen
 CREATE TABLE `tb_users` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `username` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `level` varchar(50) DEFAULT NULL,
   `kode_unit` varchar(255) NOT NULL,
@@ -213,26 +232,13 @@ CREATE TABLE `tb_users` (
 -- Dumping data for table `tb_users`
 --
 
-INSERT INTO `tb_users` (`id`, `username`, `email`, `password`, `level`, `kode_unit`, `created_at`, `updated_at`) VALUES
-(7, 'admin1', 'admin1@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'Admin', 'U01', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(8, 'asisten1', 'asisten1@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'Asisten', 'U02', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(9, 'manager1', 'manager1@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'Manager', 'U03', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(10, 'gm1', 'gm1@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'General_Manager', 'U04', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(11, 'region1', 'region1@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'Region_Head', 'U05', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(12, 'sevp1', 'sevp1@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'SEVP', 'U06', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(13, 'admin2', 'admin2@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'Admin', 'U01', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(14, 'asisten2', 'asisten2@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'Asisten', 'U02', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(15, 'manager2', 'manager2@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'Manager', 'U03', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(16, 'gm2', 'gm2@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'General_Manager', 'U04', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(17, 'region2', 'region2@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'Region_Head', 'U05', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(18, 'sevp2', 'sevp2@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'SEVP', 'U06', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(19, 'admin3', 'admin3@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'Admin', 'U07', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(20, 'manager3', 'manager3@example.com', '$2y$12$abcdefghijklmnopqrstuv', 'Manager', 'U08', '2025-08-09 12:34:47', '2025-08-09 12:34:47'),
-(22, 'aldi', 'aldi@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'Asisten', 'ASN01', NULL, NULL),
-(24, 'yusuf', 'yusuf@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'General_Manager', 'GM01', NULL, NULL),
-(34, 'Muhammad Nabil', 'nabilaja@gmail.com', '$2y$12$ArX2pwR7lGkdg6kEoebZVOF4sR/p3.6s1Kdifo1.MGqjsXNzJ6MH2', 'Admin', '3E06', NULL, NULL),
-(37, 'asisten', 'asisten@gmail.com', '$2y$12$qS0HOZSh.v28bQYCOiYYDu3ogZcPOTkEImedZzt8KCSpB9mZc8/6m', 'Asisten', '3R00', NULL, NULL),
-(38, 'gm1234', 'gm1234@gmail', '$2y$12$7eK8cf0LyniAdzwGRtD6FOZaDbi42n.0bcFvZInIiuKD3jkcyxc1a', 'General_Manager', '3E25', NULL, NULL);
+INSERT INTO `tb_users` (`id`, `username`, `password`, `level`, `kode_unit`, `created_at`, `updated_at`) VALUES
+(48, 'satria', '$2y$12$52eoN6VpPAi7owNH/d9jBenlDTSxB6ozJghPiI82n942E9BuQR.G.', 'Asisten', '3E07', '2025-08-28 01:34:09', '2025-08-28 04:47:59'),
+(49, 'nabil', '$2y$12$LmKoW24XHLW2/nk6LVcvE.nc6rck3cLOECJuTPOGb9FEkCeUPkJze', 'Asisten', '3E25', '2025-08-28 01:34:32', '2025-08-28 01:34:32'),
+(50, 'admin', '$2y$12$E1Ch3Q8HP4OJK.mP00ZC.eBp9.Yqq6zVV7IyeNIFFnV0OXfZgKY9K', 'Admin', '3R00', '2025-08-28 02:14:38', '2025-08-28 02:14:38'),
+(67, 'dika', '$2y$12$qZGhEz5h3jam94.zXT36Ue./OR8OWb4.KOYP3qROg4CpQlOGLvGne', 'Manager', '3E07', '2025-08-28 04:46:14', '2025-08-28 04:48:24'),
+(68, 'pajar', '$2y$12$SfkrRQLidVXQnx5iHuB6xO2cohj6ACulLwwBcm2U7kDks/ofG34IC', 'Manager', '3E25', '2025-08-28 04:46:52', '2025-08-28 04:46:52'),
+(70, 'putri2', '$2y$12$oI.agm0YnH6sC9DK.p40MOL/x6DDRjXM/vvOBmUVlZLjnYFKuz4pm', 'Admin', '3E12', '2025-08-28 07:29:57', '2025-08-28 07:31:59');
 
 --
 -- Indexes for dumped tables
@@ -249,6 +255,14 @@ ALTER TABLE `migrations`
 --
 ALTER TABLE `tb_grade`
   ADD PRIMARY KEY (`id`) USING BTREE;
+
+--
+-- Indexes for table `tb_pembelian_approvals`
+--
+ALTER TABLE `tb_pembelian_approvals`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_pembelian_id` (`pembelian_id`),
+  ADD KEY `idx_approved_by` (`approved_by`);
 
 --
 -- Indexes for table `tb_pembelian_cpo_pk`
@@ -286,10 +300,16 @@ ALTER TABLE `tb_grade`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
+-- AUTO_INCREMENT for table `tb_pembelian_approvals`
+--
+ALTER TABLE `tb_pembelian_approvals`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
 -- AUTO_INCREMENT for table `tb_pembelian_cpo_pk`
 --
 ALTER TABLE `tb_pembelian_cpo_pk`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tb_unit`
@@ -301,7 +321,18 @@ ALTER TABLE `tb_unit`
 -- AUTO_INCREMENT for table `tb_users`
 --
 ALTER TABLE `tb_users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `tb_pembelian_approvals`
+--
+ALTER TABLE `tb_pembelian_approvals`
+  ADD CONSTRAINT `pembelian_approvals_approved_by_foreign` FOREIGN KEY (`approved_by`) REFERENCES `tb_users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `pembelian_approvals_pembelian_id_foreign` FOREIGN KEY (`pembelian_id`) REFERENCES `tb_pembelian_cpo_pk` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

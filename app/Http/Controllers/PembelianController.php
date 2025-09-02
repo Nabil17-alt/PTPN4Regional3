@@ -156,12 +156,19 @@ class PembelianController extends Controller
             'harga_pk' => 'required|numeric',
             'rendemen_cpo' => 'required|numeric',
             'rendemen_pk' => 'required|numeric',
+            'total_rendemen' => 'required|numeric',
             'biaya_olah' => 'required|numeric',
             'tarif_angkut_cpo' => 'required|numeric',
             'tarif_angkut_pk' => 'required|numeric',
+            'pendapatan_cpo' => 'required|numeric',
+            'pendapatan_pk' => 'required|numeric',
+            'total_pendapatan' => 'required|numeric',
+            'biaya_produksi' => 'required|numeric',
             'biaya_angkut_jual' => 'required|numeric',
+            'total_biaya' => 'required|numeric',
+            'harga_penetapan' => 'required|numeric',
             'harga_escalasi' => 'required|numeric',
-            
+            'margin' => 'required|numeric',
         ]);
         $pembelian->update($validated);
         return redirect()->back()->with('success', 'Data pembelian berhasil diedit');

@@ -20,6 +20,14 @@ return new class extends Migration
             $table->string('singkatan', 100)->nullable();
             $table->timestamps(); 
         });
+
+        DB::table('tb_unit')->insert([
+            ['id_unit' => '6', 'kode_unit' => '3E06', 'nama_unit' => 'Kebun Plasma/Pembelian SGO/SPA/SGH', 'nama_distrik' => '', 'jenis' => 'Kebun Inti', 'singkatan' => ''],
+            ['id_unit' => '7', 'kode_unit' => '3E07', 'nama_unit' => 'Kebun Plasma/Pembelian TPU/TME', 'nama_distrik' => '', 'jenis' => 'Kebun Inti', 'singkatan' => ''],
+            ['id_unit' => '12', 'kode_unit' => '3E12', 'nama_unit' => 'Kebun Plasma/Pembelian SBT/LDA', 'nama_distrik' => '', 'jenis' => 'Kebun Inti', 'singkatan' => ''],
+            ['id_unit' => '25', 'kode_unit' => '3E25', 'nama_unit' => 'Kebun Plasma/Pembelian STA/SSI/SIN/SRO', 'nama_distrik' => '', 'jenis' => 'Kebun Inti', 'singkatan' => ''],
+            ['id_unit' => '49', 'kode_unit' => '3R00', 'nama_unit' => 'Kantor Regional', 'nama_distrik' => '', 'jenis' => 'Kantor Regional', 'singkatan' => ''],
+        ]);
     }
 
     /**

@@ -25,7 +25,7 @@
             </div>
             <div class="welcome-msg">Selamat Datang!</div>
             <div class="welcome-sub">Silakan login terlebih dahulu untuk melanjutkan</div>
-            <a href="{{ route('register') }}" class="btn-signup" id="signupBtn">Buat Akun</a>
+            <!-- <a href="{{ route('register') }}" class="btn-signup" id="signupBtn">Buat Akun</a> -->
         </div>
         <div class="right">
             <div class="sign-in-title">Masuk ke Akun Anda</div>
