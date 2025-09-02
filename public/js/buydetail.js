@@ -1,69 +1,77 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
+    const loader = document.getElementById('pageLoader');
     const searchInput = document.getElementById('searchDetail');
+    const logoutBtn = document.getElementById('logoutForm');
+    const backBtn = document.getElementById('backForm');
+    const greetingEl = document.getElementById('greeting');
+    const approveForm = document.querySelector('form[action*="pembelian.approve"]');
     const tableRows = document.querySelectorAll('tbody tr');
 
-    if (searchInput) {
+    const showLoader = () => loader?.classList.remove('hidden');
+
+    const handleRedirect = (btn, delay = 300) => {
+        if (!btn) return;
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showLoader();
+            btn.classList.add('pointer-events-none', 'opacity-70');
+            setTimeout(() => {
+                window.location.href = btn.getAttribute('href');
+            }, delay);
+        });
+    };
+
+    const setupSearchFilter = () => {
+        if (!searchInput || !tableRows.length) return;
+
         searchInput.addEventListener('input', function () {
             const keyword = this.value.toLowerCase();
 
             tableRows.forEach(row => {
-                const rowText = row.textContent.toLowerCase();
-                row.style.display = rowText.includes(keyword) ? '' : 'none';
+                const text = row.textContent.toLowerCase();
+                const match = text.includes(keyword);
+
+                row.style.display = match ? '' : 'none';
+
+                row.querySelectorAll('td').forEach(cell => {
+                    if (match && keyword) {
+                        const regex = new RegExp(`(${keyword})`, 'gi');
+                        cell.innerHTML = cell.textContent.replace(regex, '<mark class="bg-yellow-200">$1</mark>');
+                    } else {
+                        cell.innerHTML = cell.textContent;
+                    }
+                });
             });
         });
-    }
+    };
 
-    const loader = document.getElementById('pageLoader');
-    const logoutBtn = document.getElementById('logoutForm');
-    const backBtn = document.getElementById('backForm');
+    const setGreeting = () => {
+        if (!greetingEl) return;
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (loader) loader.classList.remove('hidden');
-            setTimeout(() => {
-                window.location.href = logoutBtn.getAttribute('href');
-            }, 300);
-        });
-    }
-
-    if (backBtn) {
-        backBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (loader) loader.classList.remove('hidden');
-            setTimeout(() => {
-                window.location.href = backBtn.getAttribute('href'); 
-            }, 300);
-        });
-    }
-
-    const greetingEl = document.getElementById("greeting");
-    if (greetingEl) {
         const hour = new Date().getHours();
-        let greetingText = "Selamat datang";
+        let greetingText = 'Selamat datang';
 
-        if (hour >= 3 && hour < 10) {
-            greetingText = "Selamat pagi";
-        } else if (hour >= 10 && hour < 15) {
-            greetingText = "Selamat siang";
-        } else if (hour >= 15 && hour < 18) {
-            greetingText = "Selamat sore";
-        } else {
-            greetingText = "Selamat malam";
-        }
+        if (hour >= 3 && hour < 10) greetingText = 'Selamat pagi';
+        else if (hour >= 10 && hour < 15) greetingText = 'Selamat siang';
+        else if (hour >= 15 && hour < 18) greetingText = 'Selamat sore';
+        else greetingText = 'Selamat malam';
 
-        greetingEl.textContent = greetingText + ", " + greetingEl.dataset.username;
-    }
+        greetingEl.textContent = `${greetingText}, ${greetingEl.dataset.username}`;
+    };
 
-    const approveForm = document.querySelector('form[action*="pembelian.approve"]');
-    if (approveForm) {
-        approveForm.addEventListener('submit', function (e) {
-            if (loader) loader.classList.remove('hidden');
+    const setupApproveForm = () => {
+        if (!approveForm) return;
+
+        approveForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            setTimeout(() => {
-                approveForm.submit();
-            }, 300); 
+            showLoader();
+            setTimeout(() => approveForm.submit(), 300);
         });
-    }
+    };
 
+    handleRedirect(logoutBtn);
+    handleRedirect(backBtn);
+    setupSearchFilter();
+    setGreeting();
+    setupApproveForm();
 });

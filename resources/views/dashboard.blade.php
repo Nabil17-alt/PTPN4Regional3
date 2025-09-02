@@ -83,7 +83,7 @@
                                 <th class="px-4 py-3 text-left font-semibold">Unit</th>
                                 <th class="px-4 py-3 text-left font-semibold">Grade</th>
                                 <th class="px-4 py-3 text-left font-semibold">Harga Penetapan</th>
-                                <th class="px-4 py-3 text-left font-semibold">Harga Eskalasi</th>
+                                <th class="px-4 py-3 text-left font-semibold">Harga Ekskalasi</th>
                                 <th class="px-4 py-3 text-left font-semibold">Margin</th>
                                 <th class="px-4 py-3 text-center font-semibold">Approval</th>
                             </tr>

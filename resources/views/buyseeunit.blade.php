@@ -56,7 +56,7 @@
                                     text: {!! json_encode(session('error')) !!}
                                 });
                             @endif
-                                                                                                                                                                                                            });
+                                                                                                                                                                                                                    });
                 </script>
             @endif
             <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">

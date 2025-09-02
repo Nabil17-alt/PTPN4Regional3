@@ -11,64 +11,82 @@ document.addEventListener('DOMContentLoaded', () => {
         const width = window.innerWidth;
 
         if (width >= 640 && width < 768) {
-            sidebar.classList.remove('hidden');
-            sidebar.classList.add('flex');
-            overlay.classList.remove('hidden');
-            openSidebarBtn?.classList.add('hidden');
-            closeSidebarBtn?.classList.add('hidden');
+            showSidebar(true);
+            toggleOverlay(true);
+            toggleButtons(false);
         } else if (width < 640) {
-            sidebar.classList.add('hidden');
-            sidebar.classList.remove('flex');
-            overlay.classList.add('hidden');
-            openSidebarBtn?.classList.remove('hidden');
-            closeSidebarBtn?.classList.remove('hidden');
+            showSidebar(false);
+            toggleOverlay(false);
+            toggleButtons(true);
         } else {
-            sidebar.classList.remove('hidden');
-            sidebar.classList.add('flex');
-            overlay.classList.add('hidden');
-            openSidebarBtn?.classList.add('hidden');
-            closeSidebarBtn?.classList.add('hidden');
+            showSidebar(true);
+            toggleOverlay(false);
+            toggleButtons(false);
         }
+    }
+
+    /**
+     * Show or hide sidebar.
+     * @param {boolean} show
+     */
+    function showSidebar(show) {
+        sidebar.classList.toggle('hidden', !show);
+        sidebar.classList.toggle('flex', show);
+    }
+
+    /**
+     * Show or hide overlay.
+     * @param {boolean} show
+     */
+    function toggleOverlay(show) {
+        overlay.classList.toggle('hidden', !show);
+    }
+
+    /**
+     * Show or hide open/close buttons.
+     * @param {boolean} show
+     */
+    function toggleButtons(show) {
+        openSidebarBtn?.classList.toggle('hidden', !show);
+        closeSidebarBtn?.classList.toggle('hidden', !show);
     }
 
     updateSidebarVisibility();
     window.addEventListener('resize', updateSidebarVisibility);
 
     openSidebarBtn?.addEventListener('click', () => {
-        sidebar.classList.remove('hidden');
-        sidebar.classList.add('flex');
-        overlay.classList.remove('hidden');
+        showSidebar(true);
+        toggleOverlay(true);
     });
 
     closeSidebarBtn?.addEventListener('click', () => {
-        sidebar.classList.add('hidden');
-        sidebar.classList.remove('flex');
-        overlay.classList.add('hidden');
+        showSidebar(false);
+        toggleOverlay(false);
     });
 
     overlay?.addEventListener('click', () => {
-        sidebar.classList.add('hidden');
-        sidebar.classList.remove('flex');
-        overlay.classList.add('hidden');
+        showSidebar(false);
+        toggleOverlay(false);
     });
 
     document.querySelectorAll('.menu-item').forEach(link => {
-        link.addEventListener('click', function (e) {
+        link.addEventListener('click', () => {
             loader?.classList.remove('hidden');
             loader?.classList.add('flex');
         });
     });
 });
 
-window.addEventListener('pageshow', function (event) {
+window.addEventListener('pageshow', (event) => {
     const loader = document.getElementById('buttonLoader');
-    if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+    const navType = performance.getEntriesByType('navigation')[0]?.type;
+    if (event.persisted || navType === 'back_forward') {
         loader?.classList.add('hidden');
         loader?.classList.remove('flex');
     }
 });
 
-window.addEventListener('load', function () {
+window.addEventListener('load', () => {
     const loader = document.getElementById('buttonLoader');
     loader?.classList.add('hidden');
     loader?.classList.remove('flex');

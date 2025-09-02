@@ -27,21 +27,36 @@
             </span>
         </div>
         <div class="p-4 sm:ml-64">
-            @if (session('success'))
+            @if (session('success') || session('error'))
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 5000,
-                            timerProgressBar: true,
-                        });
-                        Toast.fire({
-                            icon: 'success',
-                            title: @json(session('success'))
-                        });
-                    });
+                        @if (session('success'))
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 5000,
+                                timerProgressBar: true,
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: @json(session('success'))
+                            });
+                        @endif
+                            @if (session('error'))
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 5000,
+                                    timerProgressBar: true,
+                                });
+                                Toast.fire({
+                                    icon: 'error',
+                                    text: {!! json_encode(session('error')) !!}
+                                });
+                            @endif
+                                                                                                                                                                                                                    });
                 </script>
             @endif
             <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
@@ -49,7 +64,8 @@
                     <div>
                         <ol class="flex items-center space-x-2 text-sm text-gray-500">
                             <li>
-                                <a id="greeting" class="hover:text-gray-700" data-username="{{ Auth::user()->username }}"></a>
+                                <a id="greeting" class="hover:text-gray-700"
+                                    data-username="{{ Auth::user()->username }}"></a>
                             </li>
                             <li>
                                 <span class="mx-2 text-gray-400">/</span>
@@ -104,7 +120,6 @@
                                             {{ number_format($pembelian->margin, 2, ',', '.') }}%
                                         </span>
                                     </td>
-
                                     <td class="text-center px-4 py-3">
                                         <div class="flex justify-center items-center gap-2">
                                             <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
@@ -129,8 +144,8 @@
                                                 action="{{ route('pembelian.destroy', $pembelian->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" onclick="confirmDelete({{ $pembelian->id }})"
-                                                    class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-all">
+                                                <button type="button"
+                                                    class="delete-btn flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-all">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                         fill="currentColor" viewBox="0 0 24 24" class="inline-block">
                                                         <path
@@ -167,8 +182,9 @@
             </div>
         </div>
     @endsection
-    <script src="{{ asset('js/buysee.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('js/buysee.js') }}"></script>
+
 </body>
 
 </html>

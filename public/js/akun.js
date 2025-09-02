@@ -1,28 +1,27 @@
-function openAddModal() {
-    document.getElementById('addModal').classList.remove('hidden');
-}
+const openAddModal = () => document.getElementById('addModal')?.classList.remove('hidden');
+const closeAddModal = () => document.getElementById('addModal')?.classList.add('hidden');
 
-function closeAddModal() {
-    document.getElementById('addModal').classList.add('hidden');
-}
+const openEditModal = (username, name, email, level, kodeUnit) => {
+    const editUsername = document.getElementById('editUsername');
+    const editLevel = document.getElementById('editLevel');
+    const unitSelectEdit = document.getElementById('unitSelectEdit');
+    const editPassword = document.getElementById('editPassword');
+    const editForm = document.getElementById('editForm');
 
-function openEditModal(username, name, email, level, kodeUnit) {
-    document.getElementById('editUsername').value = username;
-    document.getElementById('editLevel').value = level;
-    document.getElementById('unitSelectEdit').value = kodeUnit;
-    document.getElementById('editPassword').value = '';
+    if (editUsername && editLevel && unitSelectEdit && editPassword && editForm) {
+        editUsername.value = username;
+        editLevel.value = level;
+        unitSelectEdit.value = kodeUnit;
+        editPassword.value = '';
+        editForm.action = `/akun/${username}`;
+    }
 
-    const form = document.getElementById('editForm');
-    form.action = `/akun/${username}`;
+    document.getElementById('editModal')?.classList.remove('hidden');
+};
 
-    document.getElementById('editModal').classList.remove('hidden');
-}
+const closeModal = () => document.getElementById('editModal')?.classList.add('hidden');
 
-function closeModal() {
-    document.getElementById('editModal').classList.add('hidden');
-}
-
-function confirmDelete(username) {
+const confirmDelete = (username) => {
     Swal.fire({
         title: 'Yakin ingin menghapus akun ini?',
         icon: 'warning',
@@ -33,31 +32,29 @@ function confirmDelete(username) {
         cancelButtonText: 'Batal',
         preConfirm: () => {
             const loader = document.getElementById('pageLoader');
-            if (loader) loader.classList.remove('hidden');
+            loader?.classList.remove('hidden');
 
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    document.getElementById('delete-form-' + username).submit();
+                    document.getElementById(`delete-form-${username}`)?.submit();
                     resolve();
                 }, 300);
             });
         }
     });
-}
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('pageLoader');
 
     const logoutBtn = document.getElementById('logoutForm');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            loader.classList.remove('hidden');
-            setTimeout(() => {
-                window.location.href = logoutBtn.getAttribute('href');
-            }, 300);
-        });
-    }
+    logoutBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        loader?.classList.remove('hidden');
+        setTimeout(() => {
+            window.location.href = logoutBtn.getAttribute('href');
+        }, 300);
+    });
 
     const addakunForm = document.getElementById('addakunForm');
     const unitSelectAdd = document.getElementById('unitSelectAdd');
@@ -69,47 +66,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const cariForm = document.getElementById('cariForm');
-    if (cariForm) cariForm.addEventListener('submit', () => loader.classList.remove('hidden'));
+    ['cariForm', 'editForm'].forEach(formId => {
+        const form = document.getElementById(formId);
+        form?.addEventListener('submit', () => loader?.classList.remove('hidden'));
+    });
 
-    const editForm = document.getElementById('editForm');
-    if (editForm) editForm.addEventListener('submit', () => loader.classList.remove('hidden'));
-
-    const greetingEl = document.getElementById("greeting");
+    const greetingEl = document.getElementById('greeting');
     if (greetingEl) {
         const hour = new Date().getHours();
-        let greetingText = "Selamat datang";
-        if (hour >= 3 && hour < 10) greetingText = "Selamat pagi";
-        else if (hour >= 10 && hour < 15) greetingText = "Selamat siang";
-        else if (hour >= 15 && hour < 18) greetingText = "Selamat sore";
-        else greetingText = "Selamat malam";
-
-        greetingEl.textContent = greetingText + ", " + greetingEl.dataset.username;
+        const greetings = [
+            { start: 3, end: 10, text: 'Selamat pagi' },
+            { start: 10, end: 15, text: 'Selamat siang' },
+            { start: 15, end: 18, text: 'Selamat sore' }
+        ];
+        const greetingText = greetings.find(g => hour >= g.start && hour < g.end)?.text || 'Selamat malam';
+        greetingEl.textContent = `${greetingText}, ${greetingEl.dataset.username}`;
     }
 
-    const jabatanSelect = document.getElementById("jabatanSelect");
+    const jabatanSelect = document.getElementById('jabatanSelect');
     if (jabatanSelect && unitSelectAdd && kodeUnitHidden) {
-        function updateUnitField() {
+        const updateUnitField = () => {
             const selectedJabatan = jabatanSelect.value;
-            if (selectedJabatan === "Admin" || selectedJabatan === "General_Manager" || selectedJabatan === "Region_Head") {
+            if (['Admin', 'General_Manager', 'Region_Head'].includes(selectedJabatan)) {
                 const kantorOption = Array.from(unitSelectAdd.options).find(opt =>
-                    opt.textContent.trim().toLowerCase() === "kantor regional"
+                    opt.textContent.trim().toLowerCase() === 'kantor regional'
                 );
                 if (kantorOption) {
                     unitSelectAdd.value = kantorOption.value;
                     kodeUnitHidden.value = kantorOption.value;
                 }
-                unitSelectAdd.setAttribute("disabled", "disabled");
-                unitSelectAdd.classList.add("bg-gray-100");
+                unitSelectAdd.disabled = true;
+                unitSelectAdd.classList.add('bg-gray-100');
             } else {
-                unitSelectAdd.removeAttribute("disabled");
-                unitSelectAdd.classList.remove("bg-gray-100");
+                unitSelectAdd.disabled = false;
+                unitSelectAdd.classList.remove('bg-gray-100');
                 kodeUnitHidden.value = unitSelectAdd.value;
             }
-        }
+        };
 
-        jabatanSelect.addEventListener("change", updateUnitField);
-        unitSelectAdd.addEventListener("change", () => {
+        jabatanSelect.addEventListener('change', updateUnitField);
+        unitSelectAdd.addEventListener('change', () => {
             kodeUnitHidden.value = unitSelectAdd.value;
         });
         updateUnitField();

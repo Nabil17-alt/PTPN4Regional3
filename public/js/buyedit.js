@@ -1,21 +1,27 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('pageLoader');
-    const editbuyForm = document.getElementById('editbuyForm');
+    const editForm = document.getElementById('editbuyForm');
     const logoutBtn = document.getElementById('logoutForm');
-    
-    if (editbuyForm && loader) {
-        editbuyForm.addEventListener('submit', function () {
-            loader.classList.remove('hidden');
+
+    const showLoader = () => {
+        if (!loader) return;
+        loader.classList.remove('hidden');
+        loader.classList.add('flex');
+    };
+
+    if (editForm) {
+        editForm.addEventListener('submit', () => {
+            showLoader();
         });
     }
 
-    if (logoutBtn && loader) {
-        logoutBtn.addEventListener('click', function (e) {
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            loader.classList.remove('hidden');
+            showLoader();
             setTimeout(() => {
                 window.location.href = logoutBtn.getAttribute('href');
-            }, 300);
+            }, 400);
         });
     }
 });

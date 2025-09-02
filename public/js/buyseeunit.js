@@ -53,13 +53,10 @@ function confirmDelete(id) {
         text: "Data yang dihapus tidak dapat dikembalikan!",
         icon: 'warning',
         showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
         confirmButtonText: 'Ya, hapus!',
         cancelButtonText: 'Batal',
-        buttonsStyling: false,
-        customClass: {
-            confirmButton: 'btn btn-danger',
-            cancelButton: 'btn btn-secondary'
-        },
         preConfirm: () => {
             const loader = document.getElementById('pageLoader');
             if (loader) loader.classList.remove('hidden');

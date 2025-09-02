@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Grade; 
-use App\Models\Unit; 
+use App\Models\Grade;
+use App\Models\Unit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pembelian;
@@ -101,12 +101,10 @@ class PembelianController extends Controller
             'harga_penetapan' => 'nullable|numeric',
             'margin' => 'nullable|numeric',
         ]);
-
         $unit = Unit::where('kode_unit', $validated['kode_unit'])->first();
         if (!$unit) {
             return redirect()->back()->with('error', 'Unit tidak ditemukan.');
         }
-
         $pembelian = new Pembelian();
         $pembelian->kode_unit = $validated['kode_unit'];
         $pembelian->tanggal = $validated['tanggal'];
@@ -129,25 +127,61 @@ class PembelianController extends Controller
         $pembelian->harga_penetapan = $request->harga_penetapan;
         $pembelian->margin = $request->margin;
         $pembelian->save();
-
         return redirect()->back()->with('success', 'Data pembelian berhasil disimpan');
     }
 
+    private function canEditOrDelete($pembelian, $userLevel)
+    {
+        $approvalOrder = [
+            'Asisten' => 1,
+            'Manager' => 2,
+            'Admin' => 3,
+            'General_Manager' => 4,
+            'Region_Head' => 5,
+        ];
+        $highestApproval = 1; 
+        if ($pembelian->status_approval_rh) {
+            $highestApproval = $approvalOrder['Region_Head'];
+        } elseif ($pembelian->status_approval_gm) {
+            $highestApproval = $approvalOrder['General_Manager'];
+        } elseif ($pembelian->status_approval_admin) {
+            $highestApproval = $approvalOrder['Admin'];
+        } elseif ($pembelian->status_approval_manager) {
+            $highestApproval = $approvalOrder['Manager'];
+        }
+        $userOrder = $approvalOrder[$userLevel] ?? 0;
+        return $userOrder >= $highestApproval;
+    }
+    
     public function destroy(Pembelian $pembelian)
     {
+        $userLevel = Auth::user()->level;
+        if (!$this->canEditOrDelete($pembelian, $userLevel)) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki hak untuk menghapus data ini.');
+        }
         $pembelian->delete();
         return redirect()->back()->with('success', 'Berhasil menghapus data!');
     }
+
     public function edit($id)
     {
         $pembelian = Pembelian::findOrFail($id);
+        $userLevel = Auth::user()->level;
+        if (!$this->canEditOrDelete($pembelian, $userLevel)) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki hak untuk mengedit data ini.');
+        }
         $grades = Grade::all();
-        $units = Unit::all(); 
-        return view('buyedit', compact('pembelian', 'grades', 'units')); 
+        $units = Unit::all();
+        return view('buyedit', compact('pembelian', 'grades', 'units'));
     }
+
     public function update(Request $request, $id)
     {
         $pembelian = Pembelian::findOrFail($id);
+        $userLevel = Auth::user()->level;
+        if (!$this->canEditOrDelete($pembelian, $userLevel)) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki hak untuk mengubah data ini.');
+        }
         $validated = $request->validate([
             'kode_unit' => 'required|string|max:255',
             'tanggal' => 'required|date',
@@ -173,10 +207,11 @@ class PembelianController extends Controller
         $pembelian->update($validated);
         return redirect()->back()->with('success', 'Data pembelian berhasil diedit');
     }
+
     public function lihatTanggal($tanggal)
     {
-        $items = Pembelian::whereDate('tanggal', $tanggal)->get(); 
-        return view('buysee', compact('items')); 
+        $items = Pembelian::whereDate('tanggal', $tanggal)->get();
+        return view('buysee', compact('items'));
     }
     public function detail($id)
     {
@@ -202,7 +237,6 @@ class PembelianController extends Controller
                 'status_approval_gm',
                 'status_approval_rh'
             ]);
-
         $pembelians->transform(function ($item) {
             if ($item->status_approval_rh) {
                 $item->status = 'Diapprove Region_Head';
@@ -217,7 +251,6 @@ class PembelianController extends Controller
             }
             return $item;
         });
-
         $unitCode = $unit;
         return view('buyseeunit', compact('pembelians', 'unitCode', 'tanggal'));
     }
@@ -282,43 +315,5 @@ class PembelianController extends Controller
         }
         return redirect()->route('buy.admin')
             ->with('success', "Approval per unit $unit berhasil diproses oleh $userLevel.");
-    }
-
-    public function updateHarga(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'harga_penetapan' => 'required|numeric',
-            'harga_escalasi' => 'required|numeric',
-        ]);
-
-        $pembelian = Pembelian::findOrFail($id);
-
-        $levelOrder = [
-            'Manager' => 1,
-            'Admin' => 2,
-            'General_Manager' => 3,
-            'Region_Head' => 4,
-        ];
-        $userLevel = Auth::user()->level;
-        $userOrder = $levelOrder[$userLevel] ?? 0;
-
-        $highestApproval = 0;
-        if ($pembelian->status_approval_rh) {
-            $highestApproval = $levelOrder['Region_Head'];
-        } elseif ($pembelian->status_approval_gm) {
-            $highestApproval = $levelOrder['General_Manager'];
-        } elseif ($pembelian->status_approval_admin) {
-            $highestApproval = $levelOrder['Admin'];
-        } elseif ($pembelian->status_approval_manager) {
-            $highestApproval = $levelOrder['Manager'];
-        }
-
-        if ($userOrder <= $highestApproval) {
-            return back()->with('error', 'Perubahan dibatasi');
-        }
-
-        $pembelian->update($validated);
-
-        return redirect()->back()->with('success', 'Harga berhasil diperbarui');
     }
 }

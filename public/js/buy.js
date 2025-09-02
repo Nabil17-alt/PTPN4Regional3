@@ -1,51 +1,40 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
+    const loader = document.getElementById('pageLoader');
     const searchInput = document.getElementById('searchDate');
     const tableRows = document.querySelectorAll('tbody tr');
-    const loader = document.getElementById('pageLoader');
+    const logoutBtn = document.getElementById('logoutForm');
+    const greetingEl = document.getElementById('greeting');
 
-    if (searchInput) {
+    const showLoader = () => loader?.classList.remove('hidden');
+
+    const hideLoader = () => loader?.classList.add('hidden');
+
+    const handleSearch = () => {
+        if (!searchInput) return;
         searchInput.addEventListener('input', () => {
             const keyword = searchInput.value.trim().toLowerCase();
             tableRows.forEach(row => {
-                const rowText = row.textContent.toLowerCase();
-                row.style.display = rowText.includes(keyword) ? '' : 'none';
+                row.style.display = row.textContent.toLowerCase().includes(keyword) ? '' : 'none';
             });
         });
-    }
+    };
 
-    const logoutBtn = document.getElementById('logoutForm');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function (e) {
+    const handleNavigation = (selector) => {
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest(selector);
+            if (!link) return;
+
             e.preventDefault();
-            if (loader) loader.classList.remove('hidden');
+            showLoader();
             setTimeout(() => {
-                window.location.href = logoutBtn.getAttribute('href');
+                window.location.href = link.getAttribute('href');
             }, 300);
         });
-    }
+    };
 
-    document.querySelectorAll('.lihatForm').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (loader) loader.classList.remove('hidden');
-            setTimeout(() => {
-                window.location.href = this.getAttribute('href');
-            }, 300);
-        });
-    });
+    const setGreeting = () => {
+        if (!greetingEl) return;
 
-    document.querySelectorAll('.detailForm').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (loader) loader.classList.remove('hidden');
-            setTimeout(() => {
-                window.location.href = this.getAttribute('href');
-            }, 300);
-        });
-    });
-
-    const greetingEl = document.getElementById("greeting");
-    if (greetingEl) {
         const hour = new Date().getHours();
         let greetingText = "Selamat datang";
 
@@ -59,18 +48,24 @@ document.addEventListener('DOMContentLoaded', function () {
             greetingText = "Selamat malam";
         }
 
-        greetingEl.textContent = greetingText + ", " + greetingEl.dataset.username;
-    }
+        greetingEl.textContent = `${greetingText}, ${greetingEl.dataset.username}`;
+    };
+
+    handleSearch();
+    handleNavigation('#logoutForm');   
+    handleNavigation('.lihatForm');    
+    handleNavigation('.detailForm');   
+    setGreeting();
 });
 
-window.addEventListener('load', function () {
+window.addEventListener('load', () => {
     const loader = document.getElementById('pageLoader');
-    if (loader) loader.classList.add('hidden');
+    loader?.classList.add('hidden');
 });
 
-window.addEventListener('pageshow', function (event) {
+window.addEventListener('pageshow', (event) => {
     const loader = document.getElementById('pageLoader');
-    if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
-        if (loader) loader.classList.add('hidden');
+    if (event.persisted || performance.getEntriesByType('navigation')[0].type === 'back_forward') {
+        loader?.classList.add('hidden');
     }
 });
