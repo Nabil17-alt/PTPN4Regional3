@@ -71,7 +71,7 @@
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-start border-b pb-4 mb-4">
                     <h2 class="text-xl font-semibold text-gray-800">Akun</h2>
-                    @if(in_array(Auth::user()->level, ['Admin', 'Asisten']))
+                    @if(in_array(Auth::user()->level, ['Admin']))
                         <button onclick="openAddModal()"
                             class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -83,7 +83,7 @@
                         </button>
                     @endif
                 </div>
-                @if(in_array(Auth::user()->level, ['Admin', 'Asisten']))
+                @if(in_array(Auth::user()->level, ['Admin']))
                     <form id="cariForm" method="GET" action="{{ route('admin.akun') }}"
                         class="flex justify-end items-center mb-4">
                         <div class="relative w-64">
