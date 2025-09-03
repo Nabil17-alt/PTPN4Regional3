@@ -139,20 +139,40 @@ class PembelianController extends Controller
             'General_Manager' => 4,
             'Region_Head' => 5,
         ];
-        $highestApproval = 1; 
-        if ($pembelian->status_approval_rh) {
-            $highestApproval = $approvalOrder['Region_Head'];
-        } elseif ($pembelian->status_approval_gm) {
-            $highestApproval = $approvalOrder['General_Manager'];
-        } elseif ($pembelian->status_approval_admin) {
-            $highestApproval = $approvalOrder['Admin'];
-        } elseif ($pembelian->status_approval_manager) {
-            $highestApproval = $approvalOrder['Manager'];
+
+        $highestApproval = 1;
+        foreach (array_reverse($approvalOrder, true) as $level => $order) {
+            $statusField = 'status_approval_' . strtolower($level);
+            if (!property_exists($pembelian, $statusField)) {
+                $statusField = match ($level) {
+                    'General_Manager' => 'status_approval_gm',
+                    'Region_Head' => 'status_approval_rh',
+                    default => $statusField,
+                };
+            }
+            if (!empty($pembelian->$statusField)) {
+                $highestApproval = $order;
+                break;
+            }
         }
+
         $userOrder = $approvalOrder[$userLevel] ?? 0;
+
+        $approvalStatusMap = [
+            'Asisten' => $pembelian->status_approval_asisten ?? false,
+            'Manager' => $pembelian->status_approval_manager ?? false,
+            'Admin' => $pembelian->status_approval_admin ?? false,
+            'General_Manager' => $pembelian->status_approval_gm ?? false,
+            'Region_Head' => $pembelian->status_approval_rh ?? false,
+        ];
+
+        if (!empty($approvalStatusMap[$userLevel])) {
+            return false;
+        }
+
         return $userOrder >= $highestApproval;
     }
-    
+
     public function destroy(Pembelian $pembelian)
     {
         $userLevel = Auth::user()->level;
@@ -274,7 +294,7 @@ class PembelianController extends Controller
                     break;
                 case 'Admin':
                     if (!$pembelian->status_approval_manager) {
-                        return back()->with('error', "Manager belum melakukan approval untuk unit $unit.");
+                        return back()->with('error', "Manager belum melakukan approval.");
                     }
                     if (!$pembelian->status_approval_admin) {
                         $pembelian->status_approval_admin = 1;
@@ -282,7 +302,7 @@ class PembelianController extends Controller
                     break;
                 case 'General_Manager':
                     if (!$pembelian->status_approval_admin) {
-                        return back()->with('error', "Admin belum melakukan approval untuk unit $unit.");
+                        return back()->with('error', "Admin belum melakukan approval.");
                     }
                     if (!$pembelian->status_approval_gm) {
                         $pembelian->status_approval_gm = 1;
@@ -290,14 +310,14 @@ class PembelianController extends Controller
                     break;
                 case 'Region_Head':
                     if (!$pembelian->status_approval_gm) {
-                        return back()->with('error', "General Manager belum melakukan approval untuk unit $unit.");
+                        return back()->with('error', "General Manager belum melakukan approval.");
                     }
                     if (!$pembelian->status_approval_rh) {
                         $pembelian->status_approval_rh = 1;
                     }
                     break;
                 default:
-                    return back()->with('error', "Role $userLevel tidak dikenali untuk approval.");
+                    return back()->with('error', "Jabatan $userLevel tidak dikenali untuk approval.");
             }
             PembelianApproval::updateOrCreate(
                 [
@@ -314,6 +334,6 @@ class PembelianController extends Controller
             $pembelian->save();
         }
         return redirect()->route('buy.admin')
-            ->with('success', "Approval per unit $unit berhasil diproses oleh $userLevel.");
+            ->with('success', "Approval berhasil diproses oleh $userLevel.");
     }
 }
