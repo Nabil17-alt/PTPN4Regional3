@@ -2,10 +2,10 @@
 
 ## 👥 Tim Pengembang
 
-| Nama               | NIM             | Konsentrasi          | GitHub Profile |
-|--------------------|-----------------|-----------------------|----------------|
-| Muhammad Nabil     | 2210031802043   | Full Stack Developer  | [Nabil17-alt](https://github.com/Nabil17-alt) |
-| Putri Kurnia Sari  | 2210031802061   | Full Stack Developer  | [putrikurniasari](https://github.com/putrikurniasari) |
+| Nama               | NIM             | Konsentrasi          |
+|--------------------|-----------------|-----------------------|
+| [Muhammad Nabil](https://github.com/Nabil17-alt)     | 2210031802043   | Full Stack Developer  |
+| [Putri Kurnia Sari](https://github.com/putrikurniasari)  | 2210031802061   | Full Stack Developer  |
 
 ---
 
@@ -22,19 +22,19 @@ Dibangun menggunakan **Laravel** dan **TailwindCSS** untuk tampilan antarmuka ya
 ### 🔐 Halaman Login  
 ![Login](public/images/login.png)
 
-### 📝 Halaman Registrasi  
-![Register](public/images/layout_register.png)
-
-### 📊 Dashboard  
+### 📊 Halaman Dashboard  
 ![Dashboard](public/images/layout_dashboard.png)
 
-### 👤 Manajemen Akun  
+### 👤 Halaman Akun (Admin)  
 ![Akun](public/images/layout_akun.png)
 
-### 🛒 Pembelian (Admin)  
+### 👤 Halaman Akun (User)  
+![Akun](public/images/layout_akunuser.png)
+
+### 🛒 Halaman Pembelian (Admin)  
 ![Pembelian Admin](public/images/layout_pembelianadmin.png)
 
-### 🛒 Pembelian (User)  
+### 🛒 Halaman Pembelian (User)  
 ![Pembelian User](public/images/layout_pembelianuser.png)
 
 ---
@@ -56,6 +56,15 @@ Dibangun menggunakan **Laravel** dan **TailwindCSS** untuk tampilan antarmuka ya
 - **Frontend:** Blade + TailwindCSS  
 - **Database:** MySQL  
 - **Library Tambahan:** Flowbite, Lucide Icons
+
+---
+
+## 🎓 Dokumentasi & Panduan
+
+- 🖼️ **PowerPoint:** [Klik di sini](https://docs.google.com/presentation/d/1JxrYCg33Kk08NNOqulgO9ZhB58bCnEHb/edit?usp=sharing&ouid=116701076625364631463&rtpof=true&sd=true)  
+- 🎥 **Video Panduan Penggunaan:** [Klik di sini](https://drive.google.com/file/d/1m4I4rdB8PDVkfwvC-yrFx38zFNp2JzMu/view?usp=sharing)  
+- 🌐 **Flowchart Sistem:** [Klik di sini](https://drive.google.com/file/d/1DBDd1m3pu9i0gQQCx_qDm0u1NWat7L90/view?usp=sharing)  
+- 🗂️ **Use Case Diagram:** [Klik di sini](https://drive.google.com/drive/folders/1KDurrYm1C77iZg6qsjrj4iOGh_UsCRnI?usp=sharing)
 
 ---
 
