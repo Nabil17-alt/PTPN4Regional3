@@ -68,7 +68,7 @@
                     </p>
                 </div>
                 <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-sm font-medium text-gray-500">Rata-rata Biaya Produksi</h2>
+                    <h2 class="text-sm font-medium text-gray-500">Rata-rata Total Biaya</h2>
                     <p class="mt-2 text-2xl font-bold text-green-600">
                         {{ number_format($rataRataBiaya, 2, ',', '.') }}
                     </p>
