@@ -116,13 +116,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const addbuyForm = document.getElementById('addbuyForm');
     if (addbuyForm) {
-        addbuyForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const interval = showTopLoader();
-            setTimeout(() => {
-                clearInterval(interval);
-                this.submit();
-            }, 700);
+        addbuyForm.addEventListener('submit', function () {
+            const loader = document.getElementById('topLoader');
+            loader.style.transition = "none";
+            loader.style.width = "0%";
+            loader.style.opacity = "1";
+            loader.style.display = "block";
+            void loader.offsetWidth;
+            loader.style.transition = "width 0.6s cubic-bezier(.4,1,.7,1), opacity 0.6s";
+            loader.style.width = "100%";
         });
     }
 });

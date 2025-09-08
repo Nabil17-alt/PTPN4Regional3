@@ -15,6 +15,7 @@
 </head>
 
 <body>
+    <div id="topLoader"></div>
     @extends('layouts.app')
 
     @section('content')

@@ -3,11 +3,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logoutForm');
     const backBtn = document.getElementById('backForm');
     const greetingEl = document.getElementById('greeting');
+    const approveBtn = document.getElementById('approveBtnUnit');
 
-    /**
-     * Tampilkan loader lalu redirect ke URL yang ditentukan
-     * @param {HTMLElement} element
-     */
+    if (approveBtn) {
+        approveBtn.addEventListener('click', function () {
+            const topLoader = document.getElementById('topLoader');
+            if (topLoader) {
+                topLoader.style.transition = "none";
+                topLoader.style.width = "0%";
+                topLoader.style.opacity = "1";
+                topLoader.style.display = "block";
+                void topLoader.offsetWidth;
+                topLoader.style.transition = "width 0.6s cubic-bezier(.4,1,.7,1), opacity 0.6s";
+                topLoader.style.width = "100%";
+            }
+        });
+    }
+
     const handleRedirectWithLoader = (element) => {
         if (!element) return;
         element.addEventListener('click', (e) => {
@@ -28,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (greetingEl) {
         const hour = new Date().getHours();
         let greetingText;
-
         if (hour >= 3 && hour < 10) {
             greetingText = "Selamat pagi";
         } else if (hour >= 10 && hour < 15) {
@@ -38,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             greetingText = "Selamat malam";
         }
-
         greetingEl.textContent = `${greetingText}, ${greetingEl.dataset.username || ''}`;
     }
 });
