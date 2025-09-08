@@ -1,3 +1,19 @@
+function showTopLoader() {
+    const loader = document.getElementById('topLoader');
+    let progress = 0;
+    loader.style.opacity = "1";
+    loader.style.display = "block";
+    loader.style.width = "0%";
+
+    let interval = setInterval(() => {
+        progress += Math.random() * 20 + 10;
+        if (progress > 90) progress = 90;
+        loader.style.width = progress + "%";
+    }, 200);
+
+    return interval;
+}
+
 function updateColumn() {
     const getValue = (id) => parseFloat(document.getElementById(id)?.value) || 0;
     const setValue = (id, value) => {
@@ -56,18 +72,6 @@ function setupInputListeners() {
     });
 }
 
-function setupFormSubmitLoader() {
-    const loader = document.getElementById('pageLoader');
-    const addbuyForm = document.getElementById('addbuyForm');
-
-    if (addbuyForm && loader) {
-        addbuyForm.addEventListener('submit', function () {
-            updateColumn();
-            loader.classList.remove('hidden');
-        });
-    }
-}
-
 function setupLogoutLoader() {
     const loader = document.getElementById('pageLoader');
     const logoutBtn = document.getElementById('logoutForm');
@@ -107,7 +111,18 @@ function setupGreeting() {
 document.addEventListener('DOMContentLoaded', () => {
     updateColumn();
     setupInputListeners();
-    setupFormSubmitLoader();
     setupLogoutLoader();
     setupGreeting();
+
+    const addbuyForm = document.getElementById('addbuyForm');
+    if (addbuyForm) {
+        addbuyForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const interval = showTopLoader();
+            setTimeout(() => {
+                clearInterval(interval);
+                this.submit();
+            }, 700);
+        });
+    }
 });

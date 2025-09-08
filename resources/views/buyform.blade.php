@@ -12,10 +12,11 @@
     <script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/loaders.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <link rel="stylesheet" href="{{ asset('css/buyfrom.css') }}">
 </head>
 
 <body>
+    <div id="topLoader"></div>
     @extends('layouts.app')
 
     @section('content')
@@ -55,8 +56,8 @@
                                 <span class="mx-2 text-gray-400">/</span>
                             </li>
                         </ol>
-                        <h6 class="text-lg font-semibold text-gray-800 mt-1"> 
-                            {{ Auth::user()->level }} - {{ Auth::user()->unit->nama_unit ?? Auth::user()->kode_unit }} 
+                        <h6 class="text-lg font-semibold text-gray-800 mt-1">
+                            {{ Auth::user()->level }} - {{ Auth::user()->unit->nama_unit ?? Auth::user()->kode_unit }}
                         </h6>
                     </div>
                     <div class="flex items-center gap-6">
