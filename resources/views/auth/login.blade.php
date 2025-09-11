@@ -6,17 +6,14 @@
     <title>Login - PTPN4</title>
     <link rel="icon" href="{{ asset('images/logo_ptpn4.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/loaders.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/loaderslogin.css') }}">
 
 </head>
 <body>
     <div class="loader hidden" id="pageLoader">
         <div class="square-spin">
-            <img src="{{ asset('images/logo_ptpn4.png') }}" alt="Loading..." />
+            <img src="{{ asset('images/loader.svg') }}" alt="Loading..." class="svg-loader"/>
         </div>
-        <span class="tooltip">
-            <p>Memuat...</p>
-        </span>
     </div>
     <div class="container">
         <div class="left">

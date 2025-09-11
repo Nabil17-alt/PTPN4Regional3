@@ -149,7 +149,7 @@ input:focus {
 @media (max-width: 1024px) {
     .container {
         flex-direction: column;
-        height: auto;
+        min-height: 100vh;
     }
 }
 
