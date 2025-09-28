@@ -152,7 +152,21 @@
                                     </td>
                                     <td class="px-4 py-3 text-center">
                                         <span class="text-xs px-2 py-1 rounded-full font-medium {{ $badgeClass }}">
-                                            {{ $status }}
+                                            @php
+                                                $statusGabungan = $status;
+                                                // Gabungkan status waktu jika sudah diapprove
+                                                if(isset($pembelian->status_approval_waktu)) {
+                                                    // Ambil level yang diapprove
+                                                    $approvedLevel = null;
+                                                    if(strpos($status, 'Diapprove') !== false) {
+                                                        $approvedLevel = trim(str_replace('Diapprove', '', $status));
+                                                    }
+                                                    if($approvedLevel && isset($pembelian->status_approval_waktu[$approvedLevel])) {
+                                                        $statusGabungan = $status . ' - ' . $pembelian->status_approval_waktu[$approvedLevel];
+                                                    }
+                                                }
+                                            @endphp
+                                            {{ $statusGabungan }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-3 text-center">

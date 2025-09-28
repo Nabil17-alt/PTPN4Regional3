@@ -189,7 +189,7 @@
                                 <td class="px-6 py-3">{{ number_format($pembelian->harga_penetapan, 2, ',', '.') }}</td>
                             </tr>
                             <tr>
-                                <td class="px-4 py-3">Margin</td>
+                                <td class="px-4 py-3">Margin Ekskalasi</td>
                                 <td class="px-6 py-3">{{ number_format($pembelian->margin, 2, ',', '.') }}%</td>
                             </tr>
                         </tbody>

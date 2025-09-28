@@ -101,7 +101,7 @@
                                 <th class="w-1/4 px-4 py-3 text-left font-semibold">Grade</th>
                                 <th class="w-1/4 px-6 py-3 text-left font-semibold">Harga Penetapan</th>
                                 <th class="w-1/4 px-6 py-3 text-left font-semibold">Harga Ekskalasi</th>
-                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Margin</th>
+                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Margin Ekskalasi</th>
                                 <th class="w-1/4 px-6 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>

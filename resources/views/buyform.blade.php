@@ -119,15 +119,21 @@
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga CPO</label>
-                                <input type="number" name="harga_cpo" id="hargaCPO" value="13400" readonly
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
-                                    required>
+                                    <div class="flex items-center">
+                                        <input type="number" name="harga_cpo" id="hargaCPO" value="13400" readonly
+                                            class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
+                                            required>
+                                        <span class="ml-2 text-gray-700 font-semibold">%</span>
+                                    </div>
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga PK</label>
-                                <input type="number" name="harga_pk" id="hargaPK" value="8600" readonly
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
-                                    required>
+                                    <div class="flex items-center">
+                                        <input type="number" name="harga_pk" id="hargaPK" value="8600" readonly
+                                            class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
+                                            required>
+                                        <span class="ml-2 text-gray-700 font-semibold">%</span>
+                                    </div>
                             </div>
                         </div>
                         <div class="flex flex-col md:flex-row gap-6">
@@ -218,7 +224,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Margin</label>
+                            <label class="block text-sm font-medium text-gray-700">Margin Ekskalasi</label>
                             <input type="number" step="any" name="margin" id="margin" readonly
                                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                         </div>

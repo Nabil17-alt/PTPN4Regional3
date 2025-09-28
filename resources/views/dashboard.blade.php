@@ -62,7 +62,7 @@
                     </p>
                 </div>
                 <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-sm font-medium text-gray-500">Rata-rata Margin</h2>
+                    <h2 class="text-sm font-medium text-gray-500">Rata-rata Margin Ekskalasi</h2>
                     <p class="mt-2 text-2xl font-bold {{ $rataRataMargin < 0 ? 'text-red-600' : 'text-green-600' }}">
                         {{ number_format($rataRataMargin, 2, ',', '.') }}
                     </p>
@@ -84,7 +84,7 @@
                                 <th class="px-4 py-3 text-left font-semibold">Grade</th>
                                 <th class="px-4 py-3 text-left font-semibold">Harga Penetapan</th>
                                 <th class="px-4 py-3 text-left font-semibold">Harga Ekskalasi</th>
-                                <th class="px-4 py-3 text-left font-semibold">Margin</th>
+                                <th class="px-4 py-3 text-left font-semibold">Margin Ekskalasi</th>
                                 <th class="px-4 py-3 text-center font-semibold">Approval</th>
                             </tr>
                         </thead>

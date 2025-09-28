@@ -102,7 +102,7 @@
                                 <th class="px-4 py-3 font-semibold">Grade</th>
                                 <th class="px-4 py-3 font-semibold">Harga Penetapan</th>
                                 <th class="px-4 py-3 font-semibold">Harga Ekskalasi</th>
-                                <th class="px-4 py-3 font-semibold">Margin</th>
+                                <th class="px-4 py-3 font-semibold">Margin Ekskalasi</th>
                                 <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                             </tr>
                         </thead>

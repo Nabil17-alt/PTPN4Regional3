@@ -33,13 +33,38 @@ class PembelianController extends Controller
     public function buyadmin(Request $request)
     {
         $tanggal = $request->tanggal ?? Carbon::yesterday()->toDateString();
-        $units = Unit::where('jenis', '!=', 'Kantor Regional')->get();
+        $user = Auth::user();
+        if ($user->level == 'Manager') {
+            $units = Unit::where('kode_unit', $user->kode_unit)->get();
+        } else {
+            $units = Unit::where('jenis', '!=', 'Kantor Regional')->get();
+        }
         $pembelianPadaTanggal = Pembelian::whereDate('tanggal', $tanggal)->get()->keyBy('kode_unit');
-        $userLevel = Auth::user()->level;
+        $userLevel = $user->level;
         $items = $units->map(function ($unit) use ($pembelianPadaTanggal, $userLevel, $tanggal) {
             $kodeUnit = $unit->kode_unit;
             $pembelian = $pembelianPadaTanggal->get($kodeUnit);
             if ($pembelian) {
+                $statusArr = [];
+                $levels = [
+                    'Manager' => ['status' => 'status_approval_manager', 'approved_at' => 'approved_at_manager'],
+                    'Admin' => ['status' => 'status_approval_admin', 'approved_at' => 'approved_at_admin'],
+                    'General_Manager' => ['status' => 'status_approval_gm', 'approved_at' => 'approved_at_gm'],
+                    'Region_Head' => ['status' => 'status_approval_rh', 'approved_at' => 'approved_at_rh'],
+                ];
+                foreach ($levels as $level => $field) {
+                    if (!empty($pembelian->{$field['status']})) {
+                        $approvedAt = $pembelian->{$field['approved_at']} ?? null;
+                        if ($approvedAt) {
+                            $statusWaktu = (Carbon::parse($approvedAt)->isSameDay(Carbon::parse($pembelian->tanggal))) ? 'Tepat Waktu' : 'Terlambat';
+                        } else {
+                            $statusWaktu = 'Tidak Ada Tanggal Approval';
+                        }
+                        $statusArr[$level] = $statusWaktu;
+                    } else {
+                        $statusArr[$level] = 'Belum Diapprove';
+                    }
+                }
                 switch ($userLevel) {
                     case 'Admin':
                         $pembelian->status = $pembelian->status_approval_admin ? 'Diapprove Admin' : 'Sudah Diinput';
@@ -56,23 +81,17 @@ class PembelianController extends Controller
                     default:
                         $pembelian->status = 'Sudah Diinput';
                 }
+                $pembelian->status_approval_waktu = $statusArr;
                 return $pembelian;
             } else {
                 $adaData = DB::table('tb_pembelian_cpo_pk')
                     ->where('kode_unit', $kodeUnit)
                     ->whereDate('tanggal', $tanggal)
                     ->exists();
-                if ($adaData) {
-                    $pembelianDummy = new Pembelian();
-                    $pembelianDummy->unit = $unit;
-                    $pembelianDummy->status = 'Sudah Diinput';
-                    return $pembelianDummy;
-                } else {
-                    $pembelianDummy = new Pembelian();
-                    $pembelianDummy->unit = $unit;
-                    $pembelianDummy->status = 'Belum Diinput';
-                    return $pembelianDummy;
-                }
+                $pembelianDummy = new Pembelian();
+                $pembelianDummy->unit = $unit;
+                $pembelianDummy->status = $adaData ? 'Sudah Diinput' : 'Belum Diinput';
+                return $pembelianDummy;
             }
         });
         return view('buyadmin', compact('items', 'tanggal'));
@@ -290,6 +309,7 @@ class PembelianController extends Controller
                 case 'Manager':
                     if (!$pembelian->status_approval_manager) {
                         $pembelian->status_approval_manager = 1;
+                        $pembelian->approved_at_manager = now();
                     }
                     break;
                 case 'Admin':
@@ -298,6 +318,7 @@ class PembelianController extends Controller
                     }
                     if (!$pembelian->status_approval_admin) {
                         $pembelian->status_approval_admin = 1;
+                        $pembelian->approved_at_admin = now();
                     }
                     break;
                 case 'General_Manager':
@@ -306,6 +327,7 @@ class PembelianController extends Controller
                     }
                     if (!$pembelian->status_approval_gm) {
                         $pembelian->status_approval_gm = 1;
+                        $pembelian->approved_at_gm = now();
                     }
                     break;
                 case 'Region_Head':
@@ -314,6 +336,7 @@ class PembelianController extends Controller
                     }
                     if (!$pembelian->status_approval_rh) {
                         $pembelian->status_approval_rh = 1;
+                        $pembelian->approved_at_rh = now();
                     }
                     break;
                 default:
