@@ -117,34 +117,20 @@
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga CPO</label>
                                 <div class="flex items-center">
-                                    @if ($user->level === 'Admin')
-                                        <input type="number" step="any" name="harga_cpo" id="hargaCPO"
-                                            value="{{ old('harga_cpo', $pembelian->harga_cpo) }}"
-                                            class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
-                                            required>
-                                    @else
-                                        <input type="number" step="any" name="harga_cpo" id="hargaCPO"
-                                            value="{{ old('harga_cpo', $pembelian->harga_cpo) }}" readonly
-                                            class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
-                                            required>
-                                    @endif
+                                    <input type="number" step="any" name="harga_cpo"
+                                        value="{{ old('harga_cpo', $pembelian->harga_cpo) }}"
+                                        class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
+                                        required>
                                     <span class="ml-2 text-gray-700 font-semibold">%</span>
                                 </div>
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga PK</label>
                                 <div class="flex items-center">
-                                    @if ($user->level === 'Admin')
-                                        <input type="number" step="any" name="harga_pk" id="hargaPK"
-                                            value="{{ old('harga_pk', $pembelian->harga_pk) }}"
-                                            class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
-                                            required>
-                                    @else
-                                        <input type="number" step="any" name="harga_pk" id="hargaPK"
-                                            value="{{ old('harga_pk', $pembelian->harga_pk) }}" readonly
-                                            class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
-                                            required>
-                                    @endif
+                                    <input type="number" step="any" name="harga_pk"
+                                        value="{{ old('harga_pk', $pembelian->harga_pk) }}"
+                                        class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
+                                        required>
                                     <span class="ml-2 text-gray-700 font-semibold">%</span>
                                 </div>
                             </div>
