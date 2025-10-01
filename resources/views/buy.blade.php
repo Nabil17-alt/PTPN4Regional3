@@ -145,15 +145,59 @@
                                     </td>
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
-                                            <a href="{{ route('pembelian.lihat.tanggal', ['tanggal' => $tanggal]) }}"
-                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    fill="currentColor" viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
-                                                </svg>
-                                                Lihat
-                                            </a>
+                                            @php
+                                                $currentUserLevel = Auth::user()->level;
+                                                $showButton = false;
+
+                                                // Jika belum ada data sama sekali, tidak ada tombol
+                                                if ($totalItems === 0) {
+                                                    $showButton = false;
+                                                }
+                                                // Jika sudah ada data tapi belum ada approval, hanya Asisten/Manager yang bisa lihat
+                                                elseif ($jumlahApproval === 0) {
+                                                    $showButton = in_array($currentUserLevel, ['Asisten', 'Manager']);
+                                                }
+                                                // Jika sudah ada approval, cek berdasarkan level approval
+                                                else {
+                                                    $hasManagerApproval = $items->some('status_approval_manager');
+                                                    $hasAdminApproval = $items->some('status_approval_admin');
+                                                    $hasGMApproval = $items->some('status_approval_gm');
+                                                    $hasRHApproval = $items->some('status_approval_rh');
+
+                                                    switch ($currentUserLevel) {
+                                                        case 'Asisten':
+                                                        case 'Manager':
+                                                            $showButton = true; // Manager bisa lihat kapan saja jika ada data
+                                                            break;
+                                                        case 'Admin':
+                                                            $showButton = $hasManagerApproval; // Admin hanya bisa lihat jika sudah diapprove Manager
+                                                            break;
+                                                        case 'General_Manager':
+                                                            $showButton = $hasAdminApproval; // GM hanya bisa lihat jika sudah diapprove Admin
+                                                            break;
+                                                        case 'Region_Head':
+                                                            $showButton = $hasGMApproval; // RH hanya bisa lihat jika sudah diapprove GM
+                                                            break;
+                                                        default:
+                                                            $showButton = $hasRHApproval; // Level lain hanya bisa lihat jika sudah diapprove RH
+                                                            break;
+                                                    }
+                                                }
+                                            @endphp
+
+                                            @if ($showButton)
+                                                <a href="{{ route('pembelian.lihat.tanggal', ['tanggal' => $tanggal]) }}"
+                                                    class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                        fill="currentColor" viewBox="0 0 24 24">
+                                                        <path
+                                                            d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
+                                                    </svg>
+                                                    Lihat
+                                                </a>
+                                            @else
+                                                <span class="text-xs text-gray-400">-</span>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

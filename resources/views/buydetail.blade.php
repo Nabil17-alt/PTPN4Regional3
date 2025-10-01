@@ -89,7 +89,7 @@
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-start border-b pb-4 mb-4">
                     <div>
-                        <h2 class="text-xl font-semibold text-gray-800">Pembelian - Detail Pembelian</h2>
+                        <h2 class="text-xl font-semibold text-gray-800">Detail Pembelian - {{ \Carbon\Carbon::parse($pembelian->tanggal)->translatedFormat('d F Y') }}</h2>
                     </div>
                 </div>
                 <div class="flex justify-end items-center mb-4">
@@ -110,12 +110,6 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-4 py-3">Tanggal</td>
-                                <td class="px-6 py-3">
-                                    {{ \Carbon\Carbon::parse($pembelian->tanggal)->translatedFormat('d F Y') }}
-                                </td>
-                            </tr>
                             <tr>
                                 <td class="px-4 py-3">Unit</td>
                                 <td class="px-6 py-3">{{ $unit->nama_unit }}</td>

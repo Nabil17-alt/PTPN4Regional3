@@ -76,69 +76,75 @@
                 <div class="flex justify-between items-start border-b pb-4 mb-4">
                     <h2 class="text-xl font-semibold text-gray-800">Pembelian - Edit Pembelian</h2>
                 </div>
+                @php
+                    $user = auth()->user();
+                @endphp
                 <form id="editbuyForm" action="{{ route('pembelian.update', $pembelian->id) }}" method="POST"
-                    class="space-y-6">
+                    class="space-y-6" data-user-level="{{ $user->level }}">
                     @csrf
                     @method('PUT')
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Tanggal</label>
-                            <input type="date" name="tanggal" value="{{ old('tanggal', $pembelian->tanggal) }}"
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring focus:ring-indigo-200"
+                            <input type="date" name="tanggal" value="{{ old('tanggal', $pembelian->tanggal) }}" readonly
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 bg-gray-100"
                                 required>
                         </div>
                         <div class="flex flex-col gap-6">
                             <div class="w-full">
                                 <label class="block text-sm font-medium text-gray-700">Unit Kerja</label>
                                 @php
-                                    $user = auth()->user();
+                                    $unitName = '';
+                                    foreach ($units as $unit) {
+                                        if ($unit->kode_unit == $pembelian->kode_unit) {
+                                            $unitName = $unit->nama_unit;
+                                            break;
+                                        }
+                                    }
                                 @endphp
-                                @if ($user->level === 'Admin' || $user->level === 'General_Manager' || $user->level === 'Region_Head')
-                                    <select name="kode_unit"
-                                        class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-white">
-                                        @foreach ($units as $unit)
-                                            <option value="{{ $unit->kode_unit }}" {{ old('kode_unit', $pembelian->kode_unit) == $unit->kode_unit ? 'selected' : '' }}>
-                                                {{ $unit->nama_unit }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                @else
-                                    <input type="text" value="{{ $user->unit->nama_unit }}" disabled
-                                        class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
-                                    <input type="hidden" name="kode_unit" value="{{ $user->kode_unit }}">
-                                @endif
+                                <input type="text" value="{{ $unitName }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
+                                <input type="hidden" name="kode_unit" value="{{ $pembelian->kode_unit }}">
                             </div>
                             <div class="w-full">
                                 <label class="block text-sm font-medium text-gray-700">Grade</label>
-                                <select name="grade" required
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200">
-                                    <option value="" disabled selected>Pilih Grade</option>
-                                    @foreach ($grades as $grade)
-                                        <option value="{{ $grade->nama_grade }}" {{ old('grade', $pembelian->grade) == $grade->nama_grade ? 'selected' : '' }}>
-                                            {{ $grade->nama_grade }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <input type="text" value="{{ old('grade', $pembelian->grade) }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
+                                <input type="hidden" name="grade" value="{{ $pembelian->grade }}">
                             </div>
                         </div>
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga CPO</label>
                                 <div class="flex items-center">
-                                    <input type="number" step="any" name="harga_cpo"
-                                        value="{{ old('harga_cpo', $pembelian->harga_cpo) }}"
-                                        class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
-                                        required>
+                                    @if ($user->level === 'Admin')
+                                        <input type="number" step="any" name="harga_cpo" id="hargaCPO"
+                                            value="{{ old('harga_cpo', $pembelian->harga_cpo) }}"
+                                            class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
+                                            required>
+                                    @else
+                                        <input type="number" step="any" name="harga_cpo" id="hargaCPO"
+                                            value="{{ old('harga_cpo', $pembelian->harga_cpo) }}" readonly
+                                            class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
+                                            required>
+                                    @endif
                                     <span class="ml-2 text-gray-700 font-semibold">%</span>
                                 </div>
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga PK</label>
                                 <div class="flex items-center">
-                                    <input type="number" step="any" name="harga_pk"
-                                        value="{{ old('harga_pk', $pembelian->harga_pk) }}"
-                                        class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
-                                        required>
+                                    @if ($user->level === 'Admin')
+                                        <input type="number" step="any" name="harga_pk" id="hargaPK"
+                                            value="{{ old('harga_pk', $pembelian->harga_pk) }}"
+                                            class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
+                                            required>
+                                    @else
+                                        <input type="number" step="any" name="harga_pk" id="hargaPK"
+                                            value="{{ old('harga_pk', $pembelian->harga_pk) }}" readonly
+                                            class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
+                                            required>
+                                    @endif
                                     <span class="ml-2 text-gray-700 font-semibold">%</span>
                                 </div>
                             </div>
@@ -146,99 +152,98 @@
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Rendemen CPO</label>
-                                <input type="number" step="any" name="rendemen_cpo"
-                                    value="{{ old('rendemen_cpo', $pembelian->rendemen_cpo) }}"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
+                                <input type="number" step="any" name="rendemen_cpo" id="rendemen_cpo"
+                                    value="{{ old('rendemen_cpo', $pembelian->rendemen_cpo) }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
                                     required>
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Rendemen PK</label>
-                                <input type="number" step="any" name="rendemen_pk"
-                                    value="{{ old('rendemen_pk', $pembelian->rendemen_pk) }}"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
+                                <input type="number" step="any" name="rendemen_pk" id="rendemen_pk"
+                                    value="{{ old('rendemen_pk', $pembelian->rendemen_pk) }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
                                     required>
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Total Rendemen</label>
-                            <input type="number" step="any" name="total_rendemen"
-                                value="{{ old('total_rendemen', $pembelian->total_rendemen) }}"
-                                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200">
+                            <input type="number" step="any" name="total_rendemen" id="total_rendemen"
+                                value="{{ old('total_rendemen', $pembelian->total_rendemen) }}" readonly
+                                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Biaya Olah</label>
-                            <input type="number" step="any" name="biaya_olah"
-                                value="{{ old('biaya_olah', $pembelian->biaya_olah) }}"
-                                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
-                                required>
+                            <input type="number" step="any" name="biaya_olah" id="biayaOlah"
+                                value="{{ old('biaya_olah', $pembelian->biaya_olah) }}" readonly
+                                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100" required>
                         </div>
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Tarif Angkut (CPO)</label>
-                                <input type="number" step="any" name="tarif_angkut_cpo"
-                                    value="{{ old('tarif_angkut_cpo', $pembelian->tarif_angkut_cpo) }}"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
+                                <input type="number" step="any" name="tarif_angkut_cpo" id="tarifAngkutCPO"
+                                    value="{{ old('tarif_angkut_cpo', $pembelian->tarif_angkut_cpo) }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
                                     required>
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Tarif Angkut (PK)</label>
-                                <input type="number" step="any" name="tarif_angkut_pk"
-                                    value="{{ old('tarif_angkut_pk', $pembelian->tarif_angkut_pk) }}"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
+                                <input type="number" step="any" name="tarif_angkut_pk" id="tarifAngkutPK"
+                                    value="{{ old('tarif_angkut_pk', $pembelian->tarif_angkut_pk) }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
                                     required>
                             </div>
                         </div>
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Pendapatan CPO</label>
-                                <input type="number" step="any" name="pendapatan_cpo"
-                                    value="{{ old('pendapatan_cpo', $pembelian->pendapatan_cpo) }}"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200">
+                                <input type="number" step="any" name="pendapatan_cpo" id="pendapatanCPO"
+                                    value="{{ old('pendapatan_cpo', $pembelian->pendapatan_cpo) }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Pendapatan PK</label>
-                                <input type="number" step="any" name="pendapatan_pk"
-                                    value="{{ old('pendapatan_pk', $pembelian->pendapatan_pk) }}"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200">
+                                <input type="number" step="any" name="pendapatan_pk" id="pendapatanPK"
+                                    value="{{ old('pendapatan_pk', $pembelian->pendapatan_pk) }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Total Pendapatan</label>
-                            <input type="number" step="any" name="total_pendapatan"
-                                value="{{ old('total_pendapatan', $pembelian->total_pendapatan) }}"
-                                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200">
+                            <input type="number" step="any" name="total_pendapatan" id="totalPendapatan"
+                                value="{{ old('total_pendapatan', $pembelian->total_pendapatan) }}" readonly
+                                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                         </div>
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Biaya Produksi</label>
-                                <input type="number" step="any" name="biaya_produksi"
-                                    value="{{ old('biaya_produksi', $pembelian->biaya_produksi) }}"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200">
+                                <input type="number" step="any" name="biaya_produksi" id="biayaProduksi"
+                                    value="{{ old('biaya_produksi', $pembelian->biaya_produksi) }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Biaya Angkut</label>
-                                <input type="number" step="any" name="biaya_angkut_jual"
-                                    value="{{ old('biaya_angkut_jual', $pembelian->biaya_angkut_jual) }}"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
+                                <input type="number" step="any" name="biaya_angkut_jual" id="biayaAngkut"
+                                    value="{{ old('biaya_angkut_jual', $pembelian->biaya_angkut_jual) }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
                                     required>
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Total Biaya</label>
-                            <input type="number" step="any" name="total_biaya"
-                                value="{{ old('total_biaya', $pembelian->total_biaya) }}"
-                                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200">
+                            <input type="number" step="any" name="total_biaya" id="totalBiaya"
+                                value="{{ old('total_biaya', $pembelian->total_biaya) }}" readonly
+                                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                         </div>
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga Penetapan</label>
-                                <input type="number" step="any" name="harga_penetapan"
-                                    value="{{ old('harga_penetapan', $pembelian->harga_penetapan) }}"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200">
+                                <input type="number" step="any" name="harga_penetapan" id="hargaPenetapan"
+                                    value="{{ old('harga_penetapan', $pembelian->harga_penetapan) }}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                             </div>
                             <div class="w-full md:w-1/2">
                                 <label class="block text-sm font-medium text-gray-700">Harga Eskalasi</label>
-                                <input type="number" step="any" name="harga_escalasi"
+                                <input type="number" step="any" name="harga_escalasi" id="hargaEskalasi"
                                     value="{{ old('harga_escalasi', $pembelian->harga_escalasi) }}"
                                     class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200"
                                     required>
@@ -246,8 +251,9 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Margin Ekskalasi</label>
-                            <input type="number" step="any" name="margin" value="{{ old('margin', $pembelian->margin) }}"
-                                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-indigo-200">
+                            <input type="number" step="any" name="margin" id="margin"
+                                value="{{ old('margin', $pembelian->margin) }}" readonly
+                                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
                         </div>
                         <div class="flex justify-between items-center pt-6">
                             <a href="{{ request('back') ?? url()->previous() }}"

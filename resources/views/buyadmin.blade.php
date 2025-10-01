@@ -155,13 +155,13 @@
                                             @php
                                                 $statusGabungan = $status;
                                                 // Gabungkan status waktu jika sudah diapprove
-                                                if(isset($pembelian->status_approval_waktu)) {
+                                                if (isset($pembelian->status_approval_waktu)) {
                                                     // Ambil level yang diapprove
                                                     $approvedLevel = null;
-                                                    if(strpos($status, 'Diapprove') !== false) {
+                                                    if (strpos($status, 'Diapprove') !== false) {
                                                         $approvedLevel = trim(str_replace('Diapprove', '', $status));
                                                     }
-                                                    if($approvedLevel && isset($pembelian->status_approval_waktu[$approvedLevel])) {
+                                                    if ($approvedLevel && isset($pembelian->status_approval_waktu[$approvedLevel])) {
                                                         $statusGabungan = $status . ' - ' . $pembelian->status_approval_waktu[$approvedLevel];
                                                     }
                                                 }
@@ -171,7 +171,44 @@
                                     </td>
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
-                                            @if ($unit && $pembelian->tanggal)
+                                            @php
+                                                $currentUserLevel = Auth::user()->level;
+                                                $showButton = false;
+
+                                                // Jika belum ada data sama sekali, tidak ada tombol
+                                                if ($pembeliansPerUnit->isEmpty()) {
+                                                    $showButton = false;
+                                                } else {
+                                                    // Cek status approval langsung dari data pembelian
+                                                    $hasManagerApproval = $pembeliansPerUnit->some('status_approval_manager');
+                                                    $hasAdminApproval = $pembeliansPerUnit->some('status_approval_admin');
+                                                    $hasGMApproval = $pembeliansPerUnit->some('status_approval_gm');
+                                                    $hasRHApproval = $pembeliansPerUnit->some('status_approval_rh');
+
+                                                    switch ($currentUserLevel) {
+                                                        case 'Asisten':
+                                                        case 'Manager':
+                                                            $showButton = true; // Manager bisa lihat kapan saja jika ada data
+                                                            break;
+                                                        case 'Admin':
+                                                            $showButton = $hasManagerApproval || $pembeliansPerUnit->some(function ($item) {
+                                                                return $item->status_approval_manager == 1 || $item->status_approval_manager === true;
+                                                            });
+                                                            break;
+                                                        case 'General_Manager':
+                                                            $showButton = $hasAdminApproval; // GM hanya bisa lihat jika sudah diapprove Admin
+                                                            break;
+                                                        case 'Region_Head':
+                                                            $showButton = $hasGMApproval; // RH hanya bisa lihat jika sudah diapprove GM
+                                                            break;
+                                                        default:
+                                                            $showButton = $hasRHApproval; // Level lain hanya bisa lihat jika sudah diapprove RH
+                                                            break;
+                                                    }
+                                                }
+                                            @endphp
+
+                                            @if ($showButton && $unit && $pembelian->tanggal)
                                                 <a href="{{ route('pembelian.lihat.perunit', ['unit' => $unit->kode_unit, 'tanggal' => $pembelian->tanggal]) }}"
                                                     class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
@@ -182,7 +219,7 @@
                                                     Lihat
                                                 </a>
                                             @else
-                                                <span class="text-xs text-gray-400"></span>
+                                                <span class="text-xs text-gray-400">-</span>
                                             @endif
                                         </div>
                                     </td>

@@ -1,3 +1,4 @@
+wa
 <!DOCTYPE html>
 <html lang="en">
 
@@ -57,7 +58,7 @@
                                     text: {!! json_encode(session('error')) !!}
                                 });
                             @endif
-                                                                                                                                                                                                                    });
+                                                                                                                                                                                                                                            });
                 </script>
             @endif
             <div class="px-4 py-3 mb-4 bg-white shadow rounded-lg">
@@ -140,38 +141,76 @@
                                     @endphp
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center items-center gap-2">
-                                            <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
-                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    fill="currentColor" viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
-                                                </svg>
-                                                Detail
-                                            </a>
-                                            <a href="{{ route('pembelian.edit', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
-                                                class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    fill="currentColor" viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M5 20h14v2H5c-1.103 0-2-.897-2-2V6h2v14zM20.707 7.293l-1-1a1.001 1.001 0 0 0-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 0 0 0-1.414z" />
-                                                </svg>
-                                                Edit
-                                            </a>
-                                            <form id="delete-form-{{ $pembelian->id }}"
-                                                action="{{ route('pembelian.destroy', $pembelian->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" onclick="confirmDelete({{ $pembelian->id }})"
-                                                    class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition">
+                                            @php
+                                                $currentUserLevel = Auth::user()->level;
+                                                $showButtons = false;
+
+                                                // Jika RH sudah approve, tombol tersedia untuk semua level
+                                                if ($pembelian->status_approval_rh) {
+                                                    $showButtons = true;
+                                                } else {
+                                                    // Logika bertahap: tombol hilang setelah level user di-approve
+                                                    switch ($currentUserLevel) {
+                                                        case 'Asisten':
+                                                        case 'Manager':
+                                                            // Tombol hilang jika Manager sudah approve
+                                                            $showButtons = !$pembelian->status_approval_manager;
+                                                            break;
+                                                        case 'Admin':
+                                                            // Tombol hilang jika Admin sudah approve
+                                                            $showButtons = !$pembelian->status_approval_admin;
+                                                            break;
+                                                        case 'General_Manager':
+                                                            // Tombol hilang jika GM sudah approve
+                                                            $showButtons = !$pembelian->status_approval_gm;
+                                                            break;
+                                                        case 'Region_Head':
+                                                            // Tombol hilang jika RH sudah approve
+                                                            $showButtons = !$pembelian->status_approval_rh;
+                                                            break;
+                                                        default:
+                                                            $showButtons = false;
+                                                            break;
+                                                    }
+                                                }
+                                            @endphp
+
+                                            @if ($showButtons)
+                                                <a href="{{ route('buy.detail', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
+                                                    class="flex items-center gap-1 text-xs px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                         fill="currentColor" viewBox="0 0 24 24">
                                                         <path
-                                                            d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
+                                                            d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z" />
                                                     </svg>
-                                                    Hapus
-                                                </button>
-                                            </form>
+                                                    Detail
+                                                </a>
+                                                <a href="{{ route('pembelian.edit', ['id' => $pembelian->id, 'back' => request()->fullUrl()]) }}"
+                                                    class="flex items-center gap-1 text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                        fill="currentColor" viewBox="0 0 24 24">
+                                                        <path
+                                                            d="M5 20h14v2H5c-1.103 0-2-.897-2-2V6h2v14zM20.707 7.293l-1-1a1.001 1.001 0 0 0-1.414 0L10 14.586V17h2.414l8.293-8.293a1 1 0 0 0 0-1.414z" />
+                                                    </svg>
+                                                    Edit
+                                                </a>
+                                                <form id="delete-form-{{ $pembelian->id }}"
+                                                    action="{{ route('pembelian.destroy', $pembelian->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" onclick="confirmDelete({{ $pembelian->id }})"
+                                                        class="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                            fill="currentColor" viewBox="0 0 24 24">
+                                                            <path
+                                                                d="M9 3v1H4v2h16V4h-5V3H9zm2 4h2v10h-2V7zm-4 0h2v10H7V7zm8 0h2v10h-2V7z" />
+                                                        </svg>
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <span class="text-xs text-gray-400">Sudah diapprove</span>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
