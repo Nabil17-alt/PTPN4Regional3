@@ -69,21 +69,26 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleOverlay(false);
     });
 
-    document.querySelectorAll('.menu-item').forEach(link => {
-        link.addEventListener('click', (event) => {
-            // Kalau ini <button> atau <a> tanpa href, jangan tampilkan loader
-            const target = event.currentTarget;
-            const tagName = target.tagName.toLowerCase();
-            const hasHref = tagName === 'a' && target.getAttribute('href');
+    function attachLoaderOnLinks(selector) {
+        document.querySelectorAll(selector).forEach(link => {
+            link.addEventListener('click', (event) => {
+                const target = event.currentTarget;
+                const tagName = target.tagName.toLowerCase();
+                const hasHref = tagName === 'a' && target.getAttribute('href');
 
-            if (!hasHref) {
-                return;
-            }
+                if (!hasHref) {
+                    return;
+                }
 
-            loader?.classList.remove('hidden');
-            loader?.classList.add('flex');
+                loader?.classList.remove('hidden');
+                loader?.classList.add('flex');
+            });
         });
-    });
+    }
+
+    // Loader untuk menu utama dan submenu kalkulator harga
+    attachLoaderOnLinks('.menu-item');
+    attachLoaderOnLinks('#kalkulatorSubmenu .submenu-item');
 });
 
 window.addEventListener('pageshow', (event) => {
