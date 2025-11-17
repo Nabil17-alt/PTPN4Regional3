@@ -70,7 +70,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelectorAll('.menu-item').forEach(link => {
-        link.addEventListener('click', () => {
+        link.addEventListener('click', (event) => {
+            // Kalau ini <button> atau <a> tanpa href, jangan tampilkan loader
+            const target = event.currentTarget;
+            const tagName = target.tagName.toLowerCase();
+            const hasHref = tagName === 'a' && target.getAttribute('href');
+
+            if (!hasHref) {
+                return;
+            }
+
             loader?.classList.remove('hidden');
             loader?.classList.add('flex');
         });

@@ -7,6 +7,10 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BiayaController;
+use App\Http\Controllers\KalkulatorController;
+use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\LaporanController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -49,4 +53,28 @@ Route::middleware('auth')->group(function () {
         ->name('pembelian.approvePerUnit');
     Route::put('/pembelian/{id}/update-harga', [PembelianController::class, 'updateHarga'])->name('pembelian.updateHarga');
 
+    // --- Input Biaya ---
+    Route::get('/kalkulator/input-biaya', [BiayaController::class, 'index'])
+        ->name('input.biaya');
+    Route::post('/kalkulator/input-biaya', [BiayaController::class, 'store'])
+        ->name('input.biaya.store');
+
+    // --- Input Kalkulator Harga ---
+    Route::get('/kalkulator/harga', [KalkulatorController::class, 'index'])
+        ->name('input.kalkulator');
+    Route::post('/kalkulator/harga/hitung', [KalkulatorController::class, 'hitung'])
+        ->name('input.kalkulator.hitung');
+
+    // --- Approval ---
+    Route::get('/kalkulator/approval', [ApprovalController::class, 'index'])
+        ->name('approval');
+    Route::post('/kalkulator/approval/proses', [ApprovalController::class, 'proses'])
+        ->name('approval.proses');
+
+
+    // ============================================================
+    //                    REKAP LAPORAN
+    // ============================================================
+    Route::get('/rekap-laporan', [LaporanController::class, 'index'])
+        ->name('rekap.laporan');
 });

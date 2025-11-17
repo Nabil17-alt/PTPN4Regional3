@@ -54,47 +54,7 @@
                     </div>
                 </nav>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-sm font-medium text-gray-500">Harga TBS Rata-rata Plasma</h2>
-                    <p class="mt-2 text-2xl font-bold text-indigo-600">
-                        {{ number_format($totalPembelian, 0, ',', '.') }}
-                    </p>
-                </div>
-                <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-sm font-medium text-gray-500">Harga TBS Rata-rata Pihak ke-3</h2>
-                    <p class="mt-2 text-2xl font-bold {{ $rataRataMargin < 0 ? 'text-red-600' : 'text-green-600' }}">
-                        {{ number_format($rataRataMargin, 2, ',', '.') }}
-                    </p>
-                </div>
-                <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-sm font-medium text-gray-500">Harga CPO Penetapan</h2>
-                    <p class="mt-2 text-2xl font-bold text-green-600">
-                        {{ number_format($rataRataBiaya, 2, ',', '.') }}
-                    </p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-sm font-medium text-gray-500">Rendemen CPO Rata-rata</h2>
-                    <p class="mt-2 text-2xl font-bold text-indigo-600">
-                        {{ number_format($totalPembelian, 0, ',', '.') }}
-                    </p>
-                </div>
-                <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-sm font-medium text-gray-500">Rendemen PK Rata-rata</h2>
-                    <p class="mt-2 text-2xl font-bold {{ $rataRataMargin < 0 ? 'text-red-600' : 'text-green-600' }}">
-                        {{ number_format($rataRataMargin, 2, ',', '.') }}
-                    </p>
-                </div>
-                <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-sm font-medium text-gray-500">Harga PK Penetapan</h2>
-                    <p class="mt-2 text-2xl font-bold text-green-600">
-                        {{ number_format($rataRataBiaya, 2, ',', '.') }}
-                    </p>
-                </div>
-            </div>
+            
 
             <footer class="footer p-5 bg-gray-50">
                 <div class="text-center text-muted text-m">
