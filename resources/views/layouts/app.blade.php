@@ -39,14 +39,18 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="{{ route('admin.akun') }}"
-                        class="menu-item {{ request()->routeIs('admin.akun') ? 'bg-blue-600 text-white' : '' }}">
-                        <i data-lucide="user-circle" class="icon"></i> Akun
-                    </a>
-                </li>
+                @auth
+                    @if (auth()->user()->level === 'Admin')
+                        <li>
+                            <a href="{{ route('admin.akun') }}"
+                                class="menu-item {{ request()->routeIs('admin.akun') ? 'bg-blue-600 text-white' : '' }}">
+                                <i data-lucide="user-circle" class="icon"></i> Akun
+                            </a>
+                        </li>
+                    @endif
 
-                {{-- Dropdown Kalkulator Harga --}}
+                @endauth
+
                 @php
                     $isKalkulatorActive = request()->routeIs('input.biaya')
                         || request()->routeIs('input.biaya.store')
@@ -92,7 +96,6 @@
                     </ul>
                 </li>
 
-                {{-- Rekap Laporan --}}
                 <li>
                     <a href="{{ route('rekap.laporan') }}"
                         class="menu-item {{ request()->routeIs('rekap.laporan') ? 'bg-blue-600 text-white' : '' }}">
@@ -100,9 +103,6 @@
                         Rekap Laporan
                     </a>
                 </li>
-
-
-
             </ul>
         </div>
     </aside>
