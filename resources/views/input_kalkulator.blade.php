@@ -54,7 +54,244 @@
                     </div>
                 </nav>
             </div>
+            <div class="px-4 py-5 mb-6 bg-white shadow rounded-lg">
+                {{-- Baris atas: Preview Rekap & Filter --}}
+                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="inline-flex items-center justify-center px-4 py-1.5 rounded border border-gray-300 text-xs font-medium text-gray-700 bg-gray-50">
+                            Preview Rekap
+                        </span>
+                        <p class="text-xs text-gray-500">Klik untuk melihat rekap harga yang sudah disimpan / setelah
+                            kalkulasi approve.</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-4 w-full lg:w-2/3">
+                        <div class="w-full md:w-1/2">
+                            <label for="pks" class="block mb-1 text-sm font-medium text-gray-700">Pilih PKS</label>
+                            <select id="pks" name="pks"
+                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900">
+                                <option value="" disabled selected>-- Pilih PKS --</option>
+                                {{-- opsi PKS diisi dari controller --}}
+                            </select>
+                        </div>
 
+                        <div class="w-full md:w-1/2">
+                            <label for="tanggal" class="block mb-1 text-sm font-medium text-gray-700">Filter Tanggal</label>
+                            <input type="date" id="tanggal" name="tanggal"
+                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
+                        </div>
+                    </div>
+
+                    <div class="w-full lg:w-1/3">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">Status Input</label>
+                        <div
+                            class="text-xs md:text-sm text-gray-500 bg-gray-50 border border-dashed border-gray-300 rounded-lg px-3 py-2">
+                            <p>Belum ada data kalkulator harga tersimpan untuk tanggal ini.</p>
+                            <p class="mt-1">Jika sudah diinput, informasi terakhir update akan ditampilkan di sini.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Baris kedua: Pilih biaya yang sudah disimpan & harga referensi --}}
+                <form id="formKalkulator" method="POST" action="#" class="space-y-6">
+                    @csrf
+                    <div class="grid gap-4 md:grid-cols-3">
+                        <div>
+                            <label for="biaya_digunakan" class="block mb-1 text-sm font-medium text-gray-700">Pilih biaya
+                                yang akan digunakan</label>
+                            <select id="biaya_digunakan" name="biaya_digunakan"
+                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900">
+                                <option value="" disabled selected>Biaya bulan mana...</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="harga_penetapan" class="block mb-1 text-sm font-medium text-gray-700">Harga CPO
+                                Penetapan</label>
+                            <input type="number" step="0.01" id="harga_penetapan" name="harga_penetapan"
+                                placeholder="Rp 15.000,-"
+                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
+                        </div>
+
+                        <div>
+                            <label for="harga_pk_penetapan" class="block mb-1 text-sm font-medium text-gray-700">Harga PK
+                                Penetapan</label>
+                            <input type="number" step="0.01" id="harga_pk_penetapan" name="harga_pk_penetapan"
+                                placeholder="Rp 11.000,-"
+                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
+                        </div>
+                    </div>
+
+                    {{-- Bagian Grade: perhitungan per grade --}}
+                    <div class="mt-6 border-t border-gray-100 pt-4 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                                <span>Grade / Kualitas yang dihitung</span>
+                            </h2>
+                            <button type="button"
+                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">
+                                + Grade
+                            </button>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-4 lg:grid-cols-6 items-end">
+                            <div>
+                                <label for="grade" class="block mb-1 text-xs font-medium text-gray-700">Grade</label>
+                                <select id="grade" name="grade"
+                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900">
+                                    <option value="" disabled selected>Pilih</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="rend_cpo" class="block mb-1 text-xs font-medium text-gray-700">Rend. CPO
+                                    (%)</label>
+                                <input type="number" step="0.01" id="rend_cpo" name="rend_cpo" placeholder="18.75"
+                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                            </div>
+
+                            <div>
+                                <label for="rend_pk" class="block mb-1 text-xs font-medium text-gray-700">Rend. PK
+                                    (%)</label>
+                                <input type="number" step="0.01" id="rend_pk" name="rend_pk" placeholder="1.70"
+                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                            </div>
+
+                            <div>
+                                <label for="harga_bep" class="block mb-1 text-xs font-medium text-gray-700">Harga
+                                    BEP</label>
+                                <input type="number" step="0.01" id="harga_bep" name="harga_bep" placeholder="Rp 3.000"
+                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                            </div>
+
+                            <div>
+                                <label for="harga_penetapan_grade"
+                                    class="block mb-1 text-xs font-medium text-gray-700">Harga Penetapan (hasil)</label>
+                                <input type="number" step="0.01" id="harga_penetapan_grade" name="harga_penetapan_grade"
+                                    placeholder="Rp 3.600"
+                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                            </div>
+
+                            <div>
+                                <label for="harga_penetapan_grade"
+                                    class="block mb-1 text-xs font-medium text-gray-700">Eskalasi (%)</label>
+                                <input type="number" step="0.01" id="harga_eskalasi" name="harga_eskalasi"
+                                    placeholder="1.10"
+                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                            </div>
+
+                            <div>
+                                <label for="info_harga_persing"
+                                    class="block mb-1 text-xs font-medium text-gray-700">Informasi Harga / persing</label>
+                                <input type="number" step="0.01" id="info_harga_persing" name="info_harga_persing"
+                                    placeholder="Rp 3.200"
+                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit"
+                                class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white bg-gray-900 rounded hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+                                Simpan
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Tabel Preview Rekap di bawah form grade --}}
+                    <div class="mt-6">
+                        <h2 class="text-sm font-semibold text-gray-800 mb-3">Preview Rekap</h2>
+                        <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                            <table class="min-w-full text-xs md:text-sm text-left text-gray-700">
+                                <thead class="bg-gray-50 text-gray-600 uppercase">
+                                    <tr>
+                                        <th rowspan="2" class="px-3 py-2 border-b align-middle">No</th>
+                                        <th rowspan="2" class="px-3 py-2 border-b align-middle">PKS</th>
+                                        <th rowspan="2" class="px-3 py-2 border-b align-middle">Grade</th>
+                                        <th colspan="2" class="px-3 py-2 border-b text-center">Harga</th>
+                                        <th colspan="2" class="px-3 py-2 border-b text-center">Rendemen</th>
+                                        <th colspan="4" class="px-3 py-2 border-b text-center">Harga</th>
+                                        <th rowspan="2" class="px-3 py-2 border-b align-middle">Eskalasi</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="px-3 py-2 border-b">CPO</th>
+                                        <th class="px-3 py-2 border-b">PK</th>
+                                        <th class="px-3 py-2 border-b">CPO</th>
+                                        <th class="px-3 py-2 border-b">PK</th>
+                                        <th class="px-3 py-2 border-b">Harga BEP</th>
+                                        <th class="px-3 py-2 border-b">Harga Saat Ini</th>
+                                        <th class="px-3 py-2 border-b">Harga Kemarin</th>
+                                        <th class="px-3 py-2 border-b">Selisih</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="px-3 py-2 border-b text-center" colspan="12">Belum ada data ditampilkan.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {{-- Ringkasan bawah (sesuai gambar 2) --}}
+                    <div class="mt-6 border-t border-gray-100 pt-4 space-y-3 text-xs text-gray-700">
+                        <h2 class="text-sm font-semibold text-gray-800 mb-2">Ringkasan Input Kalkulator Harga (per grade)
+                        </h2>
+                        <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <span>Perkiraan Pendapatan dari CPO (Rp/kg)</span>
+                                <span
+                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span>Perkiraan Pendapatan dari PK (Rp/kg)</span>
+                                <span
+                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span>Total Perkiraan Pendapatan</span>
+                                <span
+                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span>Perkiraan Biaya: Biaya Produksi per TBS olah (Rp/kg)</span>
+                                <span
+                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span>Perkiraan Biaya: Biaya Angkut Gabungan (Rp/kg)</span>
+                                <span
+                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span>Total Perkiraan Biaya</span>
+                                <span
+                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span>Grade</span>
+                                <span
+                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[60px] text-center">FND</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span>Harga BEP</span>
+                                <span
+                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span>Harga Penetapan</span>
+                                <span
+                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span>Eskalasi %</span>
+                                <span
+                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[60px] text-right">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
             <footer class="footer p-5 bg-gray-50">
                 <div class="text-center text-muted text-m">
