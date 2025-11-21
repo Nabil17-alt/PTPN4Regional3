@@ -17,7 +17,6 @@ class BiayaController extends Controller
         if ($selectedPks) {
             $pks = Pks::where('nama_pks', $selectedPks)->first();
             if ($pks) {
-                // Ambil data biaya terbaru untuk PKS tersebut
                 $biaya = Biaya::where('nama_pks', $pks->nama_pks)
                     ->orderByDesc('bulan')
                     ->first();
@@ -35,7 +34,6 @@ class BiayaController extends Controller
     {
 
         $validated = $request->validate([
-            // pks berisi nama_pks dari select
             'pks' => 'required|exists:tb_pks,nama_pks',
             'periode' => 'required|date_format:Y-m',
             'biaya_olah' => 'required|numeric',
@@ -43,11 +41,8 @@ class BiayaController extends Controller
             'tarif_angkut_pk' => 'required|numeric',
         ]);
 
-        // cari PKS berdasarkan nama_pks
         $pks = Pks::where('nama_pks', $validated['pks'])->firstOrFail();
 
-        // jika sudah ada data untuk kombinasi nama_pks + bulan → update,
-        // kalau belum ada → create (tidak akan dobel untuk kombinasi yang sama)
         Biaya::updateOrCreate(
             [
                 'nama_pks' => $pks->nama_pks,
