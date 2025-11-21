@@ -11,9 +11,12 @@
     <link href="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/loaders.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="{{ asset('css/inputkalkulator.css') }}">
 </head>
 
 <body>
+    <div id="topLoader"></div>
     @extends('layouts.app')
 
     @section('content')

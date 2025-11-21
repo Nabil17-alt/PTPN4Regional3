@@ -1,3 +1,19 @@
+function showTopLoader() {
+    const loader = document.getElementById('topLoader');
+    let progress = 0;
+    loader.style.opacity = "1";
+    loader.style.display = "block";
+    loader.style.width = "0%";
+
+    let interval = setInterval(() => {
+        progress += Math.random() * 20 + 10;
+        if (progress > 90) progress = 90;
+        loader.style.width = progress + "%";
+    }, 200);
+
+    return interval;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const loader = document.getElementById('pageLoader');
     const logoutBtn = document.getElementById('logoutForm');
