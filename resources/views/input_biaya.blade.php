@@ -81,50 +81,27 @@
                                 </option>
                                 @isset($pksList)
                                     @foreach ($pksList as $pks)
-                                        <option value="{{ $pks->kode_pks }}" {{ ($selectedPks ?? old('pks')) == $pks->kode_pks ? 'selected' : '' }}>
+                                        <option value="{{ $pks->nama_pks }}" {{ ($selectedPks ?? old('pks')) == $pks->nama_pks ? 'selected' : '' }}>
                                             {{ $pks->nama_pks }}
                                         </option>
                                     @endforeach
                                 @endisset
                             </select>
                             @if(isset($biaya))
-                                <p class="mt-1 text-xs text-blue-600">Data biaya sudah tersimpan untuk bulan ini.</p>
+                                <p class="mt-1 text-xs text-blue-600">Data biaya sudah tersimpan.</p>
                             @elseif(!empty($selectedPks))
-                                <p class="mt-1 text-xs text-red-600">Belum ada data biaya yang disimpan untuk bulan ini.</p>
+                                <p class="mt-1 text-xs text-red-600">Belum ada data biaya yang disimpan.</p>
                             @endif
                         </div>
 
                         <div class="w-full md:w-1/3">
-                            <label for="periode" class="block mb-1 text-sm font-medium text-gray-700">Pilih Bulan</label>
+                            <label for="periode" class="block mb-1 text-sm font-medium text-gray-700">Bulan Biaya
+                                Berlaku</label>
                             <input type="month" id="periode" name="periode" required
-                                value="{{ $selectedPeriode ?? old('periode', now()->format('Y-m')) }}"
+                                value="{{ $biaya->bulan ?? old('periode', now()->format('Y-m')) }}"
                                 class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
-                        </div>
-
-                        <div class="w-full md:w-1/4 flex items-center md:justify-end">
-                            @if(isset($biaya))
-                                <div
-                                    class="text-xs md:text-sm text-gray-700 bg-blue-50 border border-blue-300 rounded-lg px-3 py-2 w-full">
-                                    <div class="flex items-center gap-2">
-                                        <span class="inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
-                                        <span>Data biaya sudah tersimpan.</span>
-                                    </div>
-                                    <p class="mt-1">
-                                        Bulan: <span class="font-semibold">{{ $biaya->bulan }}</span><br>
-                                        Biaya Olah: <span class="font-semibold">{{ $biaya->biaya_olah }}</span><br>
-                                        Tarif Angkut CPO: <span class="font-semibold">{{ $biaya->tarif_angkut_cpo }}</span><br>
-                                        Tarif Angkut PK: <span class="font-semibold">{{ $biaya->tarif_angkut_pk }}</span><br>
-                                    </p>
-                                </div>
-                            @else
-                                <div
-                                    class="text-xs md:text-sm text-gray-500 bg-gray-50 border border-dashed border-gray-300 rounded-lg px-3 py-2 w-full">
-                                    <div class="flex items-center gap-2">
-                                        <span class="inline-flex h-2 w-2 rounded-full bg-red-500"></span>
-                                        <span>Belum ada data biaya tersimpan untuk kombinasi PKS & bulan ini.</span>
-                                    </div>
-                                </div>
-                            @endif
+                            <p class="mt-1 text-xs text-gray-500">Jika sudah ada data, bulan akan mengikuti data terakhir.
+                            </p>
                         </div>
                     </div>
 
@@ -159,7 +136,7 @@
                     <div class="flex justify-end pt-4 border-t border-gray-100 mt-4">
                         <button type="submit"
                             class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white bg-gray-900 rounded hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
-                            SIMPAN
+                            {{ isset($biaya) ? 'EDIT' : 'SIMPAN' }}
                         </button>
                     </div>
                 </form>
@@ -174,31 +151,8 @@
             </footer>
         </div>
     @endsection
-    <script src="{{ asset('js/dashboard.js') }}"></script>
-    <script>
-        // reload halaman ketika PKS atau bulan diubah supaya cek data
-        document.getElementById('pks').addEventListener('change', function () {
-            const pks = this.value;
-            const periode = document.getElementById('periode').value || '{{ now()->format('Y-m') }}';
-            if (pks) {
-                const url = new URL(window.location.href);
-                url.searchParams.set('pks', pks);
-                url.searchParams.set('periode', periode);
-                window.location.href = url.toString();
-            }
-        });
+    <script src="{{ asset('js/inputbiaya.js') }}"></script>
 
-        document.getElementById('periode').addEventListener('change', function () {
-            const periode = this.value;
-            const pks = document.getElementById('pks').value;
-            if (pks && periode) {
-                const url = new URL(window.location.href);
-                url.searchParams.set('pks', pks);
-                url.searchParams.set('periode', periode);
-                window.location.href = url.toString();
-            }
-        });
-    </script>
 </body>
 
 </html>

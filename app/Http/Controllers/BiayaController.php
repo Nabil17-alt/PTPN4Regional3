@@ -12,14 +12,14 @@ class BiayaController extends Controller
     {
         $pksList = Pks::orderBy('nama_pks')->get();
         $selectedPks = request('pks');
-        $selectedPeriode = request('periode', now()->format('Y-m'));
 
         $biaya = null;
         if ($selectedPks) {
-            $pks = Pks::where('kode_pks', $selectedPks)->first();
+            $pks = Pks::where('nama_pks', $selectedPks)->first();
             if ($pks) {
+                // Ambil data biaya terbaru untuk PKS tersebut
                 $biaya = Biaya::where('nama_pks', $pks->nama_pks)
-                    ->where('bulan', $selectedPeriode)
+                    ->orderByDesc('bulan')
                     ->first();
             }
         }
@@ -27,7 +27,6 @@ class BiayaController extends Controller
         return view('input_biaya', [
             'pksList' => $pksList,
             'selectedPks' => $selectedPks,
-            'selectedPeriode' => $selectedPeriode,
             'biaya' => $biaya,
         ]);
     }
@@ -36,15 +35,19 @@ class BiayaController extends Controller
     {
 
         $validated = $request->validate([
-            'pks' => 'required|exists:tb_pks,kode_pks',
+            // pks berisi nama_pks dari select
+            'pks' => 'required|exists:tb_pks,nama_pks',
             'periode' => 'required|date_format:Y-m',
             'biaya_olah' => 'required|numeric',
             'tarif_angkut_cpo' => 'required|numeric',
             'tarif_angkut_pk' => 'required|numeric',
         ]);
 
-        $pks = Pks::where('kode_pks', $validated['pks'])->firstOrFail();
+        // cari PKS berdasarkan nama_pks
+        $pks = Pks::where('nama_pks', $validated['pks'])->firstOrFail();
 
+        // jika sudah ada data untuk kombinasi nama_pks + bulan → update,
+        // kalau belum ada → create (tidak akan dobel untuk kombinasi yang sama)
         Biaya::updateOrCreate(
             [
                 'nama_pks' => $pks->nama_pks,
@@ -58,7 +61,7 @@ class BiayaController extends Controller
         );
 
         return redirect()
-            ->route('input.biaya', ['pks' => $validated['pks'], 'periode' => $validated['periode']])
+            ->route('input.biaya', ['pks' => $pks->nama_pks])
             ->with('success', 'Biaya berhasil disimpan.');
     }
 }
