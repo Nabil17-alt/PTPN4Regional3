@@ -58,10 +58,10 @@
                 <h1 class="text-base font-semibold text-gray-800 mb-4">Approval Harga TBS</h1>
 
                 {{-- Tabel rekap seperti di preview rekap --}}
-                <div class="mb-6">
+                <div class="mb-6 w-full">
                     <h2 class="text-sm font-semibold text-gray-800 mb-2">Rekap Harga per PKS & Grade</h2>
                     <div class="overflow-x-auto border border-gray-200 rounded-lg">
-                        <table class="min-w-full text-xs md:text-sm text-left text-gray-700">
+                        <table class="w-full text-xs md:text-sm text-left text-gray-700">
                             <thead class="bg-gray-50 text-gray-600 uppercase">
                                 <tr>
                                     <th rowspan="2" class="px-3 py-2 border-b align-middle">No</th>

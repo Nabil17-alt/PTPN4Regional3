@@ -1,48 +1,32 @@
 <?php
+// app/Models/Pembelian.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Pembelian extends Model
 {
-    protected $table = 'tb_pembelian_cpo_pk';
+    protected $table = 'tb_pembelian';
 
     protected $fillable = [
-        'kode_unit',
+        'nama_pks',
         'tanggal',
-        'grade',
-        'harga_cpo',
+        'biaya_bulan_berapa',
+        'biayabulanan_id',
+        'harga_cpo_penetapan',
         'harga_pk',
+        'penetapan',
+        'grade',
         'rendemen_cpo',
         'rendemen_pk',
-        'total_rendemen',
-        'pendapatan_cpo',
-        'pendapatan_pk',
-        'total_pendapatan',
-        'biaya_olah',
-        'biaya_produksi',
-        'tarif_angkut_cpo',
-        'tarif_angkut_pk',
-        'biaya_angkut_jual',
-        'total_biaya',
+        'harga_bep',
         'harga_penetapan',
-        'harga_escalasi',
-        'margin',
-        'status_approval_manager',
-        'status_approval_admin',
-        'status_approval_gm',
-        'status_approval_rh',
+        'eskalasi',
+        'harga_pesaing',
     ];
 
-    public function unit()
+    public function biayaBulanan()
     {
-        return $this->belongsTo(Unit::class, 'kode_unit', 'kode_unit');
+        return $this->belongsTo(Biaya::class, 'biayabulanan_id');
     }
-
-    public function approvals()
-    {
-        return $this->hasMany(PembelianApproval::class, 'pembelian_id');
-    }
-
 }
-

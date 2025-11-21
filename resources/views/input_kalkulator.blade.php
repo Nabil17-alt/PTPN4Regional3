@@ -56,51 +56,54 @@
             </div>
             <div class="px-4 py-5 mb-6 bg-white shadow rounded-lg">
                 {{-- Baris atas: Preview Rekap & Filter --}}
-                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
-                    <div class="flex items-center gap-3">
-                        <span
-                            class="inline-flex items-center justify-center px-4 py-1.5 rounded border border-gray-300 text-xs font-medium text-gray-700 bg-gray-50">
-                            Preview Rekap
-                        </span>
-                        <p class="text-xs text-gray-500">Klik untuk melihat rekap harga yang sudah disimpan / setelah
-                            kalkulasi approve.</p>
-                    </div>
-                    <div class="flex flex-col md:flex-row gap-4 w-full lg:w-2/3">
-                        <div class="w-full md:w-1/2">
-                            <label for="pks" class="block mb-1 text-sm font-medium text-gray-700">Pilih PKS</label>
-                            <select id="pks" name="pks"
-                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900">
-                                <option value="" disabled selected>-- Pilih PKS --</option>
-                                {{-- opsi PKS diisi dari controller --}}
-                            </select>
-                        </div>
-
-                        <div class="w-full md:w-1/2">
-                            <label for="tanggal" class="block mb-1 text-sm font-medium text-gray-700">Filter Tanggal</label>
-                            <input type="date" id="tanggal" name="tanggal"
-                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
-                        </div>
-                    </div>
-
-                    <div class="w-full lg:w-1/3">
-                        <label class="block mb-1 text-sm font-medium text-gray-700">Status Input</label>
-                        <div
-                            class="text-xs md:text-sm text-gray-500 bg-gray-50 border border-dashed border-gray-300 rounded-lg px-3 py-2">
-                            <p>Belum ada data kalkulator harga tersimpan untuk tanggal ini.</p>
-                            <p class="mt-1">Jika sudah diinput, informasi terakhir update akan ditampilkan di sini.</p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Baris kedua: Pilih biaya yang sudah disimpan & harga referensi --}}
-                <form id="formKalkulator" method="POST" action="#" class="space-y-6">
+                <form id="formKalkulator" method="POST" action="{{ route('input.kalkulator.hitung') }}" class="space-y-6">
                     @csrf
+                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <button type="button"
+                                class="inline-flex items-center justify-center px-4 py-1.5 rounded border border-gray-300 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
+                                Preview Rekap
+                            </button>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 w-full lg:w-2/3">
+                            <div class="w-full md:w-1/2">
+                                <label for="pks" class="block mb-1 text-sm font-medium text-gray-700">Pilih PKS</label>
+                                <select id="pks" name="pks"
+                                    class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900">
+                                    <option value="" disabled selected>-- Pilih PKS --</option>
+                                    @foreach ($pksList as $pks)
+                                        <option value="{{ $pks->nama_pks }}">{{ $pks->nama_pks }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="w-full md:w-1/2">
+                                <label for="tanggal" class="block mb-1 text-sm font-medium text-gray-700">Tanggal</label>
+                                <input type="date" id="tanggal" name="tanggal"
+                                    class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
+                            </div>
+                        </div>
+
+                        <div class="w-full lg:w-1/3">
+                            <label class="block mb-1 text-sm font-medium text-gray-700">Status Input</label>
+                            <div
+                                class="text-xs md:text-sm text-gray-500 bg-gray-50 border border-dashed border-gray-300 rounded-lg px-3 py-2">
+                                <p>Belum ada data kalkulator harga tersimpan untuk tanggal ini.</p>
+                                <p class="mt-1">Jika sudah diinput, informasi terakhir update akan ditampilkan di sini.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Baris kedua: Pilih biaya yang sudah disimpan & harga referensi --}}
+
                     <div class="grid gap-4 md:grid-cols-3">
                         <div>
                             <label for="biaya_digunakan" class="block mb-1 text-sm font-medium text-gray-700">Pilih biaya
                                 yang akan digunakan</label>
                             <select id="biaya_digunakan" name="biaya_digunakan"
-                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900">
+                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900"
+                                disabled>
                                 <option value="" disabled selected>Biaya bulan mana...</option>
                             </select>
                         </div>
@@ -109,7 +112,7 @@
                             <label for="harga_penetapan" class="block mb-1 text-sm font-medium text-gray-700">Harga CPO
                                 Penetapan</label>
                             <input type="number" step="0.01" id="harga_penetapan" name="harga_penetapan"
-                                placeholder="Rp 15.000,-"
+                                placeholder="Rp 13.400,-"
                                 class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
                         </div>
 
@@ -117,7 +120,7 @@
                             <label for="harga_pk_penetapan" class="block mb-1 text-sm font-medium text-gray-700">Harga PK
                                 Penetapan</label>
                             <input type="number" step="0.01" id="harga_pk_penetapan" name="harga_pk_penetapan"
-                                placeholder="Rp 11.000,-"
+                                placeholder="Rp 8.600,-"
                                 class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
                         </div>
                     </div>
@@ -128,10 +131,6 @@
                             <h2 class="text-sm font-semibold text-gray-800 flex items-center gap-2">
                                 <span>Grade / Kualitas yang dihitung</span>
                             </h2>
-                            <button type="button"
-                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">
-                                + Grade
-                            </button>
                         </div>
 
                         <div class="grid gap-4 md:grid-cols-4 lg:grid-cols-6 items-end">
@@ -139,7 +138,10 @@
                                 <label for="grade" class="block mb-1 text-xs font-medium text-gray-700">Grade</label>
                                 <select id="grade" name="grade"
                                     class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900">
-                                    <option value="" disabled selected>Pilih</option>
+                                    <option value="" disabled selected>Pilih Grade</option>
+                                    @foreach ($gradeList as $grade)
+                                        <option value="{{ $grade->nama_grade }}">{{ $grade->nama_grade }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -161,7 +163,8 @@
                                 <label for="harga_bep" class="block mb-1 text-xs font-medium text-gray-700">Harga
                                     BEP</label>
                                 <input type="number" step="0.01" id="harga_bep" name="harga_bep" placeholder="Rp 3.000"
-                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                    class="block w-full rounded-lg border-gray-200 text-xs text-gray-400 bg-gray-50 focus:ring-0 focus:border-gray-200"
+                                    readonly />
                             </div>
 
                             <div>
@@ -173,16 +176,17 @@
                             </div>
 
                             <div>
-                                <label for="harga_penetapan_grade"
-                                    class="block mb-1 text-xs font-medium text-gray-700">Eskalasi (%)</label>
+                                <label for="harga_eskalasi" class="block mb-1 text-xs font-medium text-gray-700">Eskalasi
+                                    (%)</label>
                                 <input type="number" step="0.01" id="harga_eskalasi" name="harga_eskalasi"
                                     placeholder="1.10"
-                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                    class="block w-full rounded-lg border-gray-200 text-xs text-gray-400 bg-gray-50 focus:ring-0 focus:border-gray-200"
+                                    readonly />
                             </div>
 
                             <div>
                                 <label for="info_harga_persing"
-                                    class="block mb-1 text-xs font-medium text-gray-700">Informasi Harga / persing</label>
+                                    class="block mb-1 text-xs font-medium text-gray-700">Informasi Harga Pesaing</label>
                                 <input type="number" step="0.01" id="info_harga_persing" name="info_harga_persing"
                                     placeholder="Rp 3.200"
                                     class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
@@ -198,10 +202,10 @@
                     </div>
 
                     {{-- Tabel Preview Rekap di bawah form grade --}}
-                    <div class="mt-6">
+                    <div class="mt-6 w-full">
                         <h2 class="text-sm font-semibold text-gray-800 mb-3">Preview Rekap</h2>
                         <div class="overflow-x-auto border border-gray-200 rounded-lg">
-                            <table class="min-w-full text-xs md:text-sm text-left text-gray-700">
+                            <table class="w-full text-xs md:text-sm text-left text-gray-700">
                                 <thead class="bg-gray-50 text-gray-600 uppercase">
                                     <tr>
                                         <th rowspan="2" class="px-3 py-2 border-b align-middle">No</th>
@@ -209,7 +213,7 @@
                                         <th rowspan="2" class="px-3 py-2 border-b align-middle">Grade</th>
                                         <th colspan="2" class="px-3 py-2 border-b text-center">Harga</th>
                                         <th colspan="2" class="px-3 py-2 border-b text-center">Rendemen</th>
-                                        <th colspan="4" class="px-3 py-2 border-b text-center">Harga</th>
+                                        <th colspan="5" class="px-3 py-2 border-b text-center">Harga</th>
                                         <th rowspan="2" class="px-3 py-2 border-b align-middle">Eskalasi</th>
                                     </tr>
                                     <tr>
@@ -221,6 +225,7 @@
                                         <th class="px-3 py-2 border-b">Harga Saat Ini</th>
                                         <th class="px-3 py-2 border-b">Harga Kemarin</th>
                                         <th class="px-3 py-2 border-b">Selisih</th>
+                                        <th class="px-3 py-2 border-b">Harga Pesaing</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -302,7 +307,10 @@
             </footer>
         </div>
     @endsection
-    <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script src="{{ asset('js/inputkalkulator.js') }}"></script>
+    <script>
+        const biayaList = @json($biayaList);
+    </script>
 </body>
 
 </html>

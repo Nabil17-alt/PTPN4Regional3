@@ -54,11 +54,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/pembelian/{id}/update-harga', [PembelianController::class, 'updateHarga'])->name('pembelian.updateHarga');
 
     // --- Input Biaya ---
-    Route::get('/kalkulator/input-biaya', [BiayaController::class, 'index'])
+    Route::get('/kalkulator/input-biaya', [BiayaController::class, 'create'])
         ->name('input.biaya');
     Route::post('/kalkulator/input-biaya', [BiayaController::class, 'store'])
         ->name('input.biaya.store');
-
+        
     // --- Input Kalkulator Harga ---
     Route::get('/kalkulator/harga', [KalkulatorController::class, 'index'])
         ->name('input.kalkulator');

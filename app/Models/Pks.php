@@ -5,17 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Biaya extends Model
+class Pks extends Model
 {
     use HasFactory;
 
-    protected $table = 'tb_biayabulanan';
+    protected $table = 'tb_pks';
 
     protected $fillable = [
+        'kode_pks',
         'nama_pks',
-        'bulan',
-        'biaya_olah',
-        'tarif_angkut_cpo',
-        'tarif_angkut_pk',
     ];
 }
