@@ -57,10 +57,41 @@
             <div class="px-4 py-5 mb-6 bg-white shadow rounded-lg">
                 <h1 class="text-base font-semibold text-gray-800 mb-4">Approval Harga TBS</h1>
 
-                {{-- Tabel rekap seperti di preview rekap --}}
-                <div class="mb-6 w-full">
-                    <h2 class="text-sm font-semibold text-gray-800 mb-2">Rekap Harga per PKS & Grade</h2>
-                    <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                {{-- Tab untuk memilih tipe approval --}}
+                <div class="mb-6 border-b border-gray-200">
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" data-tab="manager"
+                            class="tab-btn px-4 py-2 text-sm font-medium text-gray-700 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-900 transition"
+                            onclick="showTab('manager')">
+                            Manager
+                        </button>
+                        <button type="button" data-tab="gm"
+                            class="tab-btn px-4 py-2 text-sm font-medium text-gray-700 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-900 transition"
+                            onclick="showTab('gm')">
+                            GM
+                        </button>
+                        <button type="button" data-tab="rh"
+                            class="tab-btn px-4 py-2 text-sm font-medium text-gray-700 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-900 transition"
+                            onclick="showTab('rh')">
+                            RH
+                        </button>
+                    </div>
+                </div>
+
+                {{-- TAB MANAGER --}}
+                <div id="manager-tab" class="tab-content mb-6 w-full">
+                    <div class="mb-4">
+                        <label for="manager_filter" class="block mb-2 text-sm font-semibold text-gray-800">Pilih Manager Kemitraan</label>
+                        <select id="manager_filter" name="manager_filter" onchange="selectManager(this.value)"
+                            class="block w-full md:w-1/3 rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900">
+                            <option value="">-- Pilih Manager Kemitraan --</option>
+                            <option value="TPU-TME">TPU / TME (Tanah Putih, Tanjung Medan)</option>
+                            <option value="SGO-SPA-SGH">SGO / SPA / SGH (Sei Garo, Sei Pagar, Sei Galuh)</option>
+                            <option value="SBT-LDA">SBT / LDA (Sei Buatan, Lubuk Dalam)</option>
+                            <option value="STA-SSN-SSI">STA / SSN / SSI (Sei Tapung, Sei Intan, Sei Sijenggung)</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto border border-gray-200 rounded-lg mb-4">
                         <table class="w-full text-xs md:text-sm text-left text-gray-700">
                             <thead class="bg-gray-50 text-gray-600 uppercase">
                                 <tr>
@@ -69,88 +100,181 @@
                                     <th rowspan="2" class="px-3 py-2 border-b align-middle">Grade</th>
                                     <th colspan="2" class="px-3 py-2 border-b text-center">Harga</th>
                                     <th colspan="2" class="px-3 py-2 border-b text-center">Rendemen</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Harga BEP</th>
                                     <th colspan="4" class="px-3 py-2 border-b text-center">Harga</th>
                                     <th rowspan="2" class="px-3 py-2 border-b align-middle">Eskalasi</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Aksi</th>
                                 </tr>
                                 <tr>
                                     <th class="px-3 py-2 border-b">CPO</th>
                                     <th class="px-3 py-2 border-b">PK</th>
                                     <th class="px-3 py-2 border-b">CPO</th>
                                     <th class="px-3 py-2 border-b">PK</th>
-                                    <th class="px-3 py-2 border-b">Harga BEP</th>
                                     <th class="px-3 py-2 border-b">Harga Saat Ini</th>
                                     <th class="px-3 py-2 border-b">Harga Kemarin</th>
                                     <th class="px-3 py-2 border-b">Selisih</th>
+                                    <th class="px-3 py-2 border-b">Harga Pesaing</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="px-3 py-2 border-b text-center" colspan="12">Belum ada data ditampilkan.</td>
+                                    <td class="px-3 py-2 border-b text-center" colspan="14">Pilih Manager Kemitraan untuk menampilkan data.</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
-
-                {{-- Approval Manager Kebun Kemitraan --}}
-                <div class="mb-6 border-t border-gray-100 pt-4">
-                    <h2 class="text-sm font-semibold text-gray-800 mb-3">Approval Manager Kebun Kemitraan</h2>
-                    <ol class="list-decimal list-inside text-xs text-gray-700 space-y-1 mb-3">
-                        <li>TPU/TME: mencakup harga TBS di 2 PKS (Tanah Putih, Tanjung Medan).</li>
-                        <li>SGO/SPA/SGH: mencakup harga TBS di 3 PKS (Sei Garo, Sei Pagar, Sei Galuh).</li>
-                        <li>SBT/LDA: mencakup harga TBS di 2 PKS (Sei Buatan, Lubuk Dalam).</li>
-                        <li>STA/SSN/SSI: mencakup harga TBS di 3 PKS (Sei Tapung, Sei Intan, Sei Sijenggung).</li>
-                    </ol>
-                </div>
-
-                <div class="mb-6 border-t border-gray-100 pt-4">
-                    <h2 class="text-sm font-semibold text-gray-800 mb-1">Approval GM (Rekap semua PKS)</h2>
-                    <p class="text-xs text-gray-500 mb-3">Pilih salah satu: setujui harga atau kembalikan ke Admin dengan
-                        keterangan revisi.</p>
-                    <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-start">
-                        <div class="flex flex-col gap-2 w-full md:w-auto">
-                            <button type="button"
-                                class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-white bg-emerald-600 rounded hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600">
-                                APPROVE
-                            </button>
-                            <button type="button"
-                                class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-amber-800 bg-amber-50 border border-amber-300 rounded hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-300">
-                                Kembali ke Admin
-                            </button>
-                        </div>
+                    @if(Auth::user()->level === 'Manager')
+                    <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-end justify-between">
                         <div class="flex-1">
-                            <label for="catatan_gm" class="block mb-1 text-xs font-medium text-gray-700">Keterangan (wajib
-                                diisi bila memilih "Kembali ke Admin")</label>
-                            <textarea id="catatan_gm" name="catatan_gm" rows="2"
+                            <label for="catatan_manager" class="block mb-1 text-xs font-medium text-gray-700">Keterangan (wajib diisi bila memilih "Kembali ke Admin")</label>
+                            <textarea id="catatan_manager" name="catatan_manager" rows="2"
                                 class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900"
                                 placeholder="Contoh: revisi harga grade FND di PKS TPU, sesuaikan dengan rendemen terbaru..."></textarea>
                         </div>
-                    </div>
-                </div>
-
-                <div class="border-t border-gray-100 pt-4">
-                    <h2 class="text-sm font-semibold text-gray-800 mb-1">Approval RH (Rekap semua PKS)</h2>
-                    <p class="text-xs text-gray-500 mb-3">Pilih salah satu: setujui harga atau kembalikan ke GM dengan
-                        catatan.</p>
-                    <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-start">
                         <div class="flex flex-col gap-2 w-full md:w-auto">
                             <button type="button"
-                                class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-white bg-emerald-600 rounded hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600">
+                                class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600">
                                 APPROVE
                             </button>
                             <button type="button"
-                                class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-amber-800 bg-amber-50 border border-amber-300 rounded hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-300">
-                                Kembali ke GM
+                                class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600">
+                                Kembali ke Admin
                             </button>
                         </div>
+                    </div>
+                    @else
+                    <div class="px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700">
+                        <i class="fas fa-info-circle"></i> Hanya user level Manager yang dapat melakukan approval di tab ini.
+                    </div>
+                    @endif
+                </div>
+
+                {{-- TAB GM --}}
+                <div id="gm-tab" class="tab-content mb-6 w-full hidden">
+                    <div class="mb-4">
+                        <h2 class="text-sm font-semibold text-gray-800 mb-2">Rekap semua PKS</h2>
+                        <p class="text-xs text-gray-600 mb-3">GM melakukan review dan approval terhadap semua data yang sudah di-approve oleh Manager.</p>
+                    </div>
+                    <div class="overflow-x-auto border border-gray-200 rounded-lg mb-4">
+                        <table class="w-full text-xs md:text-sm text-left text-gray-700">
+                            <thead class="bg-gray-50 text-gray-600 uppercase">
+                                <tr>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">No</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">PKS</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Grade</th>
+                                    <th colspan="2" class="px-3 py-2 border-b text-center">Harga</th>
+                                    <th colspan="2" class="px-3 py-2 border-b text-center">Rendemen</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Harga BEP</th>
+                                    <th colspan="4" class="px-3 py-2 border-b text-center">Harga</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Eskalasi</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Status</th>
+                                </tr>
+                                <tr>
+                                    <th class="px-3 py-2 border-b">CPO</th>
+                                    <th class="px-3 py-2 border-b">PK</th>
+                                    <th class="px-3 py-2 border-b">CPO</th>
+                                    <th class="px-3 py-2 border-b">PK</th>
+                                    <th class="px-3 py-2 border-b">Harga Saat Ini</th>
+                                    <th class="px-3 py-2 border-b">Harga Kemarin</th>
+                                    <th class="px-3 py-2 border-b">Selisih</th>
+                                    <th class="px-3 py-2 border-b">Harga Pesaing</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="px-3 py-2 border-b text-center" colspan="14">Belum ada data ditampilkan.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @if(Auth::user()->level === 'GM')
+                    <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-end justify-between">
                         <div class="flex-1">
-                            <label for="catatan_fh" class="block mb-1 text-xs font-medium text-gray-700">Keterangan (wajib
-                                diisi bila memilih "Kembali ke GM")</label>
-                            <textarea id="catatan_fh" name="catatan_fh" rows="2"
+                            <label for="catatan_gm" class="block mb-1 text-xs font-medium text-gray-700">Keterangan (wajib diisi bila memilih "Kembali ke Manager")</label>
+                            <textarea id="catatan_gm" name="catatan_gm" rows="2"
                                 class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900"
                                 placeholder="Contoh: harga grade FND perlu disesuaikan dengan kebijakan terbaru..."></textarea>
                         </div>
+                        <div class="flex flex-col gap-2 w-full md:w-auto">
+                            <button type="button"
+                                class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600">
+                                APPROVE
+                            </button>
+                            <button type="button"
+                                class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600">
+                                Kembali ke Manager
+                            </button>
+                        </div>
                     </div>
+                    @else
+                    <div class="px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700">
+                        <i class="fas fa-info-circle"></i> Hanya user level GM yang dapat melakukan approval di tab ini.
+                    </div>
+                    @endif
+                </div>
+
+                {{-- TAB RH --}}
+                <div id="rh-tab" class="tab-content mb-6 w-full hidden">
+                    <div class="mb-4">
+                        <h2 class="text-sm font-semibold text-gray-800 mb-2">Rekap semua PKS</h2>
+                        <p class="text-xs text-gray-600 mb-3">RH melakukan final approval terhadap semua data yang sudah di-approve oleh GM.</p>
+                    </div>
+                    <div class="overflow-x-auto border border-gray-200 rounded-lg mb-4">
+                        <table class="w-full text-xs md:text-sm text-left text-gray-700">
+                            <thead class="bg-gray-50 text-gray-600 uppercase">
+                                <tr>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">No</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">PKS</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Grade</th>
+                                    <th colspan="2" class="px-3 py-2 border-b text-center">Harga</th>
+                                    <th colspan="2" class="px-3 py-2 border-b text-center">Rendemen</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Harga BEP</th>
+                                    <th colspan="4" class="px-3 py-2 border-b text-center">Harga</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Eskalasi</th>
+                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Status</th>
+                                </tr>
+                                <tr>
+                                    <th class="px-3 py-2 border-b">CPO</th>
+                                    <th class="px-3 py-2 border-b">PK</th>
+                                    <th class="px-3 py-2 border-b">CPO</th>
+                                    <th class="px-3 py-2 border-b">PK</th>
+                                    <th class="px-3 py-2 border-b">Harga Saat Ini</th>
+                                    <th class="px-3 py-2 border-b">Harga Kemarin</th>
+                                    <th class="px-3 py-2 border-b">Selisih</th>
+                                    <th class="px-3 py-2 border-b">Harga Pesaing</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="px-3 py-2 border-b text-center" colspan="14">Belum ada data ditampilkan.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @if(Auth::user()->level === 'region_head')
+                    <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-end justify-between">
+                        <div class="flex-1">
+                            <label for="catatan_rh" class="block mb-1 text-xs font-medium text-gray-700">Keterangan (wajib diisi bila memilih "Kembali ke GM")</label>
+                            <textarea id="catatan_rh" name="catatan_rh" rows="2"
+                                class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900"
+                                placeholder="Contoh: terdapat data yang tidak sesuai dengan kebijakan kepala regional..."></textarea>
+                        </div>
+                        <div class="flex flex-col gap-2 w-full md:w-auto">
+                            <button type="button"
+                                class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600">
+                                APPROVE FINAL
+                            </button>
+                            <button type="button"
+                                class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600">
+                                Kembali ke GM
+                            </button>
+                        </div>
+                    </div>
+                    @else
+                    <div class="px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700">
+                        <i class="fas fa-info-circle"></i> Hanya user level RH yang dapat melakukan approval di tab ini.
+                    </div>
+                    @endif
                 </div>
             </div>
 
@@ -164,6 +288,45 @@
         </div>
     @endsection
     <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active state from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('border-b-2', 'border-gray-900', 'text-gray-900');
+                btn.classList.add('border-b-2', 'border-transparent', 'text-gray-700');
+            });
+            
+            // Show selected tab content
+            const selectedTab = document.getElementById(tabName + '-tab');
+            if (selectedTab) {
+                selectedTab.classList.remove('hidden');
+            }
+            
+            // Add active state to clicked button
+            const activeButton = document.querySelector(`[data-tab="${tabName}"]`);
+            if (activeButton) {
+                activeButton.classList.remove('border-b-2', 'border-transparent', 'text-gray-700');
+                activeButton.classList.add('border-b-2', 'border-gray-900', 'text-gray-900');
+            }
+        }
+        
+        function selectManager(managerType) {
+            console.log('Manager Kemitraan dipilih:', managerType);
+            // TODO: Load data sesuai manager yang dipilih
+        }
+        
+        // Set default tab on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            showTab('manager');
+        });
+    </script>
 </body>
 
 </html>

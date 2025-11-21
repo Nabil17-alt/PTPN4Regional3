@@ -94,34 +94,49 @@
                 </div>
                 <div class="flex justify-end items-center mb-4">
                 </div>
-                <div class="max-w-5xl mx-auto overflow-x-auto">
-                    <table class="min-w-[800px] w-full table-fixed">
-                        <thead class="bg-gray-100 text-gray-700">
+                <div class="max-w-full mx-auto overflow-x-auto">
+                    <table class="w-full text-xs md:text-sm text-left text-gray-700">
+                        <thead class="bg-gray-50 text-gray-600 uppercase">
                             <tr>
-                                <th class="w-1/4 px-4 py-3 text-left font-semibold">Grade</th>
-                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Harga Penetapan</th>
-                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Harga Ekskalasi</th>
-                                <th class="w-1/4 px-6 py-3 text-left font-semibold">Margin Ekskalasi</th>
-                                <th class="w-1/4 px-6 py-3 text-center font-semibold">Aksi</th>
+                                <th rowspan="2" class="px-3 py-2 border-b align-middle">NO</th>
+                                <th rowspan="2" class="px-3 py-2 border-b align-middle">PKS</th>
+                                <th rowspan="2" class="px-3 py-2 border-b align-middle">GRADE</th>
+                                <th colspan="2" class="px-3 py-2 border-b text-center">HARGA</th>
+                                <th colspan="2" class="px-3 py-2 border-b text-center">RENDEMEN</th>
+                                <th rowspan="2" class="px-3 py-2 border-b align-middle">HARGA BEP</th>
+                                <th colspan="4" class="px-3 py-2 border-b text-center">HARGA</th>
+                                <th rowspan="2" class="px-3 py-2 border-b align-middle">ESKALASI</th>
+                                <th rowspan="2" class="px-3 py-2 border-b align-middle">AKSI</th>
+                            </tr>
+                            <tr>
+                                <th class="px-3 py-2 border-b">CPO</th>
+                                <th class="px-3 py-2 border-b">PK</th>
+                                <th class="px-3 py-2 border-b">CPO</th>
+                                <th class="px-3 py-2 border-b">PK</th>
+                                <th class="px-3 py-2 border-b">HARGA SAAT INI</th>
+                                <th class="px-3 py-2 border-b">HARGA KEMARIN</th>
+                                <th class="px-3 py-2 border-b">SELISIH</th>
+                                <th class="px-3 py-2 border-b">HARGA PESAING</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse ($items as $pembelian)
+                            @forelse ($items as $idx => $pembelian)
                                 <tr>
-                                    <td class="px-4 py-3">{{ $pembelian->grade }}</td>
-                                    <td class="px-6 py-3">
-                                        {{ $pembelian->harga_penetapan}}
-                                    </td>
-                                    <td class="px-6 py-3">
-                                        {{ $pembelian->harga_escalasi }}
-                                    </td>
-                                    <td class="px-6 py-3">
-                                        <span class="{{ $pembelian->margin < 0 ? 'text-red-600' : 'text-green-600' }}">
-                                            {{ number_format($pembelian->margin, 2, ',', '.') }}%
-                                        </span>
-                                    </td>
-                                    <td class="text-center px-4 py-3">
-                                        <div class="flex justify-center items-center gap-2">
+                                    <td class="px-3 py-2 border-b text-center">{{ $idx + 1 }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->nama_pks ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->grade ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->harga_cpo_penetapan ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->harga_pk ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->rendemen_cpo ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->rendemen_pk ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->harga_bep ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->harga_penetapan ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->harga_kemarin ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->selisih ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->harga_pesaing ?? '-' }}</td>
+                                    <td class="px-3 py-2 border-b">{{ $pembelian->eskalasi ?? '-' }}</td>
+                                    <td class="text-center px-3 py-2 border-b">
+                                        <div class="flex justify-center items-center gap-1">
                                             @php
                                                 $currentUserLevel = Auth::user()->level;
                                                 $showButtons = false;
@@ -197,7 +212,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="px-4 py-3 text-center text-gray-500">
+                                    <td colspan="14" class="px-4 py-3 text-center text-gray-500">
                                         Tidak ada data pembelian pada tanggal ini.
                                     </td>
                                 </tr>
