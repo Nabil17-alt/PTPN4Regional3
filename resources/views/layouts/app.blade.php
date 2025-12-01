@@ -75,12 +75,14 @@
 
                     <ul id="kalkulatorSubmenu"
                         class="submenu ml-8 mt-1 space-y-1 text-sm {{ $isKalkulatorActive ? '' : 'hidden' }}">
+                        @if(auth()->user()->level === 'Admin')
                         <li>
                             <a href="{{ route('input.biaya') }}" class="submenu-item block px-2 py-1 pl-4 rounded hover:bg-gray-800 text-left
                       {{ request()->routeIs('input.biaya') ? 'font-semibold text-blue-400' : 'text-gray-300' }}">
                                 • Input Biaya
                             </a>
                         </li>
+                        @endif
                         <li>
                             <a href="{{ route('input.kalkulator') }}" class="submenu-item block px-2 py-1 pl-4 rounded hover:bg-gray-800 text-left
                       {{ request()->routeIs('input.kalkulator') ? 'font-semibold text-blue-400' : 'text-gray-300' }}">

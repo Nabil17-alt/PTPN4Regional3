@@ -131,65 +131,71 @@
                             <h2 class="text-sm font-semibold text-gray-800 flex items-center gap-2">
                                 <span>Grade / Kualitas yang dihitung</span>
                             </h2>
+                            <div class="flex items-center gap-2">
+                                <button type="button" id="deleteGradeBtn" onclick="deleteLastGradeRow()"
+                                    class="inline-flex items-center justify-center px-3 py-1.5 rounded border border-red-300 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-300 hidden">
+                                    Hapus
+                                </button>
+                                <button type="button" onclick="addGradeRow()"
+                                    class="inline-flex items-center justify-center px-3 py-1.5 rounded border border-gray-300 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
+                                    + Grade
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="grid gap-4 md:grid-cols-4 lg:grid-cols-6 items-end">
-                            <div>
-                                <label for="grade" class="block mb-1 text-xs font-medium text-gray-700">Grade</label>
-                                <select id="grade" name="grade"
-                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900">
-                                    <option value="" disabled selected>Pilih Grade</option>
-                                    @foreach ($gradeList as $grade)
-                                        <option value="{{ $grade->nama_grade }}">{{ $grade->nama_grade }}</option>
-                                    @endforeach
-                                </select>
+                        <div id="gradeContainer" class="space-y-3">
+                            {{-- Header labels --}}
+                            <div class="grid gap-4 grid-cols-7 mb-2">
+                                <div class="text-xs font-medium text-gray-700">Grade</div>
+                                <div class="text-xs font-medium text-gray-700">Rend. CPO (%)</div>
+                                <div class="text-xs font-medium text-gray-700">Rend. PK (%)</div>
+                                <div class="text-xs font-medium text-gray-700">Harga BEP</div>
+                                <div class="text-xs font-medium text-gray-700">Harga Penetapan</div>
+                                <div class="text-xs font-medium text-gray-700">Eskalasi (%)</div>
+                                <div class="text-xs font-medium text-gray-700">Informasi Harga Pesaing</div>
                             </div>
 
-                            <div>
-                                <label for="rend_cpo" class="block mb-1 text-xs font-medium text-gray-700">Rend. CPO
-                                    (%)</label>
-                                <input type="number" step="0.01" id="rend_cpo" name="rend_cpo" placeholder="18.75"
-                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
-                            </div>
+                            <div class="grid gap-4 grid-cols-7 items-end grade-row">
+                                <div>
+                                    <select name="grade[]"
+                                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900">
+                                        <option value="" disabled selected>Pilih Grade</option>
+                                        @foreach ($gradeList as $grade)
+                                            <option value="{{ $grade->nama_grade }}">{{ $grade->nama_grade }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                            <div>
-                                <label for="rend_pk" class="block mb-1 text-xs font-medium text-gray-700">Rend. PK
-                                    (%)</label>
-                                <input type="number" step="0.01" id="rend_pk" name="rend_pk" placeholder="1.70"
-                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
-                            </div>
+                                <div>
+                                    <input type="number" step="0.01" name="rend_cpo[]" placeholder="18.75"
+                                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                </div>
 
-                            <div>
-                                <label for="harga_bep" class="block mb-1 text-xs font-medium text-gray-700">Harga
-                                    BEP</label>
-                                <input type="number" step="0.01" id="harga_bep" name="harga_bep" placeholder="Rp 3.000"
-                                    class="block w-full rounded-lg border-gray-200 text-xs text-gray-400 bg-gray-50 focus:ring-0 focus:border-gray-200"
-                                    readonly />
-                            </div>
+                                <div>
+                                    <input type="number" step="0.01" name="rend_pk[]" placeholder="1.70"
+                                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                </div>
 
-                            <div>
-                                <label for="harga_penetapan_grade"
-                                    class="block mb-1 text-xs font-medium text-gray-700">Harga Penetapan (hasil)</label>
-                                <input type="number" step="0.01" id="harga_penetapan_grade" name="harga_penetapan_grade"
-                                    placeholder="Rp 3.600"
-                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
-                            </div>
+                                <div>
+                                    <input type="number" step="0.01" name="harga_bep[]" placeholder="Rp 3.000"
+                                        class="block w-full rounded-lg border-gray-200 text-xs text-gray-400 bg-gray-50 focus:ring-0 focus:border-gray-200"
+                                        readonly />
+                                </div>
 
-                            <div>
-                                <label for="harga_eskalasi" class="block mb-1 text-xs font-medium text-gray-700">Eskalasi
-                                    (%)</label>
-                                <input type="number" step="0.01" id="harga_eskalasi" name="harga_eskalasi"
-                                    placeholder="1.10"
-                                    class="block w-full rounded-lg border-gray-200 text-xs text-gray-400 bg-gray-50 focus:ring-0 focus:border-gray-200"
-                                    readonly />
-                            </div>
+                                <div>
+                                    <input type="number" step="0.01" name="harga_penetapan_grade[]" placeholder="Rp 3.600"
+                                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                </div>
 
-                            <div>
-                                <label for="info_harga_persing"
-                                    class="block mb-1 text-xs font-medium text-gray-700">Informasi Harga Pesaing</label>
-                                <input type="number" step="0.01" id="info_harga_persing" name="info_harga_persing"
-                                    placeholder="Rp 3.200"
-                                    class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                <div>
+                                    <input type="number" step="0.01" name="harga_eskalasi[]" placeholder="1.10"
+                                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                </div>
+
+                                <div>
+                                    <input type="number" step="0.01" name="info_harga_pesaing[]" placeholder="Rp 3.200"
+                                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                </div>
                             </div>
                         </div>
 
@@ -310,6 +316,85 @@
     <script src="{{ asset('js/inputkalkulator.js') }}"></script>
     <script>
         const biayaList = @json($biayaList);
+        const gradeList = @json($gradeList);
+
+        function addGradeRow() {
+            const container = document.getElementById('gradeContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'grid gap-4 grid-cols-7 items-end grade-row';
+            
+            const gradeOptions = gradeList.map(g => `<option value="${g.nama_grade}">${g.nama_grade}</option>`).join('');
+            
+            newRow.innerHTML = `
+                <div>
+                    <select name="grade[]"
+                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900">
+                        <option value="" disabled selected>Pilih Grade</option>
+                        ${gradeOptions}
+                    </select>
+                </div>
+
+                <div>
+                    <input type="number" step="0.01" name="rend_cpo[]" placeholder="18.75"
+                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                </div>
+
+                <div>
+                    <input type="number" step="0.01" name="rend_pk[]" placeholder="1.70"
+                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                </div>
+
+                <div>
+                    <input type="number" step="0.01" name="harga_bep[]" placeholder="Rp 3.000"
+                        class="block w-full rounded-lg border-gray-200 text-xs text-gray-400 bg-gray-50 focus:ring-0 focus:border-gray-200"
+                        readonly />
+                </div>
+
+                <div>
+                    <input type="number" step="0.01" name="harga_penetapan_grade[]" placeholder="Rp 3.600"
+                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                </div>
+
+                <div>
+                    <input type="number" step="0.01" name="harga_eskalasi[]" placeholder="1.10"
+                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                </div>
+
+                <div>
+                    <input type="number" step="0.01" name="info_harga_pesaing[]" placeholder="Rp 3.200"
+                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                </div>
+            `;
+            
+            container.appendChild(newRow);
+            updateDeleteButton();
+        }
+
+        function deleteLastGradeRow() {
+            const rows = document.querySelectorAll('.grade-row');
+            if (rows.length > 1) {
+                rows[rows.length - 1].remove();
+                updateDeleteButton();
+            }
+        }
+
+        function updateDeleteButton() {
+            const rows = document.querySelectorAll('.grade-row');
+            const deleteBtn = document.getElementById('deleteGradeBtn');
+            
+            // Tampilkan tombol hapus hanya jika ada lebih dari 1 row
+            if (rows.length > 1) {
+                deleteBtn.style.display = 'inline-flex';
+            } else {
+                deleteBtn.style.display = 'none';
+            }
+        }
+
+        // Panggil saat halaman load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDeleteButton();
+        });
+    </script>
     </script>
 </body>
 
