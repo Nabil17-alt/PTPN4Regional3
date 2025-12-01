@@ -11,9 +11,12 @@
     <link href="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/loaders.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="{{ asset('css/inputkalkulator.css') }}">
 </head>
 
 <body>
+    <div id="topLoader"></div>
     @extends('layouts.app')
 
     @section('content')
@@ -71,7 +74,7 @@
                                 <label for="pks" class="block mb-1 text-sm font-medium text-gray-700">Pilih PKS</label>
                                 <select id="pks" name="pks"
                                     class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900">
-                                    <option value="" disabled selected>-- Pilih PKS --</option>
+                                    <option value="" disabled selected>Pilih PKS</option>
                                     @foreach ($pksList as $pks)
                                         <option value="{{ $pks->nama_pks }}">{{ $pks->nama_pks }}</option>
                                     @endforeach
@@ -79,18 +82,9 @@
                             </div>
 
                             <div class="w-full md:w-1/2">
-                                <label for="tanggal" class="block mb-1 text-sm font-medium text-gray-700">Tanggal</label>
-                                <input type="date" id="tanggal" name="tanggal"
+                                <label for="tanggal" class="block mb-1 text-sm font-medium text-gray-700">Pilih Tanggal</label>
+                                <input type="date" id="tanggal" name="tanggal" value="{{ now()->subDay()->format('Y-m-d') }}"
                                     class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
-                            </div>
-                        </div>
-
-                        <div class="w-full lg:w-1/3">
-                            <label class="block mb-1 text-sm font-medium text-gray-700">Status Input</label>
-                            <div
-                                class="text-xs md:text-sm text-gray-500 bg-gray-50 border border-dashed border-gray-300 rounded-lg px-3 py-2">
-                                <p>Belum ada data kalkulator harga tersimpan untuk tanggal ini.</p>
-                                <p class="mt-1">Jika sudah diinput, informasi terakhir update akan ditampilkan di sini.</p>
                             </div>
                         </div>
                     </div>
@@ -99,8 +93,8 @@
 
                     <div class="grid gap-4 md:grid-cols-3">
                         <div>
-                            <label for="biaya_digunakan" class="block mb-1 text-sm font-medium text-gray-700">Pilih biaya
-                                yang akan digunakan</label>
+                            <label for="biaya_digunakan" class="block mb-1 text-sm font-medium text-gray-700">Pilih biaya bulan
+                                </label>
                             <select id="biaya_digunakan" name="biaya_digunakan"
                                 class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900"
                                 disabled>
@@ -109,18 +103,18 @@
                         </div>
 
                         <div>
-                            <label for="harga_penetapan" class="block mb-1 text-sm font-medium text-gray-700">Harga CPO
+                            <label for="hargaCPO" class="block mb-1 text-sm font-medium text-gray-700">Harga CPO
                                 Penetapan</label>
-                            <input type="number" step="0.01" id="harga_penetapan" name="harga_penetapan"
-                                placeholder="Rp 13.400,-"
+                            <input type="number" step="0.01" id="hargaCPO" name="hargaCPO"
+                                placeholder="13.400"
                                 class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
                         </div>
 
                         <div>
-                            <label for="harga_pk_penetapan" class="block mb-1 text-sm font-medium text-gray-700">Harga PK
+                            <label for="hargaPK" class="block mb-1 text-sm font-medium text-gray-700">Harga PK
                                 Penetapan</label>
-                            <input type="number" step="0.01" id="harga_pk_penetapan" name="harga_pk_penetapan"
-                                placeholder="Rp 8.600,-"
+                            <input type="number" step="0.01" id="hargaPK" name="hargaPK"
+                                placeholder="8.600"
                                 class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
                         </div>
                     </div>

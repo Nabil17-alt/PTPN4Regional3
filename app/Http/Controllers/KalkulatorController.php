@@ -13,7 +13,7 @@ class KalkulatorController extends Controller
     public function index()
     {
         $pksList = Pks::orderBy('nama_pks')->get();
-        $biayaList = Biaya::select('id', 'nama_pks', 'bulan')->get();
+        $biayaList = Biaya::select('id', 'nama_pks', 'bulan', 'biaya_olah', 'tarif_angkut_cpo', 'tarif_angkut_pk')->get();
         $gradeList = Grade::orderBy('nama_grade')->get();
 
         return view('input_kalkulator', compact('pksList', 'biayaList', 'gradeList'));
