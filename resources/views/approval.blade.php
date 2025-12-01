@@ -100,8 +100,7 @@
                                     <th rowspan="2" class="px-3 py-2 border-b align-middle">Grade</th>
                                     <th colspan="2" class="px-3 py-2 border-b text-center">Harga</th>
                                     <th colspan="2" class="px-3 py-2 border-b text-center">Rendemen</th>
-                                    <th rowspan="2" class="px-3 py-2 border-b align-middle">Harga BEP</th>
-                                    <th colspan="4" class="px-3 py-2 border-b text-center">Harga</th>
+                                    <th colspan="5" class="px-3 py-2 border-b text-center">Harga</th>
                                     <th rowspan="2" class="px-3 py-2 border-b align-middle">Eskalasi</th>
                                     <th rowspan="2" class="px-3 py-2 border-b align-middle">Aksi</th>
                                 </tr>
@@ -110,6 +109,7 @@
                                     <th class="px-3 py-2 border-b">PK</th>
                                     <th class="px-3 py-2 border-b">CPO</th>
                                     <th class="px-3 py-2 border-b">PK</th>
+                                    <th class="px-3 py-2 border-b">Harga BEP</th>
                                     <th class="px-3 py-2 border-b">Harga Saat Ini</th>
                                     <th class="px-3 py-2 border-b">Harga Kemarin</th>
                                     <th class="px-3 py-2 border-b">Selisih</th>

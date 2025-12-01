@@ -74,7 +74,7 @@
                                 <label for="pks" class="block mb-1 text-sm font-medium text-gray-700">Pilih PKS</label>
                                 <select id="pks" name="pks"
                                     class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900">
-                                    <option value="" disabled selected>-- Pilih PKS --</option>
+                                    <option value="" disabled selected>Pilih PKS</option>
                                     @foreach ($pksList as $pks)
                                         <option value="{{ $pks->nama_pks }}">{{ $pks->nama_pks }}</option>
                                     @endforeach
@@ -82,18 +82,9 @@
                             </div>
 
                             <div class="w-full md:w-1/2">
-                                <label for="tanggal" class="block mb-1 text-sm font-medium text-gray-700">Tanggal</label>
-                                <input type="date" id="tanggal" name="tanggal"
+                                <label for="tanggal" class="block mb-1 text-sm font-medium text-gray-700">Pilih Tanggal</label>
+                                <input type="date" id="tanggal" name="tanggal" value="{{ now()->subDay()->format('Y-m-d') }}"
                                     class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
-                            </div>
-                        </div>
-
-                        <div class="w-full lg:w-1/3">
-                            <label class="block mb-1 text-sm font-medium text-gray-700">Status Input</label>
-                            <div
-                                class="text-xs md:text-sm text-gray-500 bg-gray-50 border border-dashed border-gray-300 rounded-lg px-3 py-2">
-                                <p>Belum ada data kalkulator harga tersimpan untuk tanggal ini.</p>
-                                <p class="mt-1">Jika sudah diinput, informasi terakhir update akan ditampilkan di sini.</p>
                             </div>
                         </div>
                     </div>
@@ -102,8 +93,8 @@
 
                     <div class="grid gap-4 md:grid-cols-3">
                         <div>
-                            <label for="biaya_digunakan" class="block mb-1 text-sm font-medium text-gray-700">Pilih biaya
-                                yang akan digunakan</label>
+                            <label for="biaya_digunakan" class="block mb-1 text-sm font-medium text-gray-700">Pilih biaya bulan
+                                </label>
                             <select id="biaya_digunakan" name="biaya_digunakan"
                                 class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900"
                                 disabled>
@@ -112,18 +103,18 @@
                         </div>
 
                         <div>
-                            <label for="harga_penetapan" class="block mb-1 text-sm font-medium text-gray-700">Harga CPO
+                            <label for="hargaCPO" class="block mb-1 text-sm font-medium text-gray-700">Harga CPO
                                 Penetapan</label>
-                            <input type="number" step="0.01" id="harga_penetapan" name="harga_penetapan"
-                                placeholder="Rp 13.400,-"
+                            <input type="number" step="0.01" id="hargaCPO" name="hargaCPO"
+                                placeholder="13.400"
                                 class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
                         </div>
 
                         <div>
-                            <label for="harga_pk_penetapan" class="block mb-1 text-sm font-medium text-gray-700">Harga PK
+                            <label for="hargaPK" class="block mb-1 text-sm font-medium text-gray-700">Harga PK
                                 Penetapan</label>
-                            <input type="number" step="0.01" id="harga_pk_penetapan" name="harga_pk_penetapan"
-                                placeholder="Rp 8.600,-"
+                            <input type="number" step="0.01" id="hargaPK" name="hargaPK"
+                                placeholder="8.600"
                                 class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
                         </div>
                     </div>
@@ -149,39 +140,39 @@
                             </div>
 
                             <div>
-                                <label for="rend_cpo" class="block mb-1 text-xs font-medium text-gray-700">Rend. CPO
+                                <label for="rendemen_cpo" class="block mb-1 text-xs font-medium text-gray-700">Rend. CPO
                                     (%)</label>
-                                <input type="number" step="0.01" id="rend_cpo" name="rend_cpo" placeholder="18.75"
+                                <input type="number" step="0.01" id="rendemen_cpo" name="rendemen_cpo" placeholder="19.54"
                                     class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
                             </div>
 
                             <div>
-                                <label for="rend_pk" class="block mb-1 text-xs font-medium text-gray-700">Rend. PK
+                                <label for="rendemen_pk" class="block mb-1 text-xs font-medium text-gray-700">Rend. PK
                                     (%)</label>
-                                <input type="number" step="0.01" id="rend_pk" name="rend_pk" placeholder="1.70"
+                                <input type="number" step="0.01" id="rendemen_pk" name="rendemen_pk" placeholder="4.20"
                                     class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
                             </div>
 
                             <div>
                                 <label for="harga_bep" class="block mb-1 text-xs font-medium text-gray-700">Harga
                                     BEP</label>
-                                <input type="number" step="0.01" id="harga_bep" name="harga_bep" placeholder="Rp 3.000"
+                                <input type="number" step="0.01" id="harga_bep" name="harga_bep" placeholder="3.000"
                                     class="block w-full rounded-lg border-gray-200 text-xs text-gray-400 bg-gray-50 focus:ring-0 focus:border-gray-200"
                                     readonly />
                             </div>
 
                             <div>
-                                <label for="harga_penetapan_grade"
+                                <label for="hargaPenetapan"
                                     class="block mb-1 text-xs font-medium text-gray-700">Harga Penetapan (hasil)</label>
-                                <input type="number" step="0.01" id="harga_penetapan_grade" name="harga_penetapan_grade"
-                                    placeholder="Rp 3.600"
+                                <input type="number" step="0.01" id="hargaPenetapan" name="hargaPenetapan"
+                                    placeholder="3.220"
                                     class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
                             </div>
 
                             <div>
-                                <label for="harga_eskalasi" class="block mb-1 text-xs font-medium text-gray-700">Eskalasi
+                                <label for="hargaEskalasi" class="block mb-1 text-xs font-medium text-gray-700">Eskalasi
                                     (%)</label>
-                                <input type="number" step="0.01" id="harga_eskalasi" name="harga_eskalasi"
+                                <input type="number" step="0.01" id="hargaEskalasi" name="hargaEskalasi"
                                     placeholder="1.10"
                                     class="block w-full rounded-lg border-gray-200 text-xs text-gray-400 bg-gray-50 focus:ring-0 focus:border-gray-200"
                                     readonly />
@@ -191,7 +182,7 @@
                                 <label for="info_harga_persing"
                                     class="block mb-1 text-xs font-medium text-gray-700">Informasi Harga Pesaing</label>
                                 <input type="number" step="0.01" id="info_harga_persing" name="info_harga_persing"
-                                    placeholder="Rp 3.200"
+                                    placeholder="3.400"
                                     class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
                             </div>
                         </div>
