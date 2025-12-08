@@ -58,11 +58,11 @@ Route::middleware('auth')->group(function () {
         ->name('input.biaya');
     Route::post('/kalkulator/input-biaya', [BiayaController::class, 'store'])
         ->name('input.biaya.store');
-        
+
     // --- Input Kalkulator Harga ---
     Route::get('/kalkulator/harga', [KalkulatorController::class, 'index'])
         ->name('input.kalkulator');
-    Route::post('/kalkulator/harga/hitung', [KalkulatorController::class, 'hitung'])
+    Route::post('/input-kalkulator/hitung', [PembelianController::class, 'storeKalkulator'])
         ->name('input.kalkulator.hitung');
 
     // --- Approval ---

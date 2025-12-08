@@ -199,9 +199,8 @@ function updateColumn() {
         const bProduksi = (totalRendemen / 100) * currentBiayaOlah;
         setInputValue(bProduksiEl, bProduksi);
 
-        // Biaya Angkut dan Jual = harga CPO * rend CPO * 0.00%
-        const persentaseBiayaAngkutJual = 0.00; // 0%
-        const biayaAngkutJual = hargaCpo * (rendemenCpo / 100) * persentaseBiayaAngkutJual;
+        // Biaya Angkut dan Jual = harga CPO * rend CPO
+        const biayaAngkutJual = hargaCpo * (rendemenCpo / 100);
         setInputValue(biayaAngkutJualEl, biayaAngkutJual);
 
         // Pendapatan CPO & PK (sesuai rumus Anda: harga * rendemen)

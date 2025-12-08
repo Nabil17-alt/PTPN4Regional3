@@ -15,7 +15,7 @@ class Pembelian extends Model
         'biayabulanan_id',
         'harga_cpo_penetapan',
         'harga_pk',
-        'penetapan',
+        'penetapan', // ini bisa dihapus jika tidak dipakai
         'grade',
         'rendemen_cpo',
         'rendemen_pk',
