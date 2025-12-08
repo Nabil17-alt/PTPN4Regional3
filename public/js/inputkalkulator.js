@@ -14,6 +14,8 @@ function showTopLoader() {
     return interval;
 }
 
+let currentBiayaOlah = 0;
+
 document.addEventListener('DOMContentLoaded', function () {
     const loader = document.getElementById('pageLoader');
     const logoutBtn = document.getElementById('logoutForm');
@@ -78,6 +80,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (biayaOlahEl) biayaOlahEl.value = selected.biaya_olah || 0;
                 if (biayaAngkutEl) biayaAngkutEl.value = totalAngkut.toFixed(2);
+
+                currentBiayaOlah = parseFloat(selected.biaya_olah) || 0;
 
                 // setelah ambil biaya, hitung ulang
                 updateColumn();
@@ -181,14 +185,31 @@ function updateColumn() {
         const hargaBepEl = row.querySelector('input.harga_bep');
         const hargaPenetapanEl = row.querySelector('input[name="harga_penetapan_grade[]"]');
         const eskalasiEl = row.querySelector('input.hargaEskalasi');
+        const bProduksiEl = row.querySelector('input.b_produksi');
+        const biayaAngkutJualEl = row.querySelector('input.biaya_angkut');
 
         const rendemenCpo = getInputValue(rendCpoEl);
         const rendemenPk = getInputValue(rendPkEl);
         const hargaPenetapanManual = getInputValue(hargaPenetapanEl);
 
+        // total rendemen (dalam persen)
+        const totalRendemen = rendemenCpo + rendemenPk;
+
+        // B. Produksi Per TBS Olah = total rendemen * biaya olah
+        const bProduksi = (totalRendemen / 100) * currentBiayaOlah;
+        setInputValue(bProduksiEl, bProduksi);
+
+        // Biaya Angkut dan Jual = harga CPO * rend CPO * 0.00%
+        const persentaseBiayaAngkutJual = 0.00; // 0%
+        const biayaAngkutJual = hargaCpo * (rendemenCpo / 100) * persentaseBiayaAngkutJual;
+        setInputValue(biayaAngkutJualEl, biayaAngkutJual);
+
+        // Pendapatan CPO & PK (sesuai rumus Anda: harga * rendemen)
         const pendapatanCpo = hargaCpo * (rendemenCpo / 100);
         const pendapatanPk = hargaPk * (rendemenPk / 100);
-        const hargaBep = pendapatanCpo + pendapatanPk;
+
+        // Harga BEP = (pendapatan CPO + pendapatan PK) - (bProduksi + biayaAngkutJual)
+        const hargaBep = (pendapatanCpo + pendapatanPk) ;
 
         let eskalasi = 0;
         if (hargaBep !== 0 && hargaPenetapanManual !== 0) {

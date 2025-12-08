@@ -107,14 +107,14 @@
 
                         <div>
                             <label for="hargaCPO" class="block mb-1 text-sm font-medium text-gray-700">Harga CPO</label>
-                            <input type="number" step="0.01" id="hargaCPO" name="hargaCPO" value="13400" readonly
-                                class="block w-full rounded-lg border-gray-300 text-sm bg-gray-100" />
+                            <input type="number" step="0.01" id="hargaCPO" name="hargaCPO" placeholder="13.400"
+                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
                         </div>
 
                         <div>
                             <label for="hargaPK" class="block mb-1 text-sm font-medium text-gray-700">Harga PK</label>
-                            <input type="number" step="0.01" id="hargaPK" name="hargaPK" value="8600" readonly
-                                class="block w-full rounded-lg border-gray-300 text-sm bg-gray-100" />
+                            <input type="number" step="0.01" id="hargaPK" name="hargaPK" placeholder="8.600"
+                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
                         </div>
                     </div>
 
@@ -162,6 +162,23 @@
                                     </div>
                                 </div>
 
+                                <div class="grid gap-4 md:grid-cols-2">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">B. Produksi Per TBS
+                                            Olah</label>
+                                        <input type="number" step="0.01" name="b_produksi_per_tbs_olah[]"
+                                            class="b_produksi block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
+                                            readonly />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Biaya Angkut dan
+                                            Jual</label>
+                                        <input type="number" step="0.01" name="biaya_angkut_jual[]"
+                                            class="biaya_angkut block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
+                                            readonly />
+                                    </div>
+                                </div>
+
                                 <div>
                                     <label class="block text-xs font-medium text-gray-700 mb-1">Harga BEP (Rp)</label>
                                     <input type="number" step="0.01" name="harga_bep[]"
@@ -171,7 +188,8 @@
 
                                 <div class="grid gap-4 md:grid-cols-2">
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Harga Penetapan (Rp)</label>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Harga Penetapan
+                                            (Rp)</label>
                                         <input type="number" step="0.01" name="harga_penetapan_grade[]"
                                             class="hargaPenetapan block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
                                     </div>
@@ -282,6 +300,21 @@
                         <label class="block text-xs font-medium text-gray-700 mb-1">Rend. PK (%)</label>
                         <input type="number" step="0.01" name="rend_pk[]" placeholder="1.70"
                             class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                    </div>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">B. Produksi Per TBS Olah</label>
+                        <input type="number" step="0.01" name="b_produksi_per_tbs_olah[]"
+                            class="b_produksi block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
+                            readonly />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Biaya Angkut dan Jual</label>
+                        <input type="number" step="0.01" name="biaya_angkut_jual[]"
+                            class="biaya_angkut block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
+                            readonly />
                     </div>
                 </div>
 
