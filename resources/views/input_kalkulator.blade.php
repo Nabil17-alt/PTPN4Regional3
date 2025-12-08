@@ -82,8 +82,10 @@
                             </div>
 
                             <div class="w-full md:w-1/2">
-                                <label for="tanggal" class="block mb-1 text-sm font-medium text-gray-700">Pilih Tanggal</label>
-                                <input type="date" id="tanggal" name="tanggal" value="{{ now()->subDay()->format('Y-m-d') }}"
+                                <label for="tanggal" class="block mb-1 text-sm font-medium text-gray-700">Pilih
+                                    Tanggal</label>
+                                <input type="date" id="tanggal" name="tanggal"
+                                    value="{{ now()->subDay()->format('Y-m-d') }}"
                                     class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
                             </div>
                         </div>
@@ -93,8 +95,9 @@
 
                     <div class="grid gap-4 md:grid-cols-3">
                         <div>
-                            <label for="biaya_digunakan" class="block mb-1 text-sm font-medium text-gray-700">Pilih biaya bulan
-                                </label>
+                            <label for="biaya_digunakan" class="block mb-1 text-sm font-medium text-gray-700">Pilih biaya
+                                bulan
+                            </label>
                             <select id="biaya_digunakan" name="biaya_digunakan"
                                 class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900"
                                 disabled>
@@ -103,19 +106,15 @@
                         </div>
 
                         <div>
-                            <label for="hargaCPO" class="block mb-1 text-sm font-medium text-gray-700">Harga CPO
-                                Penetapan</label>
-                            <input type="number" step="0.01" id="hargaCPO" name="hargaCPO"
-                                placeholder="13.400"
-                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
+                            <label for="hargaCPO" class="block mb-1 text-sm font-medium text-gray-700">Harga CPO</label>
+                            <input type="number" step="0.01" id="hargaCPO" name="hargaCPO" value="13400" readonly
+                                class="block w-full rounded-lg border-gray-300 text-sm bg-gray-100" />
                         </div>
 
                         <div>
-                            <label for="hargaPK" class="block mb-1 text-sm font-medium text-gray-700">Harga PK
-                                Penetapan</label>
-                            <input type="number" step="0.01" id="hargaPK" name="hargaPK"
-                                placeholder="8.600"
-                                class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900" />
+                            <label for="hargaPK" class="block mb-1 text-sm font-medium text-gray-700">Harga PK</label>
+                            <input type="number" step="0.01" id="hargaPK" name="hargaPK" value="8600" readonly
+                                class="block w-full rounded-lg border-gray-300 text-sm bg-gray-100" />
                         </div>
                     </div>
 
@@ -137,20 +136,10 @@
                             </div>
                         </div>
 
-                        <div id="gradeContainer" class="space-y-3">
-                            {{-- Header labels --}}
-                            <div class="grid gap-4 grid-cols-7 mb-2">
-                                <div class="text-xs font-medium text-gray-700">Grade</div>
-                                <div class="text-xs font-medium text-gray-700">Rend. CPO (%)</div>
-                                <div class="text-xs font-medium text-gray-700">Rend. PK (%)</div>
-                                <div class="text-xs font-medium text-gray-700">Harga BEP</div>
-                                <div class="text-xs font-medium text-gray-700">Harga Penetapan</div>
-                                <div class="text-xs font-medium text-gray-700">Eskalasi (%)</div>
-                                <div class="text-xs font-medium text-gray-700">Informasi Harga Pesaing</div>
-                            </div>
-
-                            <div class="grid gap-4 grid-cols-7 items-end grade-row">
+                        <div id="gradeContainer" class="space-y-4">
+                            <div class="grade-row p-4 border rounded-lg bg-gray-50 space-y-4">
                                 <div>
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">Grade</label>
                                     <select name="grade[]"
                                         class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900">
                                         <option value="" disabled selected>Pilih Grade</option>
@@ -160,34 +149,44 @@
                                     </select>
                                 </div>
 
-                                <div>
-                                    <input type="number" step="0.01" name="rend_cpo[]" placeholder="18.75"
-                                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                <div class="grid gap-4 md:grid-cols-2">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Rend. CPO (%)</label>
+                                        <input type="number" step="0.01" name="rend_cpo[]" placeholder="19.54"
+                                            class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Rend. PK (%)</label>
+                                        <input type="number" step="0.01" name="rend_pk[]" placeholder="4.20"
+                                            class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                    </div>
                                 </div>
 
                                 <div>
-                                    <input type="number" step="0.01" name="rend_pk[]" placeholder="1.70"
-                                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
-                                </div>
-
-                                <div>
-                                    <input type="number" step="0.01" name="harga_bep[]" placeholder="Rp 3.000"
-                                        class="block w-full rounded-lg border-gray-200 text-xs text-gray-400 bg-gray-50 focus:ring-0 focus:border-gray-200"
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">Harga BEP (Rp)</label>
+                                    <input type="number" step="0.01" name="harga_bep[]"
+                                        class="harga_bep block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
                                         readonly />
                                 </div>
 
-                                <div>
-                                    <input type="number" step="0.01" name="harga_penetapan_grade[]" placeholder="Rp 3.600"
-                                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                <div class="grid gap-4 md:grid-cols-2">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Harga Penetapan (Rp)</label>
+                                        <input type="number" step="0.01" name="harga_penetapan_grade[]"
+                                            class="hargaPenetapan block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Eskalasi (%)</label>
+                                        <input type="number" step="0.01" name="harga_eskalasi[]"
+                                            class="hargaEskalasi block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
+                                            readonly />
+                                    </div>
                                 </div>
 
                                 <div>
-                                    <input type="number" step="0.01" name="harga_eskalasi[]" placeholder="1.10"
-                                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
-                                </div>
-
-                                <div>
-                                    <input type="number" step="0.01" name="info_harga_pesaing[]" placeholder="Rp 3.200"
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">Informasi Harga
+                                        Pesaing (Rp)</label>
+                                    <input type="number" step="0.01" name="info_harga_pesaing[]" placeholder="3.200"
                                         class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
                                 </div>
                             </div>
@@ -238,63 +237,7 @@
                         </div>
                     </div>
 
-                    {{-- Ringkasan bawah (sesuai gambar 2) --}}
-                    <div class="mt-6 border-t border-gray-100 pt-4 space-y-3 text-xs text-gray-700">
-                        <h2 class="text-sm font-semibold text-gray-800 mb-2">Ringkasan Input Kalkulator Harga (per grade)
-                        </h2>
-                        <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-                            <div class="flex items-center justify-between gap-2">
-                                <span>Perkiraan Pendapatan dari CPO (Rp/kg)</span>
-                                <span
-                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <span>Perkiraan Pendapatan dari PK (Rp/kg)</span>
-                                <span
-                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <span>Total Perkiraan Pendapatan</span>
-                                <span
-                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <span>Perkiraan Biaya: Biaya Produksi per TBS olah (Rp/kg)</span>
-                                <span
-                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <span>Perkiraan Biaya: Biaya Angkut Gabungan (Rp/kg)</span>
-                                <span
-                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <span>Total Perkiraan Biaya</span>
-                                <span
-                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <span>Grade</span>
-                                <span
-                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[60px] text-center">FND</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <span>Harga BEP</span>
-                                <span
-                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <span>Harga Penetapan</span>
-                                <span
-                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[90px] text-right">0</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <span>Eskalasi %</span>
-                                <span
-                                    class="px-3 py-1 rounded bg-gray-50 border border-gray-200 min-w-[60px] text-right">0%</span>
-                            </div>
-                        </div>
-                    </div>
+
                 </form>
             </div>
 
@@ -315,12 +258,13 @@
         function addGradeRow() {
             const container = document.getElementById('gradeContainer');
             const newRow = document.createElement('div');
-            newRow.className = 'grid gap-4 grid-cols-7 items-end grade-row';
-            
+            newRow.className = 'grade-row p-4 border rounded-lg bg-gray-50 space-y-4 mt-2';
+
             const gradeOptions = gradeList.map(g => `<option value="${g.nama_grade}">${g.nama_grade}</option>`).join('');
-            
+
             newRow.innerHTML = `
                 <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Grade</label>
                     <select name="grade[]"
                         class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900">
                         <option value="" disabled selected>Pilih Grade</option>
@@ -328,38 +272,48 @@
                     </select>
                 </div>
 
-                <div>
-                    <input type="number" step="0.01" name="rend_cpo[]" placeholder="18.75"
-                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Rend. CPO (%)</label>
+                        <input type="number" step="0.01" name="rend_cpo[]" placeholder="18.75"
+                            class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Rend. PK (%)</label>
+                        <input type="number" step="0.01" name="rend_pk[]" placeholder="1.70"
+                            class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                    </div>
                 </div>
 
                 <div>
-                    <input type="number" step="0.01" name="rend_pk[]" placeholder="1.70"
-                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
-                </div>
-
-                <div>
-                    <input type="number" step="0.01" name="harga_bep[]" placeholder="Rp 3.000"
-                        class="block w-full rounded-lg border-gray-200 text-xs text-gray-400 bg-gray-50 focus:ring-0 focus:border-gray-200"
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Harga BEP</label>
+                    <input type="number" step="0.01" name="harga_bep[]" class="harga_bep"
+                        class="block w-full rounded-lg border-gray-200 text-xs text-gray-500 bg-gray-100 focus:ring-0 focus:border-gray-200"
                         readonly />
                 </div>
 
-                <div>
-                    <input type="number" step="0.01" name="harga_penetapan_grade[]" placeholder="Rp 3.600"
-                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Harga Penetapan</label>
+                        <input type="number" step="0.01" name="harga_penetapan_grade[]" class="hargaPenetapan"
+                            class="block w-full rounded-lg border-gray-200 text-xs text-gray-500 bg-gray-100 focus:ring-0 focus:border-gray-200"
+                            readonly />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Eskalasi (%)</label>
+                        <input type="number" step="0.01" name="harga_eskalasi[]" class="hargaEskalasi"
+                            class="block w-full rounded-lg border-gray-200 text-xs text-gray-500 bg-gray-100 focus:ring-0 focus:border-gray-200"
+                            readonly />
+                    </div>
                 </div>
 
                 <div>
-                    <input type="number" step="0.01" name="harga_eskalasi[]" placeholder="1.10"
-                        class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
-                </div>
-
-                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Informasi Harga Pesaing</label>
                     <input type="number" step="0.01" name="info_harga_pesaing[]" placeholder="Rp 3.200"
                         class="block w-full rounded-lg border-gray-300 text-xs focus:ring-gray-900 focus:border-gray-900" />
                 </div>
             `;
-            
+
             container.appendChild(newRow);
             updateDeleteButton();
         }
@@ -375,7 +329,7 @@
         function updateDeleteButton() {
             const rows = document.querySelectorAll('.grade-row');
             const deleteBtn = document.getElementById('deleteGradeBtn');
-            
+
             // Tampilkan tombol hapus hanya jika ada lebih dari 1 row
             if (rows.length > 1) {
                 deleteBtn.style.display = 'inline-flex';
@@ -385,7 +339,7 @@
         }
 
         // Panggil saat halaman load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             updateDeleteButton();
         });
     </script>

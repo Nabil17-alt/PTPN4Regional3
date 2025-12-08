@@ -21,72 +21,69 @@ document.addEventListener('DOMContentLoaded', function () {
     const biayaSelect = document.getElementById('biaya_digunakan');
     const greetingEl = document.getElementById("greeting");
 
-    if (!pksSelect || !biayaSelect || !Array.isArray(biayaList)) {
-        return;
-    }
-
-    resetBiayaOptions();
-    biayaSelect.disabled = true;
-
-    pksSelect.addEventListener('change', function () {
-        const selectedPks = this.value;
+    // inisialisasi dropdown biaya jika data tersedia
+    if (pksSelect && biayaSelect && Array.isArray(biayaList)) {
         resetBiayaOptions();
+        biayaSelect.disabled = true;
 
-        if (!selectedPks) {
-            biayaSelect.disabled = true;
-            return;
-        }
+        pksSelect.addEventListener('change', function () {
+            const selectedPks = this.value;
+            resetBiayaOptions();
 
-        const filtered = biayaList.filter(function (b) {
-            return b.nama_pks === selectedPks;
-        });
-
-        const monthNames = [
-            'Januari', 'Februari', 'Maret', 'April',
-            'Mei', 'Juni', 'Juli', 'Agustus',
-            'September', 'Oktober', 'November', 'Desember'
-        ];
-
-        filtered.forEach(function (b) {
-            const opt = document.createElement('option');
-            opt.value = b.id;
-
-            const parts = String(b.bulan).split('-');
-            let label = b.bulan;
-            if (parts.length === 2) {
-                const monthIndex = parseInt(parts[1], 10) - 1;
-                if (monthIndex >= 0 && monthIndex < 12) {
-                    label = monthNames[monthIndex];
-                }
+            if (!selectedPks) {
+                biayaSelect.disabled = true;
+                return;
             }
 
-            opt.textContent = label;
-            biayaSelect.appendChild(opt);
+            const filtered = biayaList.filter(function (b) {
+                return b.nama_pks === selectedPks;
+            });
+
+            const monthNames = [
+                'Januari', 'Februari', 'Maret', 'April',
+                'Mei', 'Juni', 'Juli', 'Agustus',
+                'September', 'Oktober', 'November', 'Desember'
+            ];
+
+            filtered.forEach(function (b) {
+                const opt = document.createElement('option');
+                opt.value = b.id;
+
+                const parts = String(b.bulan).split('-');
+                let label = b.bulan;
+                if (parts.length === 2) {
+                    const monthIndex = parseInt(parts[1], 10) - 1;
+                    if (monthIndex >= 0 && monthIndex < 12) {
+                        label = monthNames[monthIndex];
+                    }
+                }
+
+                opt.textContent = label;
+                biayaSelect.appendChild(opt);
+            });
+
+            biayaSelect.disabled = filtered.length === 0;
         });
 
-        biayaSelect.disabled = filtered.length === 0;
-    });
+        biayaSelect.addEventListener('change', function () {
+            const selectedId = parseInt(this.value, 10);
+            const selected = biayaList.find(b => b.id === selectedId);
 
-    biayaSelect.addEventListener('change', function () {
-        const selectedId = parseInt(this.value, 10);
-        const selected = biayaList.find(b => b.id === selectedId);
+            if (selected) {
+                const biayaOlahEl = document.getElementById('biayaOlah');
+                const biayaAngkutEl = document.getElementById('biayaAngkut');
 
-        if (selected) {
-            const biayaOlahEl = document.getElementById('biayaOlah');
-            const biayaAngkutEl = document.getElementById('biayaAngkut');
+                const totalAngkut = (parseFloat(selected.tarif_angkut_cpo) || 0) +
+                    (parseFloat(selected.tarif_angkut_pk) || 0);
 
-            const totalAngkut = (parseFloat(selected.tarif_angkut_cpo) || 0) +
-                (parseFloat(selected.tarif_angkut_pk) || 0);
+                if (biayaOlahEl) biayaOlahEl.value = selected.biaya_olah || 0;
+                if (biayaAngkutEl) biayaAngkutEl.value = totalAngkut.toFixed(2);
 
-            if (biayaOlahEl) biayaOlahEl.value = selected.biaya_olah || 0;
-            if (biayaAngkutEl) biayaAngkutEl.value = totalAngkut.toFixed(2);
-
-            // setelah ambil biaya, hitung ulang
-            if (typeof updateColumn === 'function') {
+                // setelah ambil biaya, hitung ulang
                 updateColumn();
             }
-        }
-    });
+        });
+    }
 
     function resetBiayaOptions() {
         while (biayaSelect.firstChild) {
@@ -127,79 +124,111 @@ document.addEventListener('DOMContentLoaded', function () {
         greetingEl.textContent = greetingText + ", " + greetingEl.dataset.username;
     }
 
-    const inputIDs = [
-        'rendemen_cpo',
-        'rendemen_pk',
-        'hargaCPO',
-        'hargaPK'
-        // biayaOlah & biayaAngkut diisi otomatis dari biayaList, tapi bisa juga ikut supaya jika berubah manual langsung hitung
-        , 'biayaOlah',
-        'biayaAngkut'
-    ];
+    const hargaCpoInput = document.getElementById('hargaCPO');
+    const hargaPkInput = document.getElementById('hargaPK');
 
-    inputIDs.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('input', updateColumn);
-            el.addEventListener('change', updateColumn);
+    if (hargaCpoInput) {
+        hargaCpoInput.addEventListener('input', updateColumn);
+        hargaCpoInput.addEventListener('change', updateColumn);
+    }
+
+    if (hargaPkInput) {
+        hargaPkInput.addEventListener('input', updateColumn);
+        hargaPkInput.addEventListener('change', updateColumn);
+    }
+
+    document.addEventListener('input', function (e) {
+        if (e.target.matches('input[name="rend_cpo[]"]') ||
+            e.target.matches('input[name="rend_pk[]"]') ||
+            e.target.matches('input[name="harga_penetapan_grade[]"]')) {
+            updateColumn();
         }
     });
 
-    // hitung awal
+    document.addEventListener('change', function (e) {
+        if (e.target.matches('input[name="rend_cpo[]"]') ||
+            e.target.matches('input[name="rend_pk[]"]') ||
+            e.target.matches('input[name="harga_penetapan_grade[]"]')) {
+            updateColumn();
+        }
+    });
+
+    // hitung awal (jika ada nilai default di beberapa grade)
     updateColumn();
 });
 
 function updateColumn() {
-    const getValue = (id) => parseFloat(document.getElementById(id)?.value) || 0;
-    const setValue = (id, value) => {
-        const el = document.getElementById(id);
-        if (el) el.value = isNaN(value) ? 0 : value.toFixed(2);
+    const getInputValue = (el) => parseFloat(el && el.value) || 0;
+    const setInputValue = (el, value) => {
+        if (!el) return;
+        el.value = isNaN(value) ? 0 : value.toFixed(2);
     };
 
-    const rendemenCpo = getValue('rendemen_cpo');
-    const rendemenPk = getValue('rendemen_pk');
-    const hargaCpo = getValue('hargaCPO');
-    const hargaPk = getValue('hargaPK');
-    const biayaOlah = getValue('biayaOlah');
-    const biayaAngkut = getValue('biayaAngkut');
-    const hargaEskalasiInput = getValue('hargaEskalasi'); // bebas: bisa dipakai atau hanya output
+    const hargaCpoEl = document.getElementById('hargaCPO');
+    const hargaPkEl = document.getElementById('hargaPK');
+    const hargaCpo = getInputValue(hargaCpoEl);
+    const hargaPk = getInputValue(hargaPkEl);
 
-    const totalRendemen = rendemenCpo + rendemenPk;
-    const pendapatanCpo = hargaCpo * (rendemenCpo / 100);
-    const pendapatanPk = hargaPk * (rendemenPk / 100);
-    const totalPendapatan = pendapatanCpo + pendapatanPk;
-    const biayaProduksi = (biayaOlah / 100) * totalRendemen;
-    const totalBiaya = biayaProduksi + biayaAngkut;
-    const hargaPenetapan = totalPendapatan - totalBiaya; // ini yang akan mengisi harga_penetapan_grade
+    let totalPendapatanCpo = 0;
+    let totalPendapatanPk = 0;
+    let totalBep = 0;
 
-    // Harga BEP otomatis diisi ketika rendemen CPO & PK sudah ada
-    // di sini saya isi sama dengan biayaProduksi per kg (bisa Anda ubah rumus jika ada ketentuan lain)
-    const hargaBep = biayaProduksi;
+    const gradeRows = document.querySelectorAll('.grade-row');
 
-    // Eskalasi otomatis ketika sudah ada harga penetapan:
-    // misal rumus: eskalasi = (hargaPenetapan / hargaBep - 1) * 100 (persen)
-    let eskalasi = 0;
-    if (hargaBep !== 0) {
-        eskalasi = ((hargaPenetapan / hargaBep) - 1) * 100;
+    gradeRows.forEach((row) => {
+        const rendCpoEl = row.querySelector('input[name="rend_cpo[]"]');
+        const rendPkEl = row.querySelector('input[name="rend_pk[]"]');
+        const hargaBepEl = row.querySelector('input.harga_bep');
+        const hargaPenetapanEl = row.querySelector('input[name="harga_penetapan_grade[]"]');
+        const eskalasiEl = row.querySelector('input.hargaEskalasi');
+
+        const rendemenCpo = getInputValue(rendCpoEl);
+        const rendemenPk = getInputValue(rendPkEl);
+        const hargaPenetapanManual = getInputValue(hargaPenetapanEl);
+
+        const pendapatanCpo = hargaCpo * (rendemenCpo / 100);
+        const pendapatanPk = hargaPk * (rendemenPk / 100);
+        const hargaBep = pendapatanCpo + pendapatanPk;
+
+        let eskalasi = 0;
+        if (hargaBep !== 0 && hargaPenetapanManual !== 0) {
+            eskalasi = ((hargaPenetapanManual - hargaBep) / hargaBep) * 100;
+        }
+
+        setInputValue(hargaBepEl, hargaBep);
+        setInputValue(eskalasiEl, eskalasi);
+
+        totalPendapatanCpo += pendapatanCpo;
+        totalPendapatanPk += pendapatanPk;
+        totalBep += hargaBep;
+    });
+
+    const pendapatanCpoRingkasan = document.getElementById('pendapatanCPO');
+    const pendapatanPkRingkasan = document.getElementById('pendapatanPK');
+    const totalPendapatanRingkasan = document.getElementById('totalPendapatan');
+    const ringkasanBepEl = document.getElementById('ringkasanHargaBep');
+    const ringkasanPenetapanEl = document.getElementById('ringkasanHargaPenetapan');
+    const ringkasanEskalasiEl = document.getElementById('ringkasanEskalasi');
+
+    setInputValue(pendapatanCpoRingkasan, totalPendapatanCpo);
+    setInputValue(pendapatanPkRingkasan, totalPendapatanPk);
+    setInputValue(totalPendapatanRingkasan, totalBep);
+    setInputValue(ringkasanBepEl, totalBep);
+
+    if (ringkasanPenetapanEl && ringkasanEskalasiEl) {
+        if (gradeRows.length > 0) {
+            const lastRow = gradeRows[gradeRows.length - 1];
+            const lastPenetapanEl = lastRow.querySelector('input[name="harga_penetapan_grade[]"]');
+            const lastEskalasiEl = lastRow.querySelector('input.hargaEskalasi');
+
+            const lastPenetapan = getInputValue(lastPenetapanEl);
+            const lastEskalasi = getInputValue(lastEskalasiEl);
+
+            setInputValue(ringkasanPenetapanEl, lastPenetapan);
+            setInputValue(ringkasanEskalasiEl, lastEskalasi);
+        } else {
+            setInputValue(ringkasanPenetapanEl, 0);
+            setInputValue(ringkasanEskalasiEl, 0);
+        }
     }
-
-    // Margin jika Anda tetap ingin pakai logika lama:
-    let margin = 0;
-    if (hargaPenetapan !== 0 && hargaEskalasiInput !== 0) {
-        margin = ((1 - (hargaEskalasiInput / hargaPenetapan)) * 100);
-    }
-
-    setValue('total_rendemen', totalRendemen);
-    setValue('pendapatanCPO', pendapatanCpo);
-    setValue('pendapatanPK', pendapatanPk);
-    setValue('totalPendapatan', totalPendapatan);
-    setValue('biayaProduksi', biayaProduksi);
-    setValue('totalBiaya', totalBiaya);
-
-    // ini dua poin utama permintaan Anda:
-    setValue('harga_bep', hargaBep);          // Harga BEP otomatis
-    setValue('hargaPenetapan', hargaPenetapan); // Harga Penetapan (hasil) otomatis
-    setValue('hargaEskalasi', eskalasi);     // Eskalasi (%) otomatis
-
-    setValue('margin', margin);
 }
