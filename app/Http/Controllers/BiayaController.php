@@ -39,6 +39,8 @@ class BiayaController extends Controller
             'biaya_olah' => 'required|numeric',
             'tarif_angkut_cpo' => 'required|numeric',
             'tarif_angkut_pk' => 'required|numeric',
+            'b_produksi_per_tbs_olah' => 'required|numeric',
+            'biaya_angkut_jual' => 'required|numeric',
         ]);
 
         $pks = Pks::where('nama_pks', $validated['pks'])->firstOrFail();
@@ -52,6 +54,8 @@ class BiayaController extends Controller
                 'biaya_olah' => $validated['biaya_olah'],
                 'tarif_angkut_cpo' => $validated['tarif_angkut_cpo'],
                 'tarif_angkut_pk' => $validated['tarif_angkut_pk'],
+                'b_produksi_per_tbs_olah' => $validated['b_produksi_per_tbs_olah'],
+                'biaya_angkut_jual' => $validated['biaya_angkut_jual'],
             ]
         );
 

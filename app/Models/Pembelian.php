@@ -9,6 +9,7 @@ class Pembelian extends Model
     protected $table = 'tb_pembelian';
 
     protected $fillable = [
+        'kode_unit',
         'nama_pks',
         'tanggal',
         'biaya_bulan_berapa',
@@ -28,5 +29,10 @@ class Pembelian extends Model
     public function biayaBulanan()
     {
         return $this->belongsTo(Biaya::class, 'biayabulanan_id');
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class, 'kode_unit', 'kode_unit');
     }
 }

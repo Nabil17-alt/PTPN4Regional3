@@ -162,29 +162,16 @@
                                     </div>
                                 </div>
 
-                                <div class="grid gap-4 md:grid-cols-2">
-                                    <div>
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">B. Produksi Per TBS
-                                            Olah</label>
-                                        <input type="number" step="0.01" name="b_produksi_per_tbs_olah[]"
-                                            class="b_produksi block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
-                                            readonly />
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Biaya Angkut dan
-                                            Jual</label>
-                                        <input type="number" step="0.01" name="biaya_angkut_jual[]"
-                                            class="biaya_angkut block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
-                                            readonly />
-                                    </div>
-                                </div>
-
                                 <div>
                                     <label class="block text-xs font-medium text-gray-700 mb-1">Harga BEP (Rp)</label>
                                     <input type="number" step="0.01" name="harga_bep[]"
                                         class="harga_bep block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
                                         readonly />
                                 </div>
+
+                                {{-- Hidden fields to carry biaya produksi & angkut per grade --}}
+                                <input type="hidden" name="b_produksi_per_tbs_olah[]" class="b_produksi" />
+                                <input type="hidden" name="biaya_angkut_jual[]" class="biaya_angkut" />
 
                                 <div class="grid gap-4 md:grid-cols-2">
                                     <div>
@@ -222,34 +209,51 @@
                     <div class="mt-6 w-full">
                         <h2 class="text-sm font-semibold text-gray-800 mb-3">Preview Rekap</h2>
                         <div class="overflow-x-auto border border-gray-200 rounded-lg">
-                            <table class="w-full text-xs md:text-sm text-left text-gray-700">
+                            <table class="w-full text-xs md:text-sm text-center text-gray-700">
                                 <thead class="bg-gray-50 text-gray-600 uppercase">
                                     <tr>
-                                        <th rowspan="2" class="px-3 py-2 border-b align-middle">No</th>
-                                        <th rowspan="2" class="px-3 py-2 border-b align-middle">PKS</th>
-                                        <th rowspan="2" class="px-3 py-2 border-b align-middle">Grade</th>
+                                        <th rowspan="2" class="px-3 py-2 border-b align-middle text-center">No</th>
+                                        <th rowspan="2" class="px-3 py-2 border-b align-middle text-center">PKS</th>
+                                        <th rowspan="2" class="px-3 py-2 border-b align-middle text-center">Grade</th>
                                         <th colspan="2" class="px-3 py-2 border-b text-center">Harga</th>
                                         <th colspan="2" class="px-3 py-2 border-b text-center">Rendemen</th>
                                         <th colspan="5" class="px-3 py-2 border-b text-center">Harga</th>
-                                        <th rowspan="2" class="px-3 py-2 border-b align-middle">Eskalasi</th>
+                                        <th rowspan="2" class="px-3 py-2 border-b align-middle text-center">Eskalasi</th>
                                     </tr>
                                     <tr>
-                                        <th class="px-3 py-2 border-b">CPO</th>
-                                        <th class="px-3 py-2 border-b">PK</th>
-                                        <th class="px-3 py-2 border-b">CPO</th>
-                                        <th class="px-3 py-2 border-b">PK</th>
-                                        <th class="px-3 py-2 border-b">Harga BEP</th>
-                                        <th class="px-3 py-2 border-b">Harga Saat Ini</th>
-                                        <th class="px-3 py-2 border-b">Harga Kemarin</th>
-                                        <th class="px-3 py-2 border-b">Selisih</th>
-                                        <th class="px-3 py-2 border-b">Harga Pesaing</th>
+                                        <th class="px-3 py-2 border-b text-center">CPO</th>
+                                        <th class="px-3 py-2 border-b text-center">PK</th>
+                                        <th class="px-3 py-2 border-b text-center">CPO</th>
+                                        <th class="px-3 py-2 border-b text-center">PK</th>
+                                        <th class="px-3 py-2 border-b text-center">Harga BEP</th>
+                                        <th class="px-3 py-2 border-b text-center">Harga Saat Ini</th>
+                                        <th class="px-3 py-2 border-b text-center">Harga Kemarin</th>
+                                        <th class="px-3 py-2 border-b text-center">Selisih</th>
+                                        <th class="px-3 py-2 border-b text-center">Harga Pesaing</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="px-3 py-2 border-b text-center" colspan="12">Belum ada data ditampilkan.
-                                        </td>
-                                    </tr>
+                                <tbody id="previewTbody">
+                                    @forelse(($pembelianList ?? []) as $i => $row)
+                                        <tr>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ $i + 1 }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ is_object($row) ? ($row->nama_pks ?? '-') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ is_object($row) ? ($row->grade ?? '-') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ (is_object($row) && isset($row->harga_cpo_penetapan)) ? number_format($row->harga_cpo_penetapan, 3, ',', '.') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ (is_object($row) && isset($row->harga_pk)) ? number_format($row->harga_pk, 3, ',', '.') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ (is_object($row) && isset($row->rendemen_cpo)) ? number_format($row->rendemen_cpo, 2, ',', '.') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ (is_object($row) && isset($row->rendemen_pk)) ? number_format($row->rendemen_pk, 2, ',', '.') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ (is_object($row) && isset($row->harga_bep)) ? number_format($row->harga_bep, 2, ',', '.') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ (is_object($row) && isset($row->harga_penetapan)) ? number_format($row->harga_penetapan, 3, ',', '.') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ (is_object($row) && isset($row->harga_kemarin)) ? number_format($row->harga_kemarin, 2, ',', '.') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ (is_object($row) && isset($row->selisih_harga)) ? number_format($row->selisih_harga, 2, ',', '.') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ (is_object($row) && isset($row->harga_pesaing)) ? number_format($row->harga_pesaing, 3, ',', '.') : '-' }}</td>
+                                            <td class="px-3 py-2 border-b align-middle text-center">{{ (is_object($row) && isset($row->eskalasi)) ? number_format($row->eskalasi, 2, ',', '.') : '-' }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td class="px-3 py-2 border-b text-center" colspan="12">Belum ada data ditampilkan.</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -303,21 +307,6 @@
                     </div>
                 </div>
 
-                <div class="grid gap-4 md:grid-cols-2">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">B. Produksi Per TBS Olah</label>
-                        <input type="number" step="0.01" name="b_produksi_per_tbs_olah[]"
-                            class="b_produksi block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
-                            readonly />
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Biaya Angkut dan Jual</label>
-                        <input type="number" step="0.01" name="biaya_angkut_jual[]"
-                            class="biaya_angkut block w-full rounded-lg border-gray-300 text-xs bg-gray-100 focus:ring-gray-900 focus:border-gray-900"
-                            readonly />
-                    </div>
-                </div>
-
                 <div>
                     <label class="block text-xs font-medium text-gray-700 mb-1">Harga BEP</label>
                     <input type="number" step="0.01" name="harga_bep[]" class="harga_bep"
@@ -325,12 +314,15 @@
                         readonly />
                 </div>
 
+                <!-- Hidden fields to carry biaya produksi & angkut per grade -->
+                <input type="hidden" name="b_produksi_per_tbs_olah[]" class="b_produksi" />
+                <input type="hidden" name="biaya_angkut_jual[]" class="biaya_angkut" />
+
                 <div class="grid gap-4 md:grid-cols-2">
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1">Harga Penetapan</label>
                         <input type="number" step="0.01" name="harga_penetapan_grade[]" class="hargaPenetapan"
-                            class="block w-full rounded-lg border-gray-200 text-xs text-gray-500 bg-gray-100 focus:ring-0 focus:border-gray-200"
-                            readonly />
+                            class="block w-full rounded-lg border-gray-200 text-xs focus:ring-gray-900 focus:border-gray-200" />
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1">Eskalasi (%)</label>

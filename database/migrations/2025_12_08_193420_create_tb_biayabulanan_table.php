@@ -14,10 +14,12 @@ return new class extends Migration {
         Schema::create('tb_biayabulanan', function (Blueprint $table) {
             $table->id();
             $table->string('nama_pks');
-            $table->string('bulan'); 
+            $table->string('bulan');
             $table->decimal('biaya_olah', 15, 2)->nullable();
             $table->decimal('tarif_angkut_cpo', 15, 2)->nullable();
             $table->decimal('tarif_angkut_pk', 15, 2)->nullable();
+            $table->decimal('b_produksi_per_tbs_olah', 15, 2)->nullable();
+            $table->decimal('biaya_angkut_jual', 15, 2)->nullable();
             $table->timestamps();
         });
 
@@ -27,6 +29,8 @@ return new class extends Migration {
             'biaya_olah' => 294.94,
             'tarif_angkut_cpo' => 171.00,
             'tarif_angkut_pk' => 194.50,
+            'b_produksi_per_tbs_olah' => 70.02,
+            'biaya_angkut_jual' => 35.47,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

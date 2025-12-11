@@ -15,6 +15,8 @@ function showTopLoader() {
 }
 
 let currentBiayaOlah = 0;
+let currentBProduksiPerTbsOlah = 0;
+let currentBiayaAngkutJual = 0;
 
 document.addEventListener('DOMContentLoaded', function () {
     const loader = document.getElementById('pageLoader');
@@ -23,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const biayaSelect = document.getElementById('biaya_digunakan');
     const greetingEl = document.getElementById("greeting");
 
-    // inisialisasi dropdown biaya jika data tersedia
     if (pksSelect && biayaSelect && Array.isArray(biayaList)) {
         resetBiayaOptions();
         biayaSelect.disabled = true;
@@ -82,8 +83,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (biayaAngkutEl) biayaAngkutEl.value = totalAngkut.toFixed(2);
 
                 currentBiayaOlah = parseFloat(selected.biaya_olah) || 0;
+                currentBProduksiPerTbsOlah = parseFloat(selected.b_produksi_per_tbs_olah) || 0;
+                currentBiayaAngkutJual = parseFloat(selected.biaya_angkut_jual) || 0;
 
-                // setelah ambil biaya, hitung ulang
                 updateColumn();
             }
         });
@@ -157,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // hitung awal (jika ada nilai default di beberapa grade)
     updateColumn();
 });
 
@@ -168,10 +169,21 @@ function updateColumn() {
         el.value = isNaN(value) ? 0 : value.toFixed(2);
     };
 
+    const getRupiahInputValue = (el) => {
+        if (!el) return 0;
+        let raw = (el.value || '').toString().trim();
+        if (!raw) return 0;
+
+        raw = raw.replace(/\./g, '').replace(',', '.');
+
+        const num = parseFloat(raw);
+        return isNaN(num) ? 0 : num;
+    };
+
     const hargaCpoEl = document.getElementById('hargaCPO');
     const hargaPkEl = document.getElementById('hargaPK');
-    const hargaCpo = getInputValue(hargaCpoEl);
-    const hargaPk = getInputValue(hargaPkEl);
+    const hargaCpo = getRupiahInputValue(hargaCpoEl);
+    const hargaPk = getRupiahInputValue(hargaPkEl);
 
     let totalPendapatanCpo = 0;
     let totalPendapatanPk = 0;
@@ -190,29 +202,19 @@ function updateColumn() {
 
         const rendemenCpo = getInputValue(rendCpoEl);
         const rendemenPk = getInputValue(rendPkEl);
-        const hargaPenetapanManual = getInputValue(hargaPenetapanEl);
+        const hargaPenetapanManual = getRupiahInputValue(hargaPenetapanEl);
 
-        // total rendemen (dalam persen)
-        const totalRendemen = rendemenCpo + rendemenPk;
+        setInputValue(bProduksiEl, currentBProduksiPerTbsOlah);
+        setInputValue(biayaAngkutJualEl, currentBiayaAngkutJual);
 
-        // B. Produksi Per TBS Olah = total rendemen * biaya olah
-        const bProduksi = (totalRendemen / 100) * currentBiayaOlah;
-        setInputValue(bProduksiEl, bProduksi);
-
-        // Biaya Angkut dan Jual = harga CPO * rend CPO
-        const biayaAngkutJual = hargaCpo * (rendemenCpo / 100);
-        setInputValue(biayaAngkutJualEl, biayaAngkutJual);
-
-        // Pendapatan CPO & PK (sesuai rumus Anda: harga * rendemen)
         const pendapatanCpo = hargaCpo * (rendemenCpo / 100);
         const pendapatanPk = hargaPk * (rendemenPk / 100);
 
-        // Harga BEP = (pendapatan CPO + pendapatan PK) - (bProduksi + biayaAngkutJual)
-        const hargaBep = (pendapatanCpo + pendapatanPk) ;
+        const hargaBep = (pendapatanCpo + pendapatanPk) - (currentBProduksiPerTbsOlah + currentBiayaAngkutJual);
 
         let eskalasi = 0;
         if (hargaBep !== 0 && hargaPenetapanManual !== 0) {
-            eskalasi = ((hargaPenetapanManual - hargaBep) / hargaBep) * 100;
+            eskalasi = (hargaBep - hargaPenetapanManual) / 500;
         }
 
         setInputValue(hargaBepEl, hargaBep);
@@ -250,5 +252,82 @@ function updateColumn() {
             setInputValue(ringkasanPenetapanEl, 0);
             setInputValue(ringkasanEskalasiEl, 0);
         }
+    }
+
+    // perbarui tabel preview rekap
+    updatePreviewTable(hargaCpo, hargaPk);
+}
+
+// Render tabel preview menggunakan nilai form saat ini
+function updatePreviewTable(hargaCpo, hargaPk) {
+    // gunakan tbody khusus live preview agar tidak menimpa data dari DB
+    const tbody = document.getElementById('previewTbodyLive');
+    if (!tbody) return;
+
+    const gradeRows = document.querySelectorAll('.grade-row');
+    const pks = (document.getElementById('pks') && document.getElementById('pks').value) || '-';
+
+    const fmtNum = (n) => {
+        const v = parseFloat(n);
+        if (isNaN(v)) return '-';
+        return v.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    const rows = [];
+    gradeRows.forEach((row, idx) => {
+        const gradeSel = row.querySelector('select[name="grade[]"]');
+        const rendCpoEl = row.querySelector('input[name="rend_cpo[]"]');
+        const rendPkEl = row.querySelector('input[name="rend_pk[]"]');
+        const hargaBepEl = row.querySelector('input[name="harga_bep[]"]');
+        const hargaPenetapanEl = row.querySelector('input[name="harga_penetapan_grade[]"]');
+        const eskalasiEl = row.querySelector('input[name="harga_eskalasi[]"]');
+        const pesaingEl = row.querySelector('input[name="info_harga_pesaing[]"]');
+
+        const gradeVal = gradeSel && gradeSel.value ? gradeSel.value : '';
+        const rendCpo = parseFloat(rendCpoEl && rendCpoEl.value) || 0;
+        const rendPk = parseFloat(rendPkEl && rendPkEl.value) || 0;
+        const hargaBep = parseFloat(hargaBepEl && hargaBepEl.value) || 0;
+        const hargaPenetapan = parseFloat(hargaPenetapanEl && hargaPenetapanEl.value) || 0;
+        const eskalasi = parseFloat(eskalasiEl && eskalasiEl.value) || 0;
+        const hargaPesaing = parseFloat(pesaingEl && pesaingEl.value) || 0;
+
+        // Jika baris benar-benar kosong, lewati
+        const hasAny = gradeVal || rendCpo || rendPk || hargaBep || hargaPenetapan || hargaPesaing;
+        if (!hasAny) return;
+
+        // Harga Saat Ini = harga penetapan manual
+        const hargaSaatIni = hargaPenetapan;
+        // Harga Kemarin belum tersedia dari form/backend saat ini
+        const hargaKemarin = null;
+        // Selisih (Saat Ini - Kemarin) jika keduanya tersedia; else '-'
+        const selisih = (hargaSaatIni != null && hargaKemarin != null) ? (hargaSaatIni - hargaKemarin) : null;
+
+        rows.push(`
+            <tr>
+                <td class="px-3 py-2 border-b align-middle text-center">${idx + 1}</td>
+                <td class="px-3 py-2 border-b align-middle">${pks || '-'}</td>
+                <td class="px-3 py-2 border-b align-middle">${gradeVal || '-'}</td>
+                <td class="px-3 py-2 border-b align-middle text-right">${fmtNum(hargaCpo)}</td>
+                <td class="px-3 py-2 border-b align-middle text-right">${fmtNum(hargaPk)}</td>
+                <td class="px-3 py-2 border-b align-middle text-right">${fmtNum(rendCpo)}</td>
+                <td class="px-3 py-2 border-b align-middle text-right">${fmtNum(rendPk)}</td>
+                <td class="px-3 py-2 border-b align-middle text-right">${fmtNum(hargaBep)}</td>
+                <td class="px-3 py-2 border-b align-middle text-right">${fmtNum(hargaSaatIni)}</td>
+                <td class="px-3 py-2 border-b align-middle text-right">${hargaKemarin == null ? '-' : fmtNum(hargaKemarin)}</td>
+                <td class="px-3 py-2 border-b align-middle text-right">${selisih == null ? '-' : fmtNum(selisih)}</td>
+                <td class="px-3 py-2 border-b align-middle text-right">${fmtNum(hargaPesaing)}</td>
+                <td class="px-3 py-2 border-b align-middle text-right">${(isNaN(eskalasi) ? '-' : eskalasi.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))}</td>
+            </tr>
+        `);
+    });
+
+    if (rows.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td class="px-3 py-2 border-b text-center" colspan="12">Belum ada data ditampilkan.</td>
+            </tr>
+        `;
+    } else {
+        tbody.innerHTML = rows.join('');
     }
 }

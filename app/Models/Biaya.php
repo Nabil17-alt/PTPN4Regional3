@@ -17,5 +17,7 @@ class Biaya extends Model
         'biaya_olah',
         'tarif_angkut_cpo',
         'tarif_angkut_pk',
+        'b_produksi_per_tbs_olah',
+        'biaya_angkut_jual',
     ];
 }
